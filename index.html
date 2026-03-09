@@ -3,118 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haa Livestock Enterprise | Absolute Master</title>
+    <title>Haa Livestock Enterprise | Master System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --haa-forest: #064e3b; --haa-accent: #10b981; --dvh-blue: #1e40af; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #fafafa; scroll-behavior: smooth; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; overflow-x: hidden; }
         .glass-sidebar { background: linear-gradient(180deg, #064e3b 0%, #022c22 100%); }
-        .premium-card { background: white; border-radius: 2.5rem; border: 1px solid #f1f5f9; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .premium-card:hover { transform: translateY(-5px); box-shadow: 0 30px 50px -12px rgba(6, 78, 59, 0.1); }
-        .form-input { width: 100%; padding: 1rem; background: #f8fafc; border-radius: 1.25rem; border: 2px solid transparent; outline: none; font-weight: 600; }
+        .premium-card { background: white; border-radius: 2rem; border: 1px solid #f1f5f9; transition: all 0.3s ease; }
+        .premium-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
+        .form-input { width: 100%; padding: 1rem; background: #f1f5f9; border-radius: 1rem; border: 2px solid transparent; outline: none; font-weight: 600; transition: 0.3s; }
         .form-input:focus { border-color: var(--haa-accent); background: white; }
-        .hide { display: none; }
-        .folder-border { border-top: 8px solid var(--haa-forest); }
+        .nav-btn { width: 100%; display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: 1rem; font-size: 0.8rem; font-weight: 700; transition: 0.3s; color: #94a3b8; }
+        .nav-btn:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-btn.active { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .view-section { display: none; animation: fadeIn 0.4s ease-out forwards; }
+        .view-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="antialiased">
 
-    <aside class="fixed inset-y-0 left-0 w-80 glass-sidebar text-white p-10 flex flex-col z-50">
-        <div class="mb-12 flex items-center gap-4">
-            <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-2xl text-emerald-900 font-black text-2xl italic">H</div>
+    <aside class="fixed inset-y-0 left-0 w-72 glass-sidebar text-white p-8 flex flex-col z-50 shadow-2xl">
+        <div class="mb-12 flex items-center gap-3">
+            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center font-black text-emerald-900 text-xl italic">H</div>
             <div>
-                <h1 class="font-black text-xl tracking-tight leading-none uppercase">Haa Enterprise</h1>
-                <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mt-2">Final Master Portal</p>
+                <h1 class="font-black text-base tracking-tight leading-none">HAA ENTERPRISE</h1>
+                <p class="text-[9px] text-emerald-400 font-bold uppercase tracking-widest mt-1">Master Command</p>
             </div>
         </div>
 
-        <nav class="space-y-2 flex-1">
-            <button onclick="showSection('dashboard')" class="w-full flex items-center gap-4 p-4 hover:bg-white/10 rounded-2xl text-xs font-bold transition-all">📊 Dashboard</button>
-            <button onclick="showSection('authority')" class="w-full flex items-center gap-4 p-4 hover:bg-white/10 rounded-2xl text-xs font-bold transition-all">👤 User Authority</button>
-            <button onclick="showSection('field-entry')" class="w-full flex items-center gap-4 p-4 hover:bg-white/10 rounded-2xl text-xs font-bold transition-all">🥛 Field Entry</button>
-            <button onclick="showSection('dvh-log')" class="w-full flex items-center gap-4 p-4 hover:bg-white/10 rounded-2xl text-xs font-bold transition-all text-blue-300">🏥 Hospital Log</button>
-            <button onclick="showSection('training-vault')" class="w-full flex items-center gap-4 p-4 hover:bg-white/10 rounded-2xl text-xs font-bold transition-all">📂 Training Vault</button>
-            <button onclick="showSection('heritage')" class="w-full flex items-center gap-4 p-4 hover:bg-white/10 rounded-2xl text-xs font-bold transition-all">🏔️ Heritage Brand</button>
+        <nav class="flex-1 space-y-2">
+            <button onclick="switchView('dashboard')" class="nav-btn active" id="btn-dashboard"><span>📊</span> District Summary</button>
+            <button onclick="switchView('authority')" class="nav-btn" id="btn-authority"><span>👤</span> User Authority</button>
+            <button onclick="switchView('field-entry')" class="nav-btn" id="btn-field-entry"><span>🥛</span> Dairy Data Entry</button>
+            <button onclick="switchView('dvh-log')" class="nav-btn" id="btn-dvh-log"><span>🏥</span> Hospital Log</button>
+            <button onclick="switchView('training')" class="nav-btn" id="btn-training"><span>📂</span> Training Vault</button>
+            <button onclick="switchView('heritage')" class="nav-btn" id="btn-heritage"><span>🏔️</span> Heritage Brand</button>
         </nav>
 
-        <div class="p-6 bg-emerald-950/50 rounded-[2.5rem] border border-white/5">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-full border-2 border-emerald-500 overflow-hidden"><img src="https://ui-avatars.com/api/?name=LPO+Master&background=064e3b&color=fff"></div>
-                <div><p class="text-[11px] font-black uppercase">LPO MASTER</p><p class="text-[9px] text-emerald-500 font-bold">Verified Permanent</p></div>
+        <div class="mt-auto p-4 bg-black/20 rounded-2xl border border-white/5 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full border-2 border-emerald-500 overflow-hidden">
+                <img src="https://ui-avatars.com/api/?name=LPO+Master&background=064e3b&color=fff">
+            </div>
+            <div>
+                <p class="text-[10px] font-black uppercase">LPO Master</p>
+                <p class="text-[8px] text-emerald-400 font-bold uppercase">Gatekeeper Mode</p>
             </div>
         </div>
     </aside>
 
-    <main class="ml-80 p-16 max-w-7xl mx-auto">
+    <main class="ml-72 p-12 max-w-7xl mx-auto">
 
-        <div id="dashboard" class="section-view space-y-12">
-            <header><h2 class="text-4xl font-black tracking-tighter text-slate-900">District Summary</h2></header>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="premium-card p-8 bg-emerald-900 text-white shadow-2xl shadow-emerald-900/20">
-                    <p class="text-[10px] font-black uppercase text-emerald-400">Milk Yield</p>
-                    <h3 class="text-4xl font-black mt-4">18,540 <small class="text-sm opacity-60">Ltr</small></h3>
-                </div>
-                <div class="premium-card p-8"><p class="text-[10px] font-black uppercase text-slate-400">Total Revenue</p><h3 class="text-4xl font-black mt-4">Nu. 2.4M</h3></div>
-                <div class="premium-card p-8"><p class="text-[10px] font-black uppercase text-slate-400">Hospital OPD</p><h3 class="text-4xl font-black mt-4">142</h3></div>
-                <div class="premium-card p-8"><p class="text-[10px] font-black uppercase text-slate-400">Verified Staff</p><h3 class="text-4xl font-black mt-4">7</h3></div>
+        <section id="view-dashboard" class="view-section active">
+            <div class="mb-12">
+                <h2 class="text-4xl font-black tracking-tighter">Executive Overview</h2>
+                <p class="text-slate-500 mt-2">Real-time stats aggregated from all 6 Gewogs.</p>
             </div>
-        </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="premium-card p-8 bg-emerald-900 text-white">
+                    <p class="text-[10px] font-black uppercase text-emerald-400 tracking-widest">Milk Yield</p>
+                    <h3 class="text-4xl font-black mt-2">18,540 <small class="text-sm opacity-50 font-medium">LTR</small></h3>
+                </div>
+                <div class="premium-card p-8"><p class="text-[10px] font-black uppercase text-slate-400">Total Revenue</p><h3 class="text-4xl font-black mt-2">Nu. 2.4M</h3></div>
+                <div class="premium-card p-8"><p class="text-[10px] font-black uppercase text-slate-400">Clinical Cases</p><h3 class="text-4xl font-black mt-2">142</h3></div>
+                <div class="premium-card p-8"><p class="text-[10px] font-black uppercase text-slate-400">Approved Staff</p><h3 class="text-4xl font-black mt-2">7</h3></div>
+            </div>
+        </section>
 
-        <div id="authority" class="section-view hide space-y-12">
-            <header><h2 class="text-4xl font-black tracking-tighter">Authority Queue</h2></header>
-            <div class="premium-card p-4">
-                <div class="flex items-center justify-between p-8">
-                    <div class="flex items-center gap-6"><div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-xl">👤</div>
-                    <div><h4 class="font-black text-lg text-slate-900">Karma Wangdi</h4><p class="text-xs text-slate-400 font-bold uppercase">Supervisor • Bji</p></div></div>
-                    <div class="flex gap-4">
-                        <button onclick="approve(this)" class="bg-emerald-600 text-white px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl">Approve Permanently</button>
-                        <button class="bg-white border text-rose-500 px-8 py-3 rounded-xl text-[10px] font-black uppercase">Reject</button>
+        <section id="view-authority" class="view-section">
+            <div class="mb-10">
+                <h2 class="text-4xl font-black tracking-tighter">Account Approvals</h2>
+                <p class="text-slate-500 mt-2">Grant permanent access to new staff signups.</p>
+            </div>
+            <div class="premium-card p-4 space-y-2" id="authority-list">
+                <div class="flex items-center justify-between p-8 hover:bg-slate-50 rounded-2xl transition">
+                    <div class="flex items-center gap-6">
+                        <div class="w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center font-bold text-xl">KW</div>
+                        <div>
+                            <h4 class="font-black text-lg">Karma Wangdi</h4>
+                            <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">Supervisor • Bji Gewog</p>
+                        </div>
                     </div>
+                    <button onclick="approveUser(this)" class="bg-emerald-600 text-white px-10 py-4 rounded-xl text-[11px] font-black uppercase tracking-widest shadow-xl">Approve Permanently</button>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="training-vault" class="section-view hide space-y-12">
-            <header class="flex justify-between items-end">
-                <div><h2 class="text-4xl font-black tracking-tighter">Audit Vault</h2><p class="text-slate-400 font-medium mt-2">Documentation for Government Auditors.</p></div>
-                <button class="bg-slate-900 text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase">+ New Folder</button>
-            </header>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="premium-card folder-border p-8">
-                    <div class="flex justify-between mb-4"><span class="px-4 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase">Verified Audit</span><p class="text-[11px] font-bold text-slate-400">March 05, 2026</p></div>
-                    <h3 class="text-xl font-black mb-4">Biosecurity Poultry Training</h3>
-                    <p class="text-sm text-slate-500 mb-6">Staff Training on Guinea Fowl and Turkey management protocols.</p>
-                    <div class="grid grid-cols-3 gap-2 mb-6">
-                        <div class="h-16 bg-slate-100 rounded-lg"></div><div class="h-16 bg-slate-100 rounded-lg"></div><div class="h-16 bg-slate-100 rounded-lg flex items-center justify-center text-[10px] font-black">PHOTO</div>
-                    </div>
-                    <a href="#" class="block p-4 bg-slate-50 rounded-xl text-[10px] font-black uppercase text-center border border-slate-100">Download Audit Report (PDF)</a>
-                </div>
+        <section id="view-field-entry" class="view-section">
+            <div class="mb-10">
+                <h2 class="text-4xl font-black tracking-tighter">Dairy Production Log</h2>
+                <p class="text-slate-500 mt-2">Field data entry for milk and unique products.</p>
             </div>
-        </div>
-
-        <div id="dvh-log" class="section-view hide space-y-12">
-            <header><h2 class="text-4xl font-black tracking-tighter text-blue-900">Hospital Log</h2></header>
-            <div class="premium-card p-12 !border-blue-100">
+            <form oninput="updateRevenue()" class="premium-card p-10 space-y-8">
                 <div class="grid grid-cols-2 gap-8">
-                    <div class="space-y-2"><label class="text-[10px] font-black uppercase text-slate-400">Diagnosis</label><input type="text" class="form-input !bg-blue-50/50" placeholder="Disease"></div>
-                    <div class="space-y-2"><label class="text-[10px] font-black uppercase text-slate-400">Species</label><select class="form-input !bg-blue-50/50"><option>Yak</option><option>Cattle</option></select></div>
+                    <div class="space-y-2"><label class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Product Type</label>
+                        <select class="form-input"><option>Fresh Milk</option><option>Hard Chugo</option><option>Yaksha</option><option>Ghee</option></select>
+                    </div>
+                    <div class="space-y-2"><label class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Quantity Sold</label>
+                        <input type="number" id="qty" class="form-input" placeholder="0.00">
+                    </div>
+                    <div class="space-y-2"><label class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Unit Price (Nu.)</label>
+                        <input type="number" id="price" class="form-input" placeholder="0.00">
+                    </div>
+                    <div class="bg-emerald-50 rounded-2xl p-6 flex flex-col justify-center border border-emerald-100">
+                        <p class="text-[10px] font-black uppercase text-emerald-700">Live Revenue Total</p>
+                        <h4 class="text-3xl font-black text-emerald-900 mt-1">Nu. <span id="rev-total">0</span></h4>
+                    </div>
                 </div>
-                <button class="w-full bg-blue-900 text-white font-black py-5 rounded-3xl uppercase text-[10px] tracking-widest mt-8">Save Clinical Record</button>
+                <button type="button" onclick="alert('Data Synced to District Database')" class="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl">Sync Monthly Report</button>
+            </form>
+        </section>
+
+        <section id="view-dvh-log" class="view-section">
+            <div class="mb-10">
+                <h2 class="text-4xl font-black tracking-tighter text-blue-900">Hospital Registry</h2>
+                <p class="text-slate-500 mt-2">Clinical diagnosis and pharmacy stock management.</p>
             </div>
-        </div>
+            <div class="premium-card p-10 border-blue-100 shadow-blue-900/5 space-y-8">
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="space-y-2"><label class="text-[10px] font-black uppercase text-slate-400">Species</label>
+                        <select class="form-input"><option>Yak</option><option>Cattle</option><option>Equine</option></select>
+                    </div>
+                    <div class="space-y-2"><label class="text-[10px] font-black uppercase text-slate-400">Diagnosis</label>
+                        <input type="text" class="form-input" placeholder="Clinical Finding">
+                    </div>
+                    <div class="space-y-2 md:col-span-2"><label class="text-[10px] font-black uppercase text-slate-400">Medicine Used</label>
+                        <input type="text" class="form-input" placeholder="Quantity and Name">
+                    </div>
+                </div>
+                <button onclick="alert('Medical Record Saved')" class="w-full bg-blue-900 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl">Save Hospital Entry</button>
+            </div>
+        </section>
+
+        <section id="view-training" class="view-section">
+            <div class="mb-10 flex justify-between items-end">
+                <div><h2 class="text-4xl font-black tracking-tighter text-slate-900">Training & Audit Vault</h2><p class="text-slate-500 mt-2">Folder-based institutional memory.</p></div>
+                <button class="bg-slate-900 text-white px-8 py-4 rounded-xl text-[10px] font-black uppercase">+ Create Folder</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="premium-card p-8 border-t-8 border-emerald-900">
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[9px] font-black uppercase">Verified Audit</span>
+                        <p class="text-[10px] font-bold text-slate-400">March 2026</p>
+                    </div>
+                    <h3 class="text-2xl font-black">Biosecurity Training</h3>
+                    <p class="text-sm text-slate-500 mt-4">Field training for Bji and Katsho gewogs on skeletal anatomy and avian diseases.</p>
+                    <div class="mt-8 pt-6 border-t border-slate-50 flex items-center justify-between">
+                        <span class="text-[10px] font-black text-slate-400 uppercase">Audit Report (PDF)</span>
+                        <a href="#" class="text-emerald-600 font-black text-[11px] uppercase tracking-widest">Download →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-heritage" class="view-section">
+            <div class="mb-10">
+                <h2 class="text-4xl font-black tracking-tighter">Haa Heritage Gallery</h2>
+                <p class="text-slate-500 mt-2">Marketing catalog for unique district products.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="premium-card overflow-hidden group">
+                    <div class="h-48 bg-slate-200"><img src="https://images.unsplash.com/photo-1544025162-d76694265947" class="w-full h-full object-cover"></div>
+                    <div class="p-8"><h3 class="text-xl font-black">Haa Yaksha</h3><p class="text-xs text-slate-500 mt-2 italic">Dried Highland Meat</p></div>
+                </div>
+                <div class="premium-card overflow-hidden group">
+                    <div class="h-48 bg-slate-200"><img src="https://images.unsplash.com/photo-1552767059-ce182ead6c1b" class="w-full h-full object-cover"></div>
+                    <div class="p-8"><h3 class="text-xl font-black">Gangphu Datshi</h3><p class="text-xs text-slate-500 mt-2 italic">Signature Cheese Balls</p></div>
+                </div>
+            </div>
+        </section>
 
     </main>
 
     <script>
-        function showSection(id) {
-            document.querySelectorAll('.section-view').forEach(s => s.classList.add('hide'));
-            document.getElementById(id).classList.remove('hide');
+        // NAVIGATION LOGIC
+        function switchView(viewId) {
+            // Hide all sections
+            document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
+            // Remove active from all buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Show target section
+            document.getElementById('view-' + viewId).classList.add('active');
+            // Active current button
+            document.getElementById('btn-' + viewId).classList.add('active');
+            
+            window.scrollTo(0,0);
         }
-        function approve(btn) {
-            btn.innerHTML = "✅ Verified Permanently";
+
+        // AUTHORITY APPROVAL LOGIC
+        function approveUser(btn) {
+            btn.innerHTML = "✅ Saved Permanently";
             btn.classList.replace('bg-emerald-600', 'bg-slate-900');
-            alert("STAFF AUTHORIZED: Account is permanently saved in the system.");
+            btn.disabled = true;
+            alert("STAFF AUTHORIZED: Account has been permanently added to the system.");
+        }
+
+        // CALCULATION LOGIC
+        function updateRevenue() {
+            const q = parseFloat(document.getElementById('qty').value) || 0;
+            const p = parseFloat(document.getElementById('price').value) || 0;
+            document.getElementById('rev-total').innerText = (q * p).toLocaleString();
         }
     </script>
 </body>
