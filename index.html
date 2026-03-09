@@ -3,209 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haa Livestock Data System</title>
+    <title>Haa Livestock System - Public Access</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        .gewog-bg { background: linear-gradient(135deg, #065f46 0%, #064e3b 100%); }
-        .modal { transition: opacity 0.25s ease; }
-        body.modal-active { overflow: hidden; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-nav { background: rgba(6, 78, 59, 0.98); backdrop-filter: blur(12px); }
+        .sector-card { transition: all 0.3s ease; cursor: pointer; border: 1px solid #e2e8f0; }
+        .sector-card:hover { transform: translateY(-5px); border-color: #10b981; }
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-slate-50 text-slate-900">
 
-    <div id="loginPage" class="min-h-screen flex items-center justify-center p-4">
-        <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-emerald-900">Haa Livestock</h1>
-                <p class="text-gray-500 mt-2">Dzongkhag Data Management System</p>
-            </div>
+    <div id="loginPage" class="min-h-screen flex items-center justify-center bg-emerald-900 px-4">
+        <div class="max-w-md w-full bg-white rounded-[2.5rem] shadow-2xl p-10">
+            <h1 class="text-3xl font-black text-emerald-900 mb-2 text-center">Haa Livestock</h1>
+            <p class="text-center text-xs text-slate-400 mb-8 font-bold uppercase tracking-widest">District Reporting Portal</p>
             
-            <form onsubmit="event.preventDefault(); showDashboard();">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                    <input type="text" id="username" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none">
-                </div>
+            <form onsubmit="event.preventDefault(); login();" class="space-y-4">
+                <input type="text" id="username" required placeholder="Full Name / Visitor Name" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                
+                <select id="roleSelect" required class="w-full p-4 bg-slate-50 border rounded-2xl outline-none font-bold text-emerald-800">
+                    <option value="">Select Access Level...</option>
+                    <option value="Visitor">Visitor (View & Download Only)</option>
+                    <option value="Field Supervisor">Field Supervisor (Data Entry)</option>
+                    <option value="LPO">LPO (System Master)</option>
+                    <option value="DLO">DLO (Head of Sector)</option>
+                    <option value="ADLO">ADLO (Asst. Head)</option>
+                </select>
 
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Select Gewog</label>
-                    <select id="gewogSelect" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none bg-white">
-                        <option value="">-- Choose your Gewog --</option>
-                        <option>Bji</option>
-                        <option>Gakiling</option>
-                        <option>Katsho</option>
-                        <option>Sama</option>
-                        <option>Sangbay</option>
-                        <option>Uesu</option>
-                    </select>
-                </div>
+                <select id="gewogSelect" class="w-full p-4 bg-slate-50 border rounded-2xl outline-none">
+                    <option value="Haa HQ">Select Gewog...</option>
+                    <option value="Bji">Bji</option><option value="Katsho">Katsho</option>
+                    <option value="Uesu">Uesu</option><option value="Gakiling">Gakiling</option>
+                    <option value="Sama">Sama</option><option value="Sangbay">Sangbay</option>
+                </select>
 
-                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg">
-                    Login to System
-                </button>
+                <button type="submit" class="w-full bg-emerald-700 text-white font-black py-4 rounded-2xl uppercase tracking-widest text-sm shadow-lg hover:bg-emerald-800 transition">Enter Portal</button>
             </form>
         </div>
     </div>
 
-    <div id="dashboard" class="hidden">
-        <nav class="gewog-bg text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
-            <div>
-                <span class="font-bold text-lg">Haa Livestock Portal</span>
-                <span id="userDisplay" class="ml-4 text-emerald-200 text-sm italic"></span>
+    <div id="dashboard" class="hidden min-h-screen pb-20">
+        <nav class="glass-nav text-white px-8 py-4 flex justify-between items-center sticky top-0 z-50 no-print">
+            <div class="flex flex-col">
+                <span class="text-xl font-black tracking-tighter">HAA LIVESTOCK</span>
+                <span id="userDisplay" class="text-[10px] font-bold opacity-80"></span>
             </div>
-            <div class="flex gap-4 items-center">
-                <a href="#" class="text-sm hover:underline">Announcements</a>
-                <button onclick="location.reload()" class="text-sm bg-white/20 hover:bg-white/30 px-4 py-1 rounded-lg">Logout</button>
+            <div class="flex gap-3">
+                <button onclick="printReport()" class="bg-white/20 hover:bg-white/40 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter">Print PDF</button>
+                <button onclick="location.reload()" class="bg-rose-500 px-4 py-2 rounded-xl text-xs font-bold">Logout</button>
             </div>
         </nav>
 
-        <div class="p-6 max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                <div>
-                    <h3 class="text-3xl font-extrabold text-gray-800">Sector Gallery</h3>
-                    <p class="text-gray-500">Select a sector to begin data entry for <span id="currentGewogLabel" class="font-bold text-emerald-700"></span></p>
-                </div>
-                <div class="flex gap-2">
-                    <button class="bg-white border px-4 py-2 rounded-lg shadow-sm text-sm hover:bg-gray-50">View Social Media</button>
-                    <button class="bg-emerald-600 text-white px-4 py-2 rounded-lg shadow-sm text-sm hover:bg-emerald-700">Upload Resources</button>
+        <main class="max-w-7xl mx-auto p-6 md:p-10">
+            <div id="announcementBar" class="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-3xl flex items-center justify-between no-print">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">📢</span>
+                    <p id="announcementText" class="text-sm font-bold text-amber-900 italic">Welcome! Please use the 'Print PDF' button to download latest reports.</p>
                 </div>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <div class="bg-white border-b-4 border-blue-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Dairy Production')">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl mb-4">🐄</div>
-                    <h4 class="text-lg font-bold text-gray-800">Dairy Production</h4>
-                    <p class="text-xs text-gray-500 mb-4">Milk, Butter, Cheese records</p>
-                    <span class="text-blue-600 text-sm font-semibold">Enter Data →</span>
-                </div>
 
-                <div class="bg-white border-b-4 border-indigo-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Dairy AI Records')">
-                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-2xl mb-4">💉</div>
-                    <h4 class="text-lg font-bold text-gray-800">Dairy AI Records</h4>
-                    <p class="text-xs text-gray-500 mb-4">Semen type & Progeny</p>
-                    <span class="text-indigo-600 text-sm font-semibold">Enter Data →</span>
-                </div>
-
-                <div class="bg-white border-b-4 border-purple-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Natural Breeding')">
-                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-2xl mb-4">🐂</div>
-                    <h4 class="text-lg font-bold text-gray-800">Natural Breeding</h4>
-                    <p class="text-xs text-gray-500 mb-4">Bull & Mating records</p>
-                    <span class="text-purple-600 text-sm font-semibold">Enter Data →</span>
-                </div>
-
-                <div class="bg-white border-b-4 border-cyan-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Fishery Sector')">
-                    <div class="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center text-2xl mb-4">🐟</div>
-                    <h4 class="text-lg font-bold text-gray-800">Fishery Sector</h4>
-                    <p class="text-xs text-gray-500 mb-4">Carp & Trout farming</p>
-                    <span class="text-cyan-600 text-sm font-semibold">Enter Data →</span>
-                </div>
-
-                <div class="bg-white border-b-4 border-green-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Animal Nutrition')">
-                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl mb-4">🌱</div>
-                    <h4 class="text-lg font-bold text-gray-800">Animal Nutrition</h4>
-                    <p class="text-xs text-gray-500 mb-4">Pasture & Feed data</p>
-                    <span class="text-green-600 text-sm font-semibold">Enter Data →</span>
-                </div>
-
-                <div class="bg-white border-b-4 border-yellow-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Apiculture')">
-                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center text-2xl mb-4">🐝</div>
-                    <h4 class="text-lg font-bold text-gray-800">Apiculture</h4>
-                    <p class="text-xs text-gray-500 mb-4">Honey & Hive production</p>
-                    <span class="text-yellow-600 text-sm font-semibold">Enter Data →</span>
-                </div>
-
-                <div class="bg-white border-b-4 border-orange-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Sheep & Goat')">
-                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-2xl mb-4">🐏</div>
-                    <h4 class="text-lg font-bold text-gray-800">Sheep & Goat</h4>
-                    <p class="text-xs text-gray-500 mb-4">Wool & Meat statistics</p>
-                    <span class="text-orange-600 text-sm font-semibold">Enter Data →</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="dataModal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden z-[100]">
-        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
-        <div class="modal-container bg-white w-11/12 md:max-w-2xl mx-auto rounded-2xl shadow-2xl z-50 overflow-y-auto max-h-[90vh]">
-            <div class="modal-content py-6 text-left px-8">
-                <div class="flex justify-between items-center pb-3 border-b mb-4">
-                    <p class="text-2xl font-bold text-emerald-800" id="modalTitle">Sector Name</p>
-                    <div class="modal-close cursor-pointer z-50" onclick="closeModal()">
-                        <span class="text-3xl">&times;</span>
+            <section class="mb-12 no-print">
+                <h2 class="text-2xl font-black mb-6">📂 Livestock Sectors</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+                    <div onclick="checkAccessAndOpen('Dairy Production')" class="sector-card p-6 bg-white rounded-3xl text-center">
+                        <span class="text-3xl block mb-2">🥛</span><span class="text-[9px] font-black uppercase">Dairy</span>
+                    </div>
+                    <div onclick="checkAccessAndOpen('Dairy AI')" class="sector-card p-6 bg-white rounded-3xl text-center">
+                        <span class="text-3xl block mb-2">💉</span><span class="text-[9px] font-black uppercase">AI</span>
+                    </div>
+                    <div onclick="checkAccessAndOpen('Fishery')" class="sector-card p-6 bg-white rounded-3xl text-center">
+                        <span class="text-3xl block mb-2">🐟</span><span class="text-[9px] font-black uppercase">Fishery</span>
+                    </div>
+                    <div onclick="checkAccessAndOpen('Nutrition')" class="sector-card p-6 bg-white rounded-3xl text-center">
+                        <span class="text-3xl block mb-2">🌱</span><span class="text-[9px] font-black uppercase">Nutrition</span>
                     </div>
                 </div>
+            </section>
 
-                <form id="sectorForm" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-gray-500">Reporting Month</label>
-                            <input type="month" required class="w-full p-2 border rounded bg-gray-50">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-gray-500">Farmer Group Name</label>
-                            <input type="text" placeholder="Enter name" class="w-full p-2 border rounded">
-                        </div>
+            <section id="printableArea">
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <h2 class="text-2xl font-black">📊 Live Status Report</h2>
+                        <p class="text-xs text-slate-400 font-bold uppercase">Haa District Livestock Statistics</p>
                     </div>
-
-                    <div class="bg-emerald-50 p-4 rounded-lg">
-                        <h5 class="font-bold text-emerald-900 mb-3 text-sm">Production Details</h5>
-                        <div class="grid grid-cols-2 gap-4" id="dynamicFields">
-                            </div>
+                    <button onclick="exportToCSV()" class="no-print bg-emerald-100 text-emerald-700 px-4 py-2 rounded-xl text-[10px] font-bold uppercase">Download Excel (.csv)</button>
+                </div>
+                <div id="gallery" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     </div>
-
-                    <div class="flex justify-end pt-4 gap-3">
-                        <button type="button" onclick="closeModal()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Cancel</button>
-                        <button type="submit" class="px-6 py-2 bg-emerald-700 text-white rounded-lg hover:bg-emerald-800 font-bold">Save Record</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            </section>
+        </main>
     </div>
 
     <script>
-        function showDashboard() {
-            const gewog = document.getElementById('gewogSelect').value;
-            const user = document.getElementById('username').value;
-            document.getElementById('userDisplay').innerText = `Logged in: ${user} (${gewog} Gewog)`;
-            document.getElementById('currentGewogLabel').innerText = gewog;
-            
+        let currentUser = { name: "", role: "", gewog: "" };
+        let records = [
+            // Dummy data for visitors to see immediately
+            { id: 101, sector: "Dairy Production", month: "2025-03", data: {"Milk (l)": "4500", "Butter (kg)": "120"}, submittedBy: "System", gewog: "Bji", headRemarks: "Verified by DLO" }
+        ];
+
+        function login() {
+            currentUser = {
+                name: document.getElementById('username').value,
+                role: document.getElementById('roleSelect').value,
+                gewog: document.getElementById('gewogSelect').value
+            };
+            document.getElementById('userDisplay').innerText = `${currentUser.name} | ${currentUser.gewog} (${currentUser.role})`;
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
+            renderGallery();
         }
 
-        function openModal(sector) {
-            document.getElementById('modalTitle').innerText = sector + ' Entry';
-            const fieldContainer = document.getElementById('dynamicFields');
-            fieldContainer.innerHTML = ''; // Clear existing
-
-            // Field mapping logic based on your Excel files
-            if(sector === 'Dairy Production') {
-                fieldContainer.innerHTML = `
-                    <div><label class="text-xs">Milk Collected (L)</label><input type="number" class="w-full p-2 border rounded"></div>
-                    <div><label class="text-xs">Milk Sold (L)</label><input type="number" id="qtySold" oninput="calcRev()" class="w-full p-2 border rounded"></div>
-                    <div><label class="text-xs">Selling Price (Nu/L)</label><input type="number" id="price" oninput="calcRev()" class="w-full p-2 border rounded"></div>
-                    <div><label class="text-xs font-bold">Total Revenue</label><input type="text" id="revenue" readonly class="w-full p-2 border rounded bg-yellow-50 font-bold"></div>
-                `;
-            } else {
-                fieldContainer.innerHTML = `
-                    <div><label class="text-xs">Quantity Produced</label><input type="number" class="w-full p-2 border rounded"></div>
-                    <div><label class="text-xs">Quantity Sold</label><input type="number" class="w-full p-2 border rounded"></div>
-                    <div><label class="text-xs">Remarks</label><input type="text" class="w-full p-2 border rounded"></div>
-                `;
+        function checkAccessAndOpen(sector) {
+            if(currentUser.role === 'Visitor') {
+                alert("Visitor Mode: You can view and download data, but entry is restricted to officials.");
+                return;
             }
-
-            document.getElementById('dataModal').classList.remove('hidden');
-            document.body.classList.add('modal-active');
+            if(['DLO', 'ADLO'].includes(currentUser.role)) {
+                alert("Head of Sector: Please review existing data in the gallery.");
+                return;
+            }
+            // openForm logic...
         }
 
-        function closeModal() {
-            document.getElementById('dataModal').classList.add('hidden');
-            document.body.classList.remove('modal-active');
+        function renderGallery() {
+            const container = document.getElementById('gallery');
+            container.innerHTML = records.length ? "" : "<p class='text-slate-400 italic'>No reports found for this period.</p>";
+            
+            records.forEach(r => {
+                container.innerHTML += `
+                    <div class="bg-white p-6 rounded-[2rem] border-2 border-slate-100 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-[9px] font-black bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full uppercase">${r.month}</span>
+                            <span class="text-[8px] font-bold text-slate-300">ID: ${r.id}</span>
+                        </div>
+                        <h3 class="font-black text-lg text-emerald-900">${r.sector}</h3>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase mb-4">${r.gewog} Gewog | By: ${r.submittedBy}</p>
+                        
+                        <div class="bg-slate-50 rounded-2xl p-4 text-[11px] space-y-1 mb-4 flex-1">
+                            ${Object.entries(r.data).map(([key, val]) => `<div><b class="text-slate-400 font-medium">${key}:</b> ${val}</div>`).join('')}
+                        </div>
+                        ${r.headRemarks ? `<div class="p-3 bg-amber-50 rounded-xl border-l-4 border-amber-400 text-[10px] italic">"${r.headRemarks}"</div>` : ''}
+                    </div>
+                `;
+            });
         }
 
-        function calcRev() {
-            const qty = document.getElementById('qtySold').value || 0;
-            const price = document.getElementById('price').value || 0;
-            document.getElementById('revenue').value = 'Nu. ' + (qty * price).toLocaleString();
+        function printReport() {
+            window.print();
+        }
+
+        function exportToCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,Month,Gewog,Sector,Data\n";
+            records.forEach(r => {
+                let dataString = JSON.stringify(r.data).replace(/,/g, ";");
+                csvContent += `${r.month},${r.gewog},${r.sector},${dataString}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "Haa_Livestock_Report.csv");
+            document.body.appendChild(link);
+            link.click();
         }
     </script>
 </body>
