@@ -10,7 +10,7 @@
 
 <style>
 body { font-family:'Inter',sans-serif; background:#0f172a; transition:0.3s; }
-.sidebar { width:280px; background:#1e293b; color:white; position:fixed; height:100vh; overflow-y:auto; padding:2rem; transition:0.3s; z-index:50; }
+.sidebar { width:280px; background:#1e293b; color:white; position:fixed; height:100vh; overflow-y:auto; padding:2rem; z-index:50; }
 .sidebar h1 { font-size:1.5rem; font-weight:800; margin-bottom:0.25rem; }
 .sidebar p { font-size:0.65rem; font-weight:700; letter-spacing:0.1em; color:#3b82f6; }
 .nav-btn { display:block; width:100%; text-left; padding:0.5rem 0.75rem; border-radius:0.5rem; margin-bottom:0.25rem; cursor:pointer; font-size:0.75rem; transition:0.2s; }
@@ -21,12 +21,11 @@ body { font-family:'Inter',sans-serif; background:#0f172a; transition:0.3s; }
 .view { display:none; }
 .view.active { display:block; }
 .form-input { width:100%; border:1px solid #cbd5e1; padding:0.7rem; border-radius:10px; font-size:0.875rem; }
-.btn { background:#1e40af; color:white; padding:1rem; border-radius:12px; width:100%; font-weight:800; cursor:pointer; transition:0.3s; }
-.btn:hover { background:#1d4ed8; }
+.btn, .btn-master { background:#1e40af; color:white; padding:1rem; border-radius:12px; width:100%; font-weight:800; cursor:pointer; transition:0.3s; }
+.btn:hover, .btn-master:hover { background:#1d4ed8; }
 .prod-row { border-left:5px solid #3b82f6; background:#f0f7ff; padding:1rem; border-radius:10px; display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0.5rem; align-items:center; }
-h2 { font-weight:800; margin-bottom:1rem; }
-
 #mobile-toggle { display:none; cursor:pointer; position:fixed; top:1rem; left:1rem; z-index:60; color:white; font-size:1.5rem; }
+#signup_modal { display:flex; } /* Modal visible by default */
 @media (max-width:1024px){
     .sidebar { transform:translateX(-100%); position:fixed; }
     .sidebar.open { transform:translateX(0); }
@@ -35,143 +34,154 @@ h2 { font-weight:800; margin-bottom:1rem; }
 }
 </style>
 </head>
-
 <body>
+
 <div id="mobile-toggle">&#9776;</div>
 
+<!-- STAFF ACCESS SIGNUP MODAL -->
+<div id="signup_modal" class="fixed inset-0 bg-slate-900/90 z-[100] flex items-center justify-center p-4 no-print">
+    <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl">
+        <h2 class="text-2xl font-black text-slate-800 mb-2">Staff Access Request</h2>
+        <p class="text-xs text-slate-400 mb-6 uppercase font-bold tracking-widest">Haa District Livestock System</p>
+        <div class="space-y-4">
+            <div><label>Full Name</label><input id="reg_user" class="form-input" placeholder="Enter Name"></div>
+            <div><label>Official Email</label><input id="reg_email" type="email" class="form-input" placeholder="email@haa.gov.bt"></div>
+            <div><label>Password</label><input id="reg_pass" type="password" class="form-input" placeholder="••••••••"></div>
+            <div>
+                <label>Professional Role</label>
+                <select id="reg_role" class="form-input font-bold text-blue-700">
+                    <option>STAFF</option>
+                    <option>FIELD SUPERVISOR</option>
+                    <option>LPO</option>
+                    <option>DLO</option>
+                    <option>ADLO</option>
+                </select>
+            </div>
+            <button onclick="requestAccess()" class="btn-master bg-blue-600 hover:bg-blue-700 mt-4">Submit for Approval</button>
+            <button onclick="bypassForAdmin()" class="w-full text-[10px] text-slate-400 font-bold mt-2 hover:text-slate-600 uppercase">Administrator Bypass</button>
+        </div>
+    </div>
+</div>
+
 <div class="flex">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <h1>HAA DISTRICT</h1>
+        <p>Livestock Master Portal</p>
+        <nav class="mt-6 space-y-2">
+            <button onclick="showView('dash', this)" class="nav-btn active">🏠 Dashboard</button>
+            <p class="text-slate-500 uppercase text-[9px] mt-4 mb-2 px-1">Production</p>
+            <button onclick="showView('dairy', this)" class="nav-btn">🐄 Dairy & AI</button>
+            <button onclick="showView('sheep', this)" class="nav-btn">🐑 Sheep & Goat</button>
+            <button onclick="showView('fish', this)" class="nav-btn">🐟 Fishery</button>
+            <button onclick="showView('api', this)" class="nav-btn">🐝 Apiculture</button>
+            <button onclick="showView('nutri', this)" class="nav-btn">🌿 Nutrition</button>
+            <button onclick="showView('unique', this)" class="nav-btn">✨ Unique Products</button>
+            <p class="text-slate-500 uppercase text-[9px] mt-4 mb-2 px-1">Clinical / Visitors</p>
+            <button onclick="showView('dvh', this)" class="nav-btn">🏥 DVH Clinical</button>
+            <button onclick="showView('visitor', this)" class="nav-btn">📝 Visitors</button>
+            <p class="text-slate-500 uppercase text-[9px] mt-4 mb-2 px-1">Administration</p>
+            <button onclick="showView('staff', this)" class="nav-btn">👥 Staff Directory</button>
+            <button onclick="showView('docs', this)" class="nav-btn">📂 Document Vault</button>
+            <button onclick="showView('admin_gate', this)" class="nav-btn">🔑 Admin Panel</button>
+        </nav>
+    </aside>
 
-<!-- SIDEBAR -->
-<aside class="sidebar" id="sidebar">
-    <h1>HAA DISTRICT</h1>
-    <p>Livestock Master Portal</p>
+    <!-- MAIN CONTENT -->
+    <main class="main">
 
-    <nav class="mt-6 space-y-2">
-        <button onclick="showView('dash', this)" class="nav-btn active">🏠 Dashboard</button>
-        <p class="text-slate-500 uppercase text-[9px] mt-4 mb-2 px-1">Production</p>
-        <button onclick="showView('dairy', this)" class="nav-btn">🐄 Dairy & AI</button>
-        <button onclick="showView('fish', this)" class="nav-btn">🐟 Fishery</button>
-        <button onclick="showView('api', this)" class="nav-btn">🐝 Apiculture</button>
-        <button onclick="showView('sheep', this)" class="nav-btn">🐑 Sheep & Goat</button>
-        <button onclick="showView('nutri', this)" class="nav-btn">🌿 Nutrition</button>
-        <button onclick="showView('unique', this)" class="nav-btn">✨ Unique Products</button>
-
-        <p class="text-slate-500 uppercase text-[9px] mt-4 mb-2 px-1">Clinical / Visitors</p>
-        <button onclick="showView('dvh', this)" class="nav-btn">🏥 DVH Clinical</button>
-        <button onclick="showView('visitor', this)" class="nav-btn">📝 Visitors</button>
-
-        <p class="text-slate-500 uppercase text-[9px] mt-4 mb-2 px-1">Administration</p>
-        <button onclick="showView('staff', this)" class="nav-btn">👥 Staff Directory</button>
-        <button onclick="showView('docs', this)" class="nav-btn">📂 Document Vault</button>
-    </nav>
-</aside>
-
-<main class="main">
-
-<!-- DASHBOARD -->
-<section id="dash" class="view active">
-    <div class="mb-4 bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-2xl flex items-center gap-4 shadow-sm">
-        <span class="animate-pulse">📢</span>
-        <p id="announcement_text" class="text-sm font-bold text-amber-900 uppercase tracking-wide">
-            Welcome to Haa Livestock DRP Portal. Please update the February Progress Reports by the 15th.
-        </p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div class="p-6 bg-blue-900 text-white rounded-3xl shadow-xl">
-            <h3 class="text-xs font-black uppercase text-blue-300 mb-2">District Vision</h3>
-            <p class="text-sm italic">"To achieve self-sufficiency in livestock products and enhance the socio-economic status of Haa through climate-resilient farming."</p>
-        </div>
-        <div class="p-6 bg-white border border-slate-200 rounded-3xl shadow-sm flex justify-between items-center">
-            <div>
-                <h3 class="text-xs font-black uppercase text-slate-400 mb-2">District Mission</h3>
-                <p class="text-sm text-slate-700">Commercializing unique high-altitude products.</p>
+        <!-- DASHBOARD -->
+        <section id="dash" class="view active card">
+            <h2 class="font-black text-xl mb-2">District Dashboard</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-4">
+                <div class="p-4 bg-blue-900 text-white rounded-2xl shadow-sm">
+                    <label>Total Revenue (Nu)</label>
+                    <p id="dash_rev" class="text-2xl font-black">0</p>
+                </div>
+                <div class="p-4 bg-white rounded-2xl shadow-sm border-l-4 border-blue-500">
+                    <label>Total Cows</label>
+                    <p id="gal_cows" class="text-2xl font-black">1450</p>
+                </div>
+                <div class="p-4 bg-white rounded-2xl shadow-sm border-l-4 border-amber-500">
+                    <label>Honey (Kg)</label>
+                    <p id="gal_honey" class="text-2xl font-black">0</p>
+                </div>
+                <div class="p-4 bg-white rounded-2xl shadow-sm border-l-4 border-cyan-500">
+                    <label>Fish (Kg)</label>
+                    <p id="gal_fish" class="text-2xl font-black">0</p>
+                </div>
             </div>
-            <button onclick="window.print()" class="bg-slate-900 text-white px-6 py-3 rounded-xl text-xs font-black hover:bg-blue-600 transition">
-                🖨️ PRINT REPORT
-            </button>
-        </div>
-    </div>
+        </section>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8" id="printable_area">
-        <div class="p-6 bg-white rounded-2xl shadow-sm border-t-4 border-blue-600">
-            <span class="text-2xl">🐄</span>
-            <label>Total Cows</label>
-            <p id="gal_cows" class="text-3xl font-black text-slate-800">1,450</p>
-        </div>
-        <div class="p-6 bg-white rounded-2xl shadow-sm border-t-4 border-emerald-500">
-            <span class="text-2xl">💰</span>
-            <label>Total Revenue</label>
-            <p id="gal_rev" class="text-3xl font-black text-slate-800">Nu. 0</p>
-        </div>
-        <div class="p-6 bg-white rounded-2xl shadow-sm border-t-4 border-amber-500">
-            <span class="text-2xl">🐝</span>
-            <label>Honey (Kg)</label>
-            <p id="gal_honey" class="text-3xl font-black text-slate-800">0</p>
-        </div>
-        <div class="p-6 bg-white rounded-2xl shadow-sm border-t-4 border-cyan-500">
-            <span class="text-2xl">🐟</span>
-            <label>Fish (Kg)</label>
-            <p id="gal_fish" class="text-3xl font-black text-slate-800">0</p>
-        </div>
-    </div>
-</section>
+        <!-- DAIRY PRODUCTION -->
+        <section id="dairy" class="view card">
+            <h2 class="font-black text-xl mb-4">🐄 Dairy Production & Sales</h2>
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <input id="calc_qty" type="number" oninput="runAutoCalc()" placeholder="Quantity (Litre/Kg)" class="form-input">
+                <input id="calc_price" type="number" oninput="runAutoCalc()" placeholder="Unit Price" class="form-input">
+                <div class="bg-blue-50 p-4 rounded-2xl flex flex-col justify-center">
+                    <label class="text-blue-600">Total Revenue</label>
+                    <p class="text-2xl font-black text-blue-900">Nu. <span id="auto_total">0</span></p>
+                </div>
+            </div>
+            <button onclick="syncToDashboard()" class="btn">Sync to District Dashboard</button>
+        </section>
 
-<!-- DAIRY -->
-<section id="dairy" class="view">
-    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-        <h3 class="text-lg font-black text-slate-800 mb-6 uppercase flex items-center gap-3">🐄 Dairy Production & Sales</h3>
-        <div class="grid grid-cols-3 gap-6 mb-8">
-            <div>
-                <label>Quantity (Litre/Kg)</label>
-                <input id="calc_qty" type="number" oninput="runAutoCalc()" class="form-input">
-            </div>
-            <div>
-                <label>Unit Price (Nu)</label>
-                <input id="calc_price" type="number" oninput="runAutoCalc()" class="form-input">
-            </div>
-            <div class="bg-blue-50 p-4 rounded-2xl flex flex-col justify-center">
-                <label class="text-blue-600">Total Revenue</label>
-                <p class="text-2xl font-black text-blue-900">Nu. <span id="auto_total">0</span></p>
-            </div>
-        </div>
-        <button onclick="syncToDashboard()" class="btn">Sync to District Dashboard</button>
-    </div>
-</section>
+        <!-- UNIQUE PRODUCTS -->
+        <section id="unique" class="view card">
+            <h2 class="font-black text-xl mb-4">✨ Unique Products of Haa</h2>
+            <div id="product-grid" class="space-y-2"></div>
+            <button onclick="saveRecord('unique_products')" class="btn mt-4">Submit Market Report</button>
+        </section>
 
-<!-- STAFF -->
-<section id="staff" class="view">
-    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200">
-        <h3 class="text-lg font-black text-slate-800 mb-6 uppercase">Staff Information System</h3>
-        <div class="grid grid-cols-3 gap-6 mb-8">
-            <div><label>Staff Name</label><input id="s_name" class="form-input"></div>
-            <div><label>Designation</label><input id="s_desig" class="form-input"></div>
-            <div><label>Duty Station</label>
-                <select id="s_unit" class="form-input">
-                    <option>District HQ</option>
-                    <option>DVH (Hospital)</option>
-                    <option>Government Farm</option>
-                    <option>RLDC / Center</option>
-                    <option>Gewog Extension</option>
+        <!-- DVH CLINICAL -->
+        <section id="dvh" class="view card">
+            <h2 class="font-black text-xl mb-4">🏥 DVH Clinical Report</h2>
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <input id="v_owner" class="form-input" placeholder="Farmer Name">
+                <select id="v_species" class="form-input">
+                    <option>Yak</option><option>Cow</option><option>Dog</option><option>Horse</option>
                 </select>
-            </div>
-            <div><label>Gewog</label>
-                <select id="s_gewog" class="form-input">
-                    <option>Bji</option><option>Katsho</option><option>Uesu</option>
-                    <option>Samar</option><option>Gakiling</option><option>Sangbay</option>
+                <input id="v_diag" class="form-input" placeholder="Diagnosis">
+                <input id="v_med" class="form-input" placeholder="Medicine">
+                <select id="v_stock" class="form-input">
+                    <option>Available</option><option>Low</option><option>Out</option>
                 </select>
+                <input id="v_date" type="date" class="form-input">
             </div>
-            <div><label>Contact No</label><input id="s_phone" class="form-input"></div>
-            <div><label>Additional Info</label><input id="s_info" class="form-input"></div>
-        </div>
-        <button onclick="registerStaff()" class="btn">Register Staff & Update Catalog</button>
-    </div>
-</section>
+            <button onclick="saveRecord('clinical')" class="btn">Log Case</button>
+        </section>
 
-<!-- Additional sections: fish, api, sheep, nutri, dvh, visitor, unique, docs -->
-<!-- Reuse previous code structure with Firebase integration for all -->
+        <!-- VISITOR -->
+        <section id="visitor" class="view card">
+            <h2 class="font-black text-xl mb-4">📝 Visitor Registration</h2>
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <input id="vis_name" class="form-input" placeholder="Visitor Name">
+                <input id="vis_org" class="form-input" placeholder="Organization">
+                <input id="vis_date" type="date" class="form-input">
+                <textarea id="vis_purpose" class="form-input col-span-3" placeholder="Purpose"></textarea>
+            </div>
+            <button onclick="saveRecord('visitors')" class="btn">Register Visitor</button>
+        </section>
 
-</main>
+        <!-- STAFF DIRECTORY -->
+        <section id="staff" class="view card">
+            <h2 class="font-black text-xl mb-4">👥 Staff Directory</h2>
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                <input id="st_name" class="form-input" placeholder="Staff Name">
+                <input id="st_desig" class="form-input" placeholder="Designation">
+                <input id="st_unit" class="form-input" placeholder="Duty Station">
+            </div>
+            <button onclick="addStaff()" class="btn">Add Staff</button>
+            <div id="staff_list" class="mt-4"></div>
+        </section>
+
+        <!-- ADMIN GATE -->
+        <section id="admin_gate" class="view card hidden">
+            <h2 class="font-black text-xl mb-4">🔑 Admin Panel</h2>
+            <div id="request_list" class="space-y-4"></div>
+        </section>
+    </main>
 </div>
 
 <script type="module">
@@ -182,61 +192,91 @@ const firebaseConfig = { apiKey:"YOURKEY", projectId:"haa-livestock" };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// 1. Auto-Calculator Logic
-function runAutoCalc() {
-    const qty = parseFloat(document.getElementById('calc_qty').value) || 0;
-    const price = parseFloat(document.getElementById('calc_price').value) || 0;
-    const total = qty * price;
-    document.getElementById('auto_total').innerText = total.toLocaleString();
+// =================== GLOBALS ===================
+const isAdmin = true;
+const products=[
+    {id:"yaksha",name:"Yaksha"},{id:"chugo",name:"Chugo"},{id:"datshi",name:"Gangphu Datshi"},
+    {id:"phelu",name:"Phelu"},{id:"ghee",name:"Alpine Ghee"},{id:"yog",name:"Yoghurt"},
+    {id:"honey",name:"Honey"},{id:"eggs",name:"Eggs"}
+];
+const grid=document.getElementById("product-grid");
+products.forEach(p=>{
+    const row=document.createElement("div");
+    row.className="prod-row";
+    row.innerHTML=`<p class="font-bold">${p.name}</p>
+    <input id="${p.id}_s" type="number" class="form-input" placeholder="Qty">
+    <input id="${p.id}_pr" type="number" class="form-input" placeholder="Price" oninput="calcProducts()">
+    <p>Nu. <span id="${p.id}_rev">0</span></p>`;
+    grid.appendChild(row);
+});
+
+// =================== FUNCTIONS ===================
+function showView(id, btn=null){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if(btn){document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');}
+}
+
+function runAutoCalc(){
+    const qty = parseFloat(document.getElementById('calc_qty').value)||0;
+    const price = parseFloat(document.getElementById('calc_price').value)||0;
+    const total = qty*price;
+    document.getElementById('auto_total').innerText=total.toLocaleString();
     return total;
 }
 
-// 2. Dashboard Sync
-function syncToDashboard() {
-    const currentTotal = runAutoCalc();
-    const existingTotal = parseFloat(document.getElementById('dash_rev').innerText.replace(/,/g, '')) || 0;
-    document.getElementById('dash_rev').innerText = (existingTotal + currentTotal).toLocaleString();
-    document.getElementById('gal_rev').innerText = (existingTotal + currentTotal).toLocaleString();
-    alert("Data validated and synced to District Statistics.");
+function syncToDashboard(){
+    const curTotal=runAutoCalc();
+    const dashTotal=parseFloat(document.getElementById('dash_rev').innerText.replace(/,/g,''))||0;
+    document.getElementById('dash_rev').innerText=(dashTotal+curTotal).toLocaleString();
+    alert("Data synced to dashboard");
 }
 
-// 3. Navigation
-function showView(viewId, btn=null) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(viewId).classList.add('active');
-    if(btn){
-        document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-    }
+function calcProducts(){
+    let total=0;
+    products.forEach(p=>{
+        const s=Number(document.getElementById(p.id+"_s").value)||0;
+        const pr=Number(document.getElementById(p.id+"_pr").value)||0;
+        const rev=s*pr;
+        document.getElementById(p.id+"_rev").innerText=rev;
+        total+=rev;
+    });
+    document.getElementById("dash_rev").innerText=total;
 }
 
-// 4. Web Visitor Counter
-window.onload = () => {
-    let visits = parseInt(localStorage.getItem('haa_visits') || "1204");
-    visits++;
-    localStorage.setItem('haa_visits', visits);
-    const visitorElement = document.getElementById('visitor_count');
-    if(visitorElement) visitorElement.innerText = visits.toLocaleString();
-};
-
-// 5. Staff Registration
-function registerStaff() {
-    alert("Staff record created and assigned to " + document.getElementById('s_unit').value);
+async function saveRecord(coll){
+    const inputs=document.querySelectorAll(".view.active input,select,textarea");
+    let data={timestamp:serverTimestamp()};
+    inputs.forEach(i=>data[i.id]=i.value);
+    await addDoc(collection(db,coll),data);
+    alert("Data Uploaded");
 }
 
-// 6. Mobile toggle
-document.getElementById("mobile-toggle").addEventListener("click",()=>{
-    document.getElementById("sidebar").classList.toggle("open");
-});
-
-// 7. Firebase saveRecord function (for production, clinical, visitors, unique products)
-async function saveRecord(coll, inputsSelector=".view.active input, select, textarea") {
-    const inputs = document.querySelectorAll(inputsSelector);
-    let data = { timestamp: serverTimestamp() };
-    inputs.forEach(i => { if(i.id) data[i.id]=i.value; });
-    try { await addDoc(collection(db, coll), data); alert("Data Uploaded"); }
-    catch(e){ alert("Error: "+e.message); }
+// STAFF FUNCTIONS
+function addStaff(){
+    const name=document.getElementById("st_name").value;
+    const des=document.getElementById("st_desig").value;
+    const div=document.createElement("div");
+    div.innerHTML=`<b>${name}</b> - ${des}`;
+    document.getElementById("staff_list").appendChild(div);
 }
-</script>
-</body>
-</html>
+
+// ADMIN FUNCTIONS
+function bypassForAdmin(){document.getElementById('signup_modal').classList.add('hidden'); showView('dash');}
+function requestAccess(){
+    const name=document.getElementById('reg_user').value;
+    const role=document.getElementById('reg_role').value;
+    const email=document.getElementById('reg_email').value;
+    if(!name||!email)return alert("Fill all fields");
+    const list=document.getElementById('request_list');
+    const id="req_"+Date.now();
+    const newReq=`
+        <div id="${id}" class="p-4 bg-white rounded-2xl flex justify-between items-center border border-slate-200 shadow-sm">
+            <div><p class="font-black text-sm">${name}</p>
+            <p class="text-[10px] font-bold text-blue-600 uppercase">Role: ${role} | ${email}</p></div>
+            <div class="flex gap-2">
+                <button onclick="approveUser('${id}','${name}','${role}')" class="bg-emerald-500 text-white text-[10px] font-black px-4 py-2 rounded-lg">APPROVE</button>
+                <button onclick="document.getElementById('${id}').remove()" class="bg-red-500 text-white text-[10px] font-black px-4 py-2 rounded-lg">REJECT</button>
+            </div>
+        </div>`;
+    list.innerHTML=newReq+list.inner
