@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .gewog-bg { background: linear-gradient(135deg, #065f46 0%, #064e3b 100%); }
+        .modal { transition: opacity 0.25s ease; }
+        body.modal-active { overflow: hidden; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
@@ -15,13 +17,13 @@
         <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-bold text-emerald-900">Haa Livestock</h1>
-                <p class="text-gray-500 mt-2">Data Management System</p>
+                <p class="text-gray-500 mt-2">Dzongkhag Data Management System</p>
             </div>
             
             <form onsubmit="event.preventDefault(); showDashboard();">
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                    <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none">
+                    <input type="text" id="username" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
 
                 <div class="mb-6">
@@ -37,57 +39,174 @@
                     </select>
                 </div>
 
-                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl transition duration-200">
-                    Login to Dashboard
+                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-3 rounded-xl transition duration-200 shadow-lg">
+                    Login to System
                 </button>
             </form>
         </div>
     </div>
 
     <div id="dashboard" class="hidden">
-        <nav class="gewog-bg text-white p-4 flex justify-between items-center shadow-lg">
-            <h2 class="text-xl font-bold">Haa Livestock Portal</h2>
-            <button onclick="location.reload()" class="text-sm bg-white/20 px-4 py-1 rounded-lg">Logout</button>
+        <nav class="gewog-bg text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
+            <div>
+                <span class="font-bold text-lg">Haa Livestock Portal</span>
+                <span id="userDisplay" class="ml-4 text-emerald-200 text-sm italic"></span>
+            </div>
+            <div class="flex gap-4 items-center">
+                <a href="#" class="text-sm hover:underline">Announcements</a>
+                <button onclick="location.reload()" class="text-sm bg-white/20 hover:bg-white/30 px-4 py-1 rounded-lg">Logout</button>
+            </div>
         </nav>
 
-        <div class="p-6 max-w-6xl mx-auto">
-            <div class="mb-8 p-4 bg-emerald-50 border-l-4 border-emerald-500 rounded text-emerald-800">
-                <strong>Latest Announcement:</strong> Please ensure all Sheep & Goat records for Q1 are finalized by Friday.
+        <div class="p-6 max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                <div>
+                    <h3 class="text-3xl font-extrabold text-gray-800">Sector Gallery</h3>
+                    <p class="text-gray-500">Select a sector to begin data entry for <span id="currentGewogLabel" class="font-bold text-emerald-700"></span></p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="bg-white border px-4 py-2 rounded-lg shadow-sm text-sm hover:bg-gray-50">View Social Media</button>
+                    <button class="bg-emerald-600 text-white px-4 py-2 rounded-lg shadow-sm text-sm hover:bg-emerald-700">Upload Resources</button>
+                </div>
             </div>
-
-            <h3 class="text-2xl font-bold text-gray-800 mb-6">Sector Gallery</h3>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-blue-50 border border-blue-100 p-6 rounded-2xl hover:shadow-md transition">
-                    <div class="text-3xl mb-2">🐄</div>
-                    <h4 class="text-xl font-bold text-blue-900">Dairy Production</h4>
-                    <p class="text-sm text-blue-700 mb-4">Production, Sales, Revenue</p>
-                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">Enter Data</button>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="bg-white border-b-4 border-blue-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Dairy Production')">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl mb-4">🐄</div>
+                    <h4 class="text-lg font-bold text-gray-800">Dairy Production</h4>
+                    <p class="text-xs text-gray-500 mb-4">Milk, Butter, Cheese records</p>
+                    <span class="text-blue-600 text-sm font-semibold">Enter Data →</span>
                 </div>
 
-                <div class="bg-cyan-50 border border-cyan-100 p-6 rounded-2xl hover:shadow-md transition">
-                    <div class="text-3xl mb-2">🐟</div>
-                    <h4 class="text-xl font-bold text-cyan-900">Fishery Sector</h4>
-                    <p class="text-sm text-cyan-700 mb-4">Stocking & Harvest data</p>
-                    <button class="bg-cyan-600 text-white px-4 py-2 rounded-lg text-sm">Enter Data</button>
+                <div class="bg-white border-b-4 border-indigo-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Dairy AI Records')">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-2xl mb-4">💉</div>
+                    <h4 class="text-lg font-bold text-gray-800">Dairy AI Records</h4>
+                    <p class="text-xs text-gray-500 mb-4">Semen type & Progeny</p>
+                    <span class="text-indigo-600 text-sm font-semibold">Enter Data →</span>
                 </div>
 
-                <div class="bg-amber-50 border border-amber-100 p-6 rounded-2xl hover:shadow-md transition">
-                    <div class="text-3xl mb-2">🐝</div>
-                    <h4 class="text-xl font-bold text-amber-900">Apiculture</h4>
-                    <p class="text-sm text-amber-700 mb-4">Hive & Honey management</p>
-                    <button class="bg-amber-600 text-white px-4 py-2 rounded-lg text-sm">Enter Data</button>
+                <div class="bg-white border-b-4 border-purple-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Natural Breeding')">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-2xl mb-4">🐂</div>
+                    <h4 class="text-lg font-bold text-gray-800">Natural Breeding</h4>
+                    <p class="text-xs text-gray-500 mb-4">Bull & Mating records</p>
+                    <span class="text-purple-600 text-sm font-semibold">Enter Data →</span>
                 </div>
+
+                <div class="bg-white border-b-4 border-cyan-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Fishery Sector')">
+                    <div class="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center text-2xl mb-4">🐟</div>
+                    <h4 class="text-lg font-bold text-gray-800">Fishery Sector</h4>
+                    <p class="text-xs text-gray-500 mb-4">Carp & Trout farming</p>
+                    <span class="text-cyan-600 text-sm font-semibold">Enter Data →</span>
+                </div>
+
+                <div class="bg-white border-b-4 border-green-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Animal Nutrition')">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl mb-4">🌱</div>
+                    <h4 class="text-lg font-bold text-gray-800">Animal Nutrition</h4>
+                    <p class="text-xs text-gray-500 mb-4">Pasture & Feed data</p>
+                    <span class="text-green-600 text-sm font-semibold">Enter Data →</span>
+                </div>
+
+                <div class="bg-white border-b-4 border-yellow-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Apiculture')">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center text-2xl mb-4">🐝</div>
+                    <h4 class="text-lg font-bold text-gray-800">Apiculture</h4>
+                    <p class="text-xs text-gray-500 mb-4">Honey & Hive production</p>
+                    <span class="text-yellow-600 text-sm font-semibold">Enter Data →</span>
+                </div>
+
+                <div class="bg-white border-b-4 border-orange-500 p-6 rounded-xl shadow-sm hover:shadow-md transition cursor-pointer" onclick="openModal('Sheep & Goat')">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-2xl mb-4">🐏</div>
+                    <h4 class="text-lg font-bold text-gray-800">Sheep & Goat</h4>
+                    <p class="text-xs text-gray-500 mb-4">Wool & Meat statistics</p>
+                    <span class="text-orange-600 text-sm font-semibold">Enter Data →</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dataModal" class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center hidden z-[100]">
+        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        <div class="modal-container bg-white w-11/12 md:max-w-2xl mx-auto rounded-2xl shadow-2xl z-50 overflow-y-auto max-h-[90vh]">
+            <div class="modal-content py-6 text-left px-8">
+                <div class="flex justify-between items-center pb-3 border-b mb-4">
+                    <p class="text-2xl font-bold text-emerald-800" id="modalTitle">Sector Name</p>
+                    <div class="modal-close cursor-pointer z-50" onclick="closeModal()">
+                        <span class="text-3xl">&times;</span>
+                    </div>
+                </div>
+
+                <form id="sectorForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-500">Reporting Month</label>
+                            <input type="month" required class="w-full p-2 border rounded bg-gray-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-500">Farmer Group Name</label>
+                            <input type="text" placeholder="Enter name" class="w-full p-2 border rounded">
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50 p-4 rounded-lg">
+                        <h5 class="font-bold text-emerald-900 mb-3 text-sm">Production Details</h5>
+                        <div class="grid grid-cols-2 gap-4" id="dynamicFields">
+                            </div>
+                    </div>
+
+                    <div class="flex justify-end pt-4 gap-3">
+                        <button type="button" onclick="closeModal()" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">Cancel</button>
+                        <button type="submit" class="px-6 py-2 bg-emerald-700 text-white rounded-lg hover:bg-emerald-800 font-bold">Save Record</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
     <script>
         function showDashboard() {
+            const gewog = document.getElementById('gewogSelect').value;
+            const user = document.getElementById('username').value;
+            document.getElementById('userDisplay').innerText = `Logged in: ${user} (${gewog} Gewog)`;
+            document.getElementById('currentGewogLabel').innerText = gewog;
+            
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
+        }
+
+        function openModal(sector) {
+            document.getElementById('modalTitle').innerText = sector + ' Entry';
+            const fieldContainer = document.getElementById('dynamicFields');
+            fieldContainer.innerHTML = ''; // Clear existing
+
+            // Field mapping logic based on your Excel files
+            if(sector === 'Dairy Production') {
+                fieldContainer.innerHTML = `
+                    <div><label class="text-xs">Milk Collected (L)</label><input type="number" class="w-full p-2 border rounded"></div>
+                    <div><label class="text-xs">Milk Sold (L)</label><input type="number" id="qtySold" oninput="calcRev()" class="w-full p-2 border rounded"></div>
+                    <div><label class="text-xs">Selling Price (Nu/L)</label><input type="number" id="price" oninput="calcRev()" class="w-full p-2 border rounded"></div>
+                    <div><label class="text-xs font-bold">Total Revenue</label><input type="text" id="revenue" readonly class="w-full p-2 border rounded bg-yellow-50 font-bold"></div>
+                `;
+            } else {
+                fieldContainer.innerHTML = `
+                    <div><label class="text-xs">Quantity Produced</label><input type="number" class="w-full p-2 border rounded"></div>
+                    <div><label class="text-xs">Quantity Sold</label><input type="number" class="w-full p-2 border rounded"></div>
+                    <div><label class="text-xs">Remarks</label><input type="text" class="w-full p-2 border rounded"></div>
+                `;
+            }
+
+            document.getElementById('dataModal').classList.remove('hidden');
+            document.body.classList.add('modal-active');
+        }
+
+        function closeModal() {
+            document.getElementById('dataModal').classList.add('hidden');
+            document.body.classList.remove('modal-active');
+        }
+
+        function calcRev() {
+            const qty = document.getElementById('qtySold').value || 0;
+            const price = document.getElementById('price').value || 0;
+            document.getElementById('revenue').value = 'Nu. ' + (qty * price).toLocaleString();
         }
     </script>
 </body>
 </html>
-"Add initial Login and Dashboard UI"
