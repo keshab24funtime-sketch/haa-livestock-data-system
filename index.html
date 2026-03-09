@@ -3,146 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haa Livestock Enterprise Portal | Master</title>
+    <title>Haa Livestock DRP Portal | Master Elite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; }
-        .sidebar { background: #0f172a; transition: all 0.3s ease; z-index: 50; width: 280px; }
-        .view { display: none; animation: fadeIn 0.4s ease; }
+        :root { --primary: #1e40af; --secondary: #0f172a; --accent: #3b82f6; }
+        body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f1f5f9; overflow-x: hidden; }
+        
+        /* Sidebar Glassmorphism */
+        .sidebar { background: rgba(30, 41, 59, 0.95); width: 280px; backdrop-filter: blur(10px); border-right: 1px solid #334155; transition: 0.3s; z-index: 100; }
+        
+        /* Main Content Area */
+        .main-content { background: #f8fafc; color: #1e293b; min-height: 100vh; border-top-left-radius: 2.5rem; transition: 0.3s; }
+        
+        /* Modern Cards */
+        .card { background: white; padding: 1.8rem; border-radius: 1.5rem; box-shadow: 0 10px 30px -5px rgba(0,0,0,0.04); margin-bottom: 2rem; border: 1px solid #e2e8f0; }
+        
+        /* View Transitions */
+        .view { display: none; animation: slideUp 0.5s ease-out; }
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .card { background: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 2rem; border: 1px solid #e2e8f0; }
-        .form-input { width: 100%; border: 1px solid #cbd5e1; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; transition: all 0.2s; }
-        .form-input:focus { border-color: #3b82f6; ring: 2px; outline: none; background: white; }
-        label { font-size: 0.7rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 0.3rem; display: block; }
+        /* Form Styling */
+        .form-input { width: 100%; border: 1px solid #cbd5e1; padding: 0.85rem; border-radius: 0.75rem; color: #1e293b; font-size: 0.9rem; background: #fdfdfd; transition: 0.2s; }
+        .form-input:focus { border-color: var(--accent); ring: 3px; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        label { font-size: 0.65rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 0.5rem; display: block; letter-spacing: 0.05em; }
         
-        .calc-panel { background: #f8fafc; border-left: 4px solid #3b82f6; padding: 1rem; border-radius: 0.5rem; }
-        .btn-save { background: #1e40af; color: white; font-weight: 800; padding: 1rem; border-radius: 0.75rem; width: 100%; transition: all 0.2s; }
-        .btn-save:active { transform: scale(0.98); }
-        
+        /* Unique Product Strips */
+        .prod-row { border-left: 5px solid var(--accent); background: #f0f7ff; padding: 1.25rem; border-radius: 0.75rem; transition: 0.2s; }
+        .prod-row:hover { background: #e0efff; transform: translateX(5px); }
+
+        /* Button States */
+        .btn-master { background: var(--primary); color: white; font-weight: 800; padding: 1.25rem; border-radius: 1rem; width: 100%; transition: 0.3s; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-master:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 12px 20px -5px rgba(30, 64, 175, 0.4); }
+        .btn-master:active { transform: translateY(0); }
+
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); position: fixed; height: 100vh; }
             .sidebar.open { transform: translateX(0); }
-            .main-content { margin-left: 0 !important; }
+            .main-content { margin-left: 0 !important; border-top-left-radius: 0; }
         }
     </style>
 </head>
 <body>
 
-<div class="md:hidden bg-[#0f172a] text-white p-4 flex justify-between items-center sticky top-0 z-[60]">
-    <span class="font-bold tracking-tighter text-lg">HAA LIVESTOCK</span>
-    <button onclick="toggleMenu()" class="bg-blue-600 px-3 py-1 rounded text-sm">MENU</button>
-</div>
-
 <div class="flex">
-    <aside id="sidebar" class="sidebar text-white fixed h-full p-6 overflow-y-auto">
-        <h1 class="text-2xl font-black mb-8 border-b border-gray-700 pb-4 hidden md:block">HAA PORTAL</h1>
+    <aside id="sidebar" class="sidebar fixed h-full p-6 overflow-y-auto">
+        <div class="mb-10 text-center">
+            <div class="inline-block p-3 bg-blue-600 rounded-2xl shadow-2xl mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            </div>
+            <h1 class="text-xl font-black text-white">HAA LIVESTOCK</h1>
+            <p class="text-[10px] text-blue-400 font-bold tracking-widest uppercase">District Portal</p>
+        </div>
+
         <nav class="space-y-1">
-            <button onclick="showView('dashboard')" class="block w-full text-left py-3 px-4 hover:bg-blue-800 rounded-lg transition font-medium">Dashboard</button>
-            <div class="text-gray-500 text-[10px] font-bold uppercase mt-6 mb-2 px-4">Sector Data Entry</div>
-            <button onclick="showView('dairy')" class="block w-full text-left py-2 px-4 hover:bg-blue-800 rounded-lg text-sm">1. Dairy Production</button>
-            <button onclick="showView('ai')" class="block w-full text-left py-2 px-4 hover:bg-blue-800 rounded-lg text-sm">2. Dairy AI Record</button>
-            <button onclick="showView('breeding')" class="block w-full text-left py-2 px-4 hover:bg-blue-800 rounded-lg text-sm">3. Natural Breeding</button>
-            <button onclick="showView('fishery')" class="block w-full text-left py-2 px-4 hover:bg-blue-800 rounded-lg text-sm">6. Fishery Sector</button>
-            <button onclick="showView('nutrition')" class="block w-full text-left py-2 px-4 hover:bg-blue-800 rounded-lg text-sm">7. Animal Nutrition</button>
-            <button onclick="showView('api')" class="block w-full text-left py-2 px-4 hover:bg-blue-800 rounded-lg text-sm">8. Apiculture</button>
-            <button onclick="showView('sheep')" class="block w-full text-left py-2 px-4 hover:bg-blue-800 rounded-lg text-sm">9. Sheep & Goat</button>
+            <button onclick="showView('dashboard')" class="nav-btn group flex items-center w-full text-left py-3 px-4 hover:bg-slate-700 rounded-xl transition text-sm font-semibold">
+                <span>Dashboard</span>
+            </button>
+            
+            <div class="pt-6 pb-2 px-4 text-[10px] font-black text-slate-500 uppercase">Reporting Sectors</div>
+            <button onclick="showView('dairy')" class="block w-full text-left py-2 px-4 hover:bg-slate-700 rounded-lg text-xs text-slate-300">1. Dairy Production</button>
+            <button onclick="showView('breeding')" class="block w-full text-left py-2 px-4 hover:bg-slate-700 rounded-lg text-xs text-slate-300">3. Natural Breeding</button>
+            <button onclick="showView('fishery')" class="block w-full text-left py-2 px-4 hover:bg-slate-700 rounded-lg text-xs text-slate-300">6. Fishery Sector</button>
+            <button onclick="showView('apiculture')" class="block w-full text-left py-2 px-4 hover:bg-slate-700 rounded-lg text-xs text-slate-300">8. Apiculture</button>
+            
+            <div class="pt-6 pb-2 px-4 text-[10px] font-black text-slate-500 uppercase">Highland Commercial</div>
+            <button onclick="showView('unique')" class="block w-full text-left py-2 px-4 hover:bg-slate-700 rounded-lg text-xs text-blue-400 font-bold">✨ Unique Haa Products</button>
+            
+            <div class="pt-6 pb-2 px-4 text-[10px] font-black text-slate-500 uppercase">Medical & Admin</div>
+            <button onclick="showView('dvh')" class="block w-full text-left py-2 px-4 hover:bg-slate-700 rounded-lg text-xs text-slate-300">🏥 DVH Clinical Report</button>
+            <button onclick="showView('staff')" class="block w-full text-left py-2 px-4 hover:bg-slate-700 rounded-lg text-xs text-slate-300">👥 Staff Information</button>
+            <button onclick="showView('admin')" class="block w-full text-left py-2 px-4 hover:bg-slate-700 rounded-lg text-xs text-slate-300">📂 Administration</button>
         </nav>
     </aside>
 
-    <main class="main-content md:ml-[280px] w-full p-4 md:p-10">
+    <main class="main-content flex-1 md:ml-[280px] p-4 md:p-12">
         
         <section id="dashboard" class="view active">
-            <h2 class="text-3xl font-black mb-6">District Summary</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="card bg-blue-600 text-white">
-                    <label class="text-blue-100">Live Dairy Revenue</label>
-                    <p class="text-4xl font-black">Nu. <span id="dash_rev">0</span></p>
+            <header class="mb-10">
+                <h2 class="text-4xl font-black text-slate-800">District Executive Summary</h2>
+                <p class="text-slate-500 font-medium">Real-time oversight for Haa Livestock Operations.</p>
+            </header>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <div class="card bg-gradient-to-br from-blue-900 to-blue-700 text-white border-none shadow-blue-200 shadow-2xl">
+                    <label class="text-blue-200">Total Commercial Revenue</label>
+                    <p class="text-4xl font-black mt-2">Nu. <span id="dash_total_rev">0</span></p>
                 </div>
-                <div class="card md:col-span-2">
-                    <h3 class="font-bold mb-4">Quick Post (Announcements)</h3>
-                    <div class="flex gap-2">
-                        <input id="ann_input" class="form-input flex-1" placeholder="Type district update...">
-                        <button onclick="postAnn()" class="bg-blue-600 text-white px-6 rounded-lg font-bold">Post</button>
+                <div class="card border-l-8 border-l-emerald-500">
+                    <label>Clinical Cases Treated</label>
+                    <p class="text-4xl font-black text-slate-800 mt-2" id="dash_cases">0</p>
+                </div>
+                <div class="card border-l-8 border-l-amber-500">
+                    <label>Active Staff Personnel</label>
+                    <p class="text-4xl font-black text-slate-800 mt-2">24</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card">
+                    <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-blue-600 rounded-full"></span> Recent Official Postings
+                    </h3>
+                    <div id="ann_list" class="space-y-3">
+                        <div class="p-4 bg-slate-50 rounded-xl text-sm border border-slate-100">Portal synchronized with Haa District database. All sectors active.</div>
                     </div>
-                    <div id="ann_list" class="mt-4 space-y-2 text-sm italic text-gray-500"></div>
+                </div>
+                <div class="card">
+                    <h3 class="font-bold text-slate-800 mb-4">Quick Document Access</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="p-3 bg-slate-100 rounded-lg text-[10px] font-bold uppercase hover:bg-blue-50">Notesheet Template</button>
+                        <button class="p-3 bg-slate-100 rounded-lg text-[10px] font-bold uppercase hover:bg-blue-50">Leave Form</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="unique" class="view">
+            <h2 class="text-3xl font-black text-slate-800 mb-2">Unique Products of Haa</h2>
+            <p class="text-slate-500 mb-8 font-medium">Premium high-altitude exports and artisanal production.</p>
+            
+            <div class="card">
+                <div id="product-grid" class="space-y-4">
+                    </div>
+                <button id="btn_unique_save" onclick="saveRecord('unique_market_data', 'btn_unique_save')" class="btn-master mt-10">Sync Market Data to Firebase</button>
+            </div>
+        </section>
+
+        <section id="dvh" class="view">
+            <h2 class="text-3xl font-black text-slate-800 mb-6">DVH Clinical Veterinary Report</h2>
+            <div class="card">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div><label>Animal Species</label>
+                        <select id="v_species" class="form-input">
+                            <option>Yaks</option><option>Cow</option><option>Dog</option><option>Cats</option><option>Horse</option><option>Domestic Poultry</option><option>Others</option>
+                        </select>
+                    </div>
+                    <div><label>Owner/Farmer Name</label><input id="v_owner" class="form-input" placeholder="Name"></div>
+                    <div><label>Diagnosis/Case</label><input id="v_diag" class="form-input" placeholder="e.g. FMD, Injury"></div>
+                    <div><label>Treatment Date</label><input id="v_date" type="date" class="form-input"></div>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                    <h3 class="font-bold text-slate-700 mb-4 uppercase text-xs">Pharmacy & Medicine Inventory</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div><label>Medicine Name</label><input id="v_med_name" class="form-input"></div>
+                        <div><label>Stock Status</label>
+                            <select id="v_med_status" class="form-input">
+                                <option>Restocked</option><option>Not Available</option><option>Low Stock</option><option>Sufficient</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button id="btn_dvh" onclick="saveRecord('clinical_dvh_logs', 'btn_dvh')" class="btn-master mt-8">Log Case & Update Pharmacy</button>
+            </div>
+        </section>
+
+        <section id="staff" class="view">
+            <h2 class="text-3xl font-black text-slate-800 mb-6">Staff Information System</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="font-bold mb-4">Active Directory</h3>
+                    <div class="space-y-4" id="staff_directory">
+                        <div class="p-4 bg-slate-50 rounded-xl border-l-4 border-blue-600">
+                            <p class="font-bold text-slate-800">Tshenden</p>
+                            <p class="text-xs text-blue-600 font-bold uppercase mb-2">District Data Manager / Moderator</p>
+                            <p class="text-xs text-slate-500">📧 tshenden@haa.gov.bt | 📞 +975-17xxxxxx</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="font-bold mb-4">Register New Staff</h3>
+                    <div class="space-y-4">
+                        <div><label>Full Name</label><input id="st_name" class="form-input"></div>
+                        <div><label>Designation</label><input id="st_desig" class="form-input"></div>
+                        <div><label>Contact/Email</label><input id="st_contact" class="form-input"></div>
+                        <button class="bg-slate-800 text-white w-full py-3 rounded-xl font-bold">Add to System</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin" class="view">
+            <h2 class="text-3xl font-black text-slate-800 mb-6">Administration & Document Control</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card">
+                    <h3 class="font-bold mb-4">Document Submission</h3>
+                    <label>Category</label>
+                    <select id="adm_cat" class="form-input mb-6">
+                        <option>Notesheet</option><option>Leave Form</option><option>Spot Quotation</option><option>Tender</option><option>Project Proposal</option><option>Others</option>
+                    </select>
+                    
+                    <div class="border-4 border-dashed border-slate-100 p-12 rounded-3xl text-center hover:border-blue-400 hover:bg-blue-50 transition cursor-pointer">
+                        <div class="text-4xl mb-2">📤</div>
+                        <p class="text-slate-500 font-bold">Drag & Drop Files Here</p>
+                        <p class="text-[10px] text-slate-400 mt-2">Maximum file size: 25MB (PDF/DOCX/XLSX)</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 class="font-bold mb-4">Archive History</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg text-xs">
+                            <span class="font-medium">notesheet_vaccine_proc.pdf</span>
+                            <span class="text-blue-600 font-bold hover:underline">Download</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="dairy" class="view">
-            <h2 class="text-2xl font-black mb-6">1. Dairy Production</h2>
+            <h2 class="text-3xl font-black text-slate-800 mb-6">1. Dairy Production</h2>
             <div class="card">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    <div><label>Month</label><select id="d_month" class="form-input"><option>July</option><option>August</option><option>September</option></select></div>
-                    <div><label>Gewog</label><select id="d_gewog" class="form-input"><option>Bji</option><option>Katsho</option><option>Uesu</option><option>Samar</option><option>Gakiling</option><option>Sangbay</option></select></div>
-                    <div><label>Farmers Group</label><input id="d_group" class="form-input"></div>
-                    <div><label>Milking Cows</label><input id="d_cows" type="number" class="form-input"></div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div><label>Gewog</label><select id="dr_gewog" class="form-input"><option>Bji</option><option>Katsho</option><option>Uesu</option><option>Samar</option><option>Gakiling</option><option>Sangbay</option></select></div>
+                    <div><label>Cows Milking</label><input id="dr_cows" type="number" class="form-input"></div>
+                    <div><label>Milk Sold (L)</label><input id="dr_milk" type="number" oninput="calcCommercial()" class="form-input"></div>
+                    <div><label>Price (Nu)</label><input id="dr_price" type="number" oninput="calcCommercial()" class="form-input"></div>
                 </div>
-
-                <div class="space-y-6">
-                    <div class="calc-panel grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div><label>Milk Sold (Ltr)</label><input id="d_m_sold" type="number" oninput="calcDairy()" class="form-input"></div>
-                        <div><label>Price (Nu/L)</label><input id="d_m_price" type="number" oninput="calcDairy()" class="form-input"></div>
-                        <div class="flex items-end pb-2 font-bold text-blue-700">Milk Rev: Nu. <span id="r_m">0</span></div>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div><label>Butter Produced (Kg)</label><input id="d_b_p" type="number" class="form-input"></div>
-                        <div><label>Butter Sold (Kg)</label><input id="d_b_s" type="number" oninput="calcDairy()" class="form-input"></div>
-                        <div><label>Cheese Produced (Kg)</label><input id="d_c_p" type="number" class="form-input"></div>
-                        <div><label>Cheese Sold (Kg)</label><input id="d_c_s" type="number" oninput="calcDairy()" class="form-input"></div>
-                    </div>
-
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 border-t pt-4">
-                        <div><label>Hard Chugo Sold</label><input id="d_hc" type="number" class="form-input"></div>
-                        <div><label>Yoghurt Produced (L)</label><input id="d_yog" type="number" class="form-input"></div>
-                        <div><label>Paneer Produced (Kg)</label><input id="d_pan" type="number" class="form-input"></div>
-                    </div>
-                </div>
-                <button id="btn_dairy" onclick="saveRecord('dairy_prod', 'btn_dairy')" class="btn-save mt-8">SAVE RECORD</button>
-            </div>
-        </section>
-
-        <section id="ai" class="view">
-            <h2 class="text-2xl font-black mb-6">2. Dairy AI Record</h2>
-            <div class="card grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label>AI Centre Name</label><input id="ai_name" class="form-input"></div>
-                <div><label>Semen Type</label><select id="ai_type" class="form-input"><option>Sex-sorted</option><option>Normal</option></select></div>
-                <div><label>No. of AI Performed</label><input id="ai_qty" type="number" class="form-input"></div>
-                <div class="grid grid-cols-2 gap-2">
-                    <div><label>Male Born</label><input id="ai_m" type="number" class="form-input"></div>
-                    <div><label>Female Born</label><input id="ai_f" type="number" class="form-input"></div>
-                </div>
-                <button id="btn_ai" onclick="saveRecord('ai_records', 'btn_ai')" class="btn-save md:col-span-2">SAVE AI LOG</button>
-            </div>
-        </section>
-
-        <section id="nutrition" class="view">
-            <h2 class="text-2xl font-black mb-6">7. Animal Nutrition</h2>
-            <div class="card grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div><label>Pasture Developed (Acre)</label><input id="n_pasture" type="number" class="form-input"></div>
-                <div><label>Fodder Plantation (Acre)</label><input id="n_fodder" type="number" class="form-input"></div>
-                <div><label>Winter Oat (Acre)</label><input id="n_oat" type="number" class="form-input"></div>
-                <div><label>Silage Produced (MT)</label><input id="n_silage" type="number" class="form-input"></div>
-                <div><label>Hay Produced (MT)</label><input id="n_hay" type="number" class="form-input"></div>
-                <div><label>Chaff Cutter Supplied</label><input id="n_chaff" type="number" class="form-input"></div>
-                <button id="btn_nut" onclick="saveRecord('nutrition', 'btn_nut')" class="btn-save md:col-span-3">SAVE NUTRITION DATA</button>
-            </div>
-        </section>
-
-        <section id="sheep" class="view">
-            <h2 class="text-2xl font-black mb-6">9. Sheep & Goat Progress</h2>
-            <div class="card grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div><label>Imp. Sheep Male</label><input id="s_im" type="number" class="form-input"></div>
-                <div><label>Imp. Sheep Female</label><input id="s_if" type="number" class="form-input"></div>
-                <div><label>Local Sheep Total</label><input id="s_loc" type="number" class="form-input"></div>
-                <div><label>Wool Produced (Kg)</label><input id="s_wool" type="number" class="form-input"></div>
-                <div><label>Mutton Produced (Kg)</label><input id="s_meat" type="number" class="form-input"></div>
-                <div><label>Imp. Goat Female</label><input id="s_gt" type="number" class="form-input"></div>
-                <button id="btn_sheep" onclick="saveRecord('sheep_goat', 'btn_sheep')" class="btn-save md:col-span-4">SAVE SHEEP RECORD</button>
+                <button id="btn_dairy" onclick="saveRecord('dairy_production', 'btn_dairy')" class="btn-master">Save Production Report</button>
             </div>
         </section>
 
@@ -150,70 +230,116 @@
 </div>
 
 <script type="module">
+    // FIREBASE INITIALIZATION
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-    // REPLACE THIS WITH YOUR FIREBASE CONFIG FROM GOOGLE CONSOLE
-    const firebaseConfig = { apiKey: "AIzaSy...", projectId: "haa-livestock" };
+    const firebaseConfig = { apiKey: "AIzaSy...", projectId: "haa-livestock-portal" };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // MENU CONTROLS
-    window.toggleMenu = () => document.getElementById('sidebar').classList.toggle('open');
+    // UNIQUE PRODUCT DATA DEFINITION
+    const products = [
+        { id: 'yaksha', name: 'Yaksha', desc: 'Premium air-dried yak meat' },
+        { id: 'chugo', name: 'Hard Chugo (Shey)', desc: 'World-renowned string cheese' },
+        { id: 'datshi', name: 'Gangphu Datshi', desc: 'Signature soft cheese balls' },
+        { id: 'phelu', name: 'Phelu', desc: 'Probiotic whey soup base' },
+        { id: 'ghee', name: 'Alpine Ghee (Mar)', desc: 'Clarified medicinal butter' },
+        { id: 'yog', name: 'Premium Yoghurt', desc: 'High-fat organic yoghurt' },
+        { id: 'honey', name: 'Haa Alpine Honey', desc: 'Medicinal flora profile' },
+        { id: 'eggs', name: 'Haa Organic Eggs', desc: 'Free-range, deep colored yolks' }
+    ];
+
+    // INITIALIZE UNIQUE PRODUCT GRID
+    const grid = document.getElementById('product-grid');
+    products.forEach(p => {
+        const row = document.createElement('div');
+        row.className = "prod-row grid grid-cols-1 md:grid-cols-5 gap-4 items-center";
+        row.innerHTML = `
+            <div class="md:col-span-1">
+                <p class="font-black text-slate-800 leading-tight">${p.name}</p>
+                <p class="text-[9px] text-slate-500 font-bold uppercase mt-1">${p.desc}</p>
+            </div>
+            <div><label>Total Produced</label><input id="${p.id}_p" type="number" class="form-input"></div>
+            <div><label>Qty Sold</label><input id="${p.id}_s" type="number" oninput="calcCommercial()" class="form-input"></div>
+            <div><label>Selling Price</label><input id="${p.id}_pr" type="number" oninput="calcCommercial()" class="form-input"></div>
+            <div class="text-right"><p class="text-[10px] font-bold text-slate-400">REVENUE</p><p class="font-black text-blue-700">Nu. <span id="${p.id}_rev">0</span></p></div>
+        `;
+        grid.appendChild(row);
+    });
+
+    // WORLD-CLASS NAVIGATION
     window.showView = (id) => {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(window.innerWidth < 768) toggleMenu();
-        window.scrollTo(0,0);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if(window.innerWidth < 768) document.getElementById('sidebar').classList.remove('open');
     };
 
-    // AUTO-CALCULATION LOGIC
-    window.calcDairy = () => {
-        const sold = Number(document.getElementById('d_m_sold').value) || 0;
-        const price = Number(document.getElementById('d_m_price').value) || 0;
-        const rev = sold * price;
-        document.getElementById('r_m').innerText = rev.toLocaleString();
-        document.getElementById('dash_rev').innerText = rev.toLocaleString();
+    // COMMERCIAL CALCULATION ENGINE
+    window.calcCommercial = () => {
+        let total = 0;
+        products.forEach(p => {
+            const qty = Number(document.getElementById(`${p.id}_s`).value) || 0;
+            const pr = Number(document.getElementById(`${p.id}_pr`).value) || 0;
+            const rev = qty * pr;
+            document.getElementById(`${p.id}_rev`).innerText = rev.toLocaleString();
+            total += rev;
+        });
+        
+        // Add Dairy Revenue to total if in dairy view
+        const d_qty = Number(document.getElementById('dr_milk')?.value) || 0;
+        const d_pr = Number(document.getElementById('dr_price')?.value) || 0;
+        total += (d_qty * d_pr);
+
+        document.getElementById('dash_total_rev').innerText = total.toLocaleString();
     };
 
-    // UNIVERSAL SAVE FUNCTION WITH VISUAL FEEDBACK
+    // UNIVERSAL FIREBASE SAVE FUNCTION
     window.saveRecord = async (collName, btnId) => {
         const btn = document.getElementById(btnId);
         const originalText = btn.innerText;
-        btn.innerText = "UPLOADING TO CLOUD...";
+        
+        btn.innerText = "Synchronizing with Firebase...";
         btn.style.background = "#ca8a04";
 
         const activeView = document.querySelector('.view.active');
         const inputs = activeView.querySelectorAll('input, select');
-        let data = { timestamp: new Date(), entry_sector: collName };
-        inputs.forEach(i => data[i.id] = i.value);
+        let data = { 
+            timestamp: serverTimestamp(), 
+            author: "Haa Moderator",
+            sector: collName
+        };
+        
+        inputs.forEach(i => { data[i.id] = i.value; });
 
         try {
             await addDoc(collection(db, collName), data);
-            btn.innerText = "✓ RECORD SAVED SUCCESSFULLY";
-            btn.style.background = "#16a34a";
+            btn.innerText = "✓ Successfully Synced";
+            btn.style.background = "#059669";
+            
+            // Increment Case Counter if DVH
+            if(collName === 'clinical_dvh_logs') {
+                const caseEl = document.getElementById('dash_cases');
+                caseEl.innerText = Number(caseEl.innerText) + 1;
+            }
+
             setTimeout(() => {
                 btn.innerText = originalText;
                 btn.style.background = "#1e40af";
                 inputs.forEach(i => i.value = "");
-            }, 2500);
-        } catch (e) {
-            alert("Error: check your Firebase internet connection.");
+            }, 3000);
+        } catch (error) {
+            console.error(error);
+            alert("Connection Error. Check Firebase Configuration.");
             btn.innerText = originalText;
             btn.style.background = "#1e40af";
         }
     };
 
-    window.postAnn = () => {
-        const val = document.getElementById('ann_input').value;
-        if(!val) return;
-        const div = document.createElement('div');
-        div.className = "p-3 bg-white border rounded shadow-sm text-blue-900 font-medium";
-        div.innerText = "📢 " + val;
-        document.getElementById('ann_list').prepend(div);
-        document.getElementById('ann_input').value = "";
-    };
-</script>
+    // SIDEBAR TOGGLE
+    window.toggleMenu = () => document.getElementById('sidebar').classList.toggle('open');
 
+</script>
 </body>
 </html>
