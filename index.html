@@ -4,103 +4,86 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Haa Livestock Enterprise Portal</title>
+
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
 <style>
-body{font-family:Inter,sans-serif;background:#f8fafc}
-.sidebar{background:#0f172a}
+body{font-family:Inter, sans-serif;background:#f1f5f9} /* Light grey background from mockup */
+.sidebar{background:#0c1a2a} /* Dark navy sidebar */
 .view{display:none}
 .view.active{display:block}
-.folder-card{background:white;padding:20px;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.05);cursor:pointer;transition:0.3s}
-.folder-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
-.hero-overlay{background:linear-gradient(to right,rgba(0,0,0,.7),rgba(0,0,0,.2))}
+.folder-card{background:white;padding:20px;border-radius:16px;
+box-shadow:0 4px 12px rgba(0,0,0,0.05);cursor:pointer}
+.hero-overlay{background:linear-gradient(to right,rgba(12,26,42,.7),rgba(12,26,42,.2))} /* gradient overlay */
+.button-primary{background:#1e40af;color:white;} /* deep blue */
+.button-success{background:#16a34a;color:white;} /* green */
+.button-danger{background:#dc2626;color:white;} /* red */
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-// Force direct entry for LPO/Master
-const MASTER_EMAIL = "keshab24funtime@gmail.com";
+<!-- MAIN APP (direct access, login/signup removed) -->
+<div id="app">
 
-window.onload = function() {
-    // Directly show the app
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("app").classList.remove("hidden");
-
-    // Set your role and email
-    role.value = "LPO";
-    email.value = MASTER_EMAIL;
-
-    console.log("Direct access granted: LPO/Master entered system immediately.");
-
-    // Load saved background if any
-    if(localStorage.getItem("bg")){
-        document.getElementById("heroImage").src = localStorage.getItem("bg");
-    }
-
-    // Update stats and gallery immediately
-    updateQuickStats();
-    renderGallery();
-    renderAudit();
-    renderDocuments();
-};
-
-<!-- MAIN APP -->
-<div id="app" class="hidden">
-<div class="flex">
+<div class="flex min-h-screen">
 
 <!-- SIDEBAR -->
-<div class="sidebar text-white w-64 min-h-screen p-6 space-y-4">
-<h2 class="text-xl font-bold">Haa Enterprise</h2>
-<button onclick="showView('dashboard')" class="block">Dashboard</button>
-<button onclick="showView('dairy')">Dairy</button>
-<button onclick="showView('ai')">AI</button>
-<button onclick="showView('breeding')">Natural Breeding</button>
-<button onclick="showView('fishery')">Fishery & Api</button>
-<button onclick="showView('nutrition')">Nutrition</button>
-<button onclick="showView('sheep')">Sheep & Goat</button>
-<button onclick="showView('dvh')">DVH Hospital</button>
-<button onclick="showView('unique')">Unique Products</button>
-<button onclick="showView('audit')">Training & Audit</button>
-<button onclick="showView('gallery')">Gallery</button>
-<button onclick="showView('documents')">Documents</button>
-<button onclick="showView('admin')">Administration</button>
-<button onclick="logout()" class="mt-10 bg-red-600 px-3 py-2 rounded-xl">Logout</button>
+<div class="sidebar text-white w-64 p-6 space-y-4">
+
+<h2 class="text-xl font-bold mb-6">Haa Enterprise</h2>
+
+<button onclick="showView('dashboard')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Dashboard</button>
+<button onclick="showView('dairy')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Dairy</button>
+<button onclick="showView('ai')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">AI</button>
+<button onclick="showView('breeding')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Natural Breeding</button>
+<button onclick="showView('fishery')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Fishery & Api</button>
+<button onclick="showView('nutrition')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Nutrition</button>
+<button onclick="showView('sheep')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Sheep & Goat</button>
+<button onclick="showView('dvh')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">DVH Hospital</button>
+<button onclick="showView('unique')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Unique Products</button>
+<button onclick="showView('audit')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Training & Audit</button>
+<button onclick="showView('gallery')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Gallery</button>
+<button onclick="showView('admin')" class="block w-full text-left py-2 px-3 hover:bg-gray-700 rounded">Administration</button>
+
 </div>
 
 <!-- CONTENT -->
-<div class="flex-1 p-10 overflow-auto">
+<div class="flex-1 p-8">
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="view active">
+
 <div class="relative rounded-3xl overflow-hidden mb-8">
-<img id="heroImage" src="https://images.unsplash.com/photo-1508672019048-805c876b67e2" class="w-full h-72 object-cover">
+<img id="heroImage" src="https://images.unsplash.com/photo-1508672019048-805c876b67e2"
+class="w-full h-72 object-cover rounded-3xl">
 <div class="absolute inset-0 hero-overlay flex flex-col justify-center p-10 text-white">
 <h1 class="text-4xl font-bold">Livestock Data Management System</h1>
-<p class="opacity-90">District Livestock Office – Haa</p>
-<input type="file" id="bgUpload" class="hidden" accept="image/*">
-<button onclick="changeBg()" class="mt-4 bg-white text-black px-4 py-2 rounded-xl w-40">Change Background</button>
+<p class="opacity-90 mt-1">District Livestock Office – Haa</p>
 </div>
 </div>
+
 <div class="grid grid-cols-3 gap-6">
 <div class="bg-white p-6 rounded-2xl shadow">
-<h3 class="font-bold">Announcements</h3>
-<textarea id="announcementText" class="w-full border mt-3 p-2 rounded"></textarea>
-<button onclick="addAnnouncement()" class="mt-3 bg-blue-600 text-white px-3 py-2 rounded">Post</button>
-<div id="announcementList" class="mt-4 text-sm"></div>
+<h3 class="font-bold mb-2">Announcements</h3>
+<textarea id="announcementText" class="w-full border p-2 rounded mb-2"></textarea>
+<button onclick="addAnnouncement()" class="button-primary px-3 py-2 rounded w-full">Post</button>
+<div id="announcementList" class="mt-3 text-sm"></div>
 </div>
+
 <div class="bg-white p-6 rounded-2xl shadow">
-<h3 class="font-bold">Quick Stats</h3>
-<p class="mt-4">Total Dairy Reports: <span id="totalDairy">0</span></p>
+<h3 class="font-bold mb-2">Quick Stats</h3>
+<p>Total Dairy Reports: <span id="totalDairy">0</span></p>
 <p>Total AI Logs: <span id="totalAI">0</span></p>
 <p>Unique Product Entries: <span id="totalProducts">0</span></p>
+<p>Total Revenue: <span id="totalRevenue">0</span></p>
 </div>
 </div>
 </div>
 
 <!-- UNIQUE PRODUCTS -->
 <div id="unique" class="view">
-<h2 class="text-2xl font-bold mb-6">Unique Products – Haa Heritage</h2>
+<h2 class="text-2xl font-bold mb-4">Unique Products – Haa Heritage</h2>
 <select id="uniqueType" class="border p-3 rounded-xl mb-4 w-60">
 <option>Yaksha</option>
 <option>Hard Chugo (Shey)</option>
@@ -113,261 +96,155 @@ window.onload = function() {
 </select>
 <input id="uniqueQty" class="border p-3 rounded-xl mb-4 w-60" placeholder="Quantity">
 <input id="uniquePrice" class="border p-3 rounded-xl mb-4 w-60" placeholder="Price">
-<button onclick="saveUniqueProduct()" class="bg-green-600 text-white px-4 py-2 rounded-xl">Save Entry</button>
+<button onclick="saveUniqueProduct()" class="button-success px-4 py-2 rounded-xl">Save Entry</button>
 </div>
 
-<!-- TRAINING & AUDIT -->
+<!-- AUDIT / TRAINING -->
 <div id="audit" class="view">
-<h2 class="text-2xl font-bold mb-6">Training & Audit Archive</h2>
-<div class="grid grid-cols-3 gap-6" id="auditGrid"></div>
+<h2 class="text-2xl font-bold mb-4">Training & Audit Archive</h2>
+<div id="auditContainer" class="grid grid-cols-3 gap-6"></div>
 </div>
 
 <!-- GALLERY -->
 <div id="gallery" class="view">
-<h2 class="text-2xl font-bold mb-6">Sector Gallery – Summary</h2>
-<div id="galleryStats" class="grid grid-cols-3 gap-6"></div>
+<h2 class="text-2xl font-bold mb-4">Gallery / Summary</h2>
+<div id="galleryContainer" class="grid grid-cols-3 gap-4 mb-4"></div>
+<p>Total Quantity: <span id="totalQty">0</span></p>
+<p>Total Revenue: <span id="totalRevenue">0</span></p>
 </div>
 
-<!-- DOCUMENTS -->
-<div id="documents" class="view">
-<h2 class="text-2xl font-bold mb-6">Document Center</h2>
-<div class="grid grid-cols-5 gap-6 mb-6" id="docTypesGrid"></div>
-<div id="docUploadArea" class="border-2 border-dashed p-10 text-center rounded-xl">
-Drag & Drop files here or click to upload
-<input type="file" id="docUploadInput" multiple class="hidden">
-</div>
-<div class="grid grid-cols-3 gap-4 mt-6" id="uploadedDocsGrid"></div>
-</div>
-
-<!-- ADMIN -->
+<!-- DOCUMENTS / ADMIN -->
 <div id="admin" class="view">
-<h2 class="text-2xl font-bold mb-6">Administration</h2>
-<div class="grid grid-cols-4 gap-6">
-<div class="folder-card">Notesheets</div>
-<div class="folder-card">Tender Files</div>
-<div class="folder-card">Leave Forms</div>
-<div class="folder-card">Official Letters</div>
-</div>
+<h2 class="text-2xl font-bold mb-4">Administration / Documents</h2>
+<div id="documentsContainer" class="grid grid-cols-3 gap-4"></div>
+<input type="file" id="docUpload" class="mb-4">
+<button onclick="uploadDocument()" class="button-primary px-4 py-2 rounded-xl">Upload Document</button>
 </div>
 
 </div>
 </div>
 </div>
 
-<script>
-const MASTER_EMAIL = "keshab24funtime@gmail.com";
+<script type="module">
+  // Firebase SDK import
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getFirestore, collection, doc, setDoc, getDocs, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
-function showView(id){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(id==="gallery") renderGallery();
-  if(id==="audit") renderAudit();
-  if(id==="documents") renderDocuments();
-}
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "haa-livestock.firebaseapp.com",
+    projectId: "haa-livestock",
+    storageBucket: "haa-livestock.appspot.com",
+    messagingSenderId: "XXXX",
+    appId: "XXXX"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
 
-function signup(){
-  let users=JSON.parse(localStorage.getItem('users')||"[]");
-  users.push({email:email.value,password:password.value,role:role.value,approved:false});
-  localStorage.setItem('users',JSON.stringify(users));
-  alert("Signup submitted. Awaiting approval.")
-}
+  const MASTER_EMAIL = "keshab24funtime@gmail.com";
+  const role = { value: "LPO" };
+  const email = { value: MASTER_EMAIL };
 
-function login(){
-  if(email.value === MASTER_EMAIL){
-    document.getElementById("loginScreen").style.display="none";
-    document.getElementById("app").classList.remove("hidden");
-    role.value="LPO";
-    return;
+  // Views
+  function showView(id){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
   }
-  let users=JSON.parse(localStorage.getItem('users')||"[]");
-  let user=users.find(u=>u.email==email.value && u.password==password.value);
-  if(user && user.approved){
-      document.getElementById("loginScreen").style.display="none";
-      document.getElementById("app").classList.remove("hidden");
-  } else { alert("Not approved or invalid credentials") }
-}
 
-function logout(){ location.reload() }
-
-window.onload = function(){
-  // Auto-login master/LPO
-  if(MASTER_EMAIL === "keshab24funtime@gmail.com"){
-      document.getElementById("loginScreen").style.display = "none";
-      document.getElementById("app").classList.remove("hidden");
-      role.value = "LPO";
-      email.value = MASTER_EMAIL;
-      console.log("Direct access granted for LPO/Master");
+  // Announcements
+  function addAnnouncement(){
+    const text = document.getElementById("announcementText").value;
+    const list = document.getElementById("announcementList");
+    const div = document.createElement("div");
+    div.className = "border-b py-2";
+    div.innerText = text;
+    list.prepend(div);
+    document.getElementById("announcementText").value = "";
   }
-  if(localStorage.getItem("bg")){
-    document.getElementById("heroImage").src = localStorage.getItem("bg");
+
+  // Direct Master Access
+  window.onload = async function(){
+    // Load gallery, audit, documents
+    renderGallery();
+    renderAudit();
+    renderDocuments();
   }
-}
 
-// Background
-function changeBg(){ document.getElementById("bgUpload").click() }
-document.getElementById("bgUpload").addEventListener("change",function(e){
-  let reader=new FileReader();
-  reader.onload=function(event){
-    document.getElementById("heroImage").src=event.target.result;
-    localStorage.setItem("bg",event.target.result)
+  // --- Unique Products ---
+  async function saveUniqueProduct(){
+    const type = document.getElementById("uniqueType").value;
+    const qty = Number(document.getElementById("uniqueQty").value);
+    const price = Number(document.getElementById("uniquePrice").value);
+    const docRef = doc(collection(db,"products"));
+    await setDoc(docRef,{type,qty,price,created_by:email.value,timestamp:new Date()});
+    document.getElementById("uniqueQty").value="";
+    document.getElementById("uniquePrice").value="";
+    renderGallery();
   }
-  reader.readAsDataURL(e.target.files[0]);
-})
 
-// Announcements
-function addAnnouncement(){
-  let text=document.getElementById("announcementText").value;
-  if(!text) return;
-  let list=document.getElementById("announcementList");
-  let div=document.createElement("div");
-  div.className="border-b py-2";
-  div.innerText=text;
-  list.prepend(div);
-  document.getElementById("announcementText").value="";
-}
-
-// Unique Products
-function saveUniqueProduct(){
-  let type=document.getElementById("uniqueType").value;
-  let qty=Number(document.getElementById("uniqueQty").value);
-  let price=Number(document.getElementById("uniquePrice").value);
-  if(!qty||!price){ alert("Enter quantity and price"); return; }
-  let products=JSON.parse(localStorage.getItem("products")||"[]");
-  products.push({type,qty,price});
-  localStorage.setItem("products",JSON.stringify(products));
-  document.getElementById("uniqueQty").value="";
-  document.getElementById("uniquePrice").value="";
-  alert("Product saved!");
-  updateQuickStats();
-}
-
-// Quick Stats
-function updateQuickStats(){
-  let products=JSON.parse(localStorage.getItem("products")||"[]");
-  document.getElementById("totalProducts").innerText=products.length;
-  let dairy=JSON.parse(localStorage.getItem("dairyReports")||"[]");
-  document.getElementById("totalDairy").innerText=dairy.length;
-  let ai=JSON.parse(localStorage.getItem("aiLogs")||"[]");
-  document.getElementById("totalAI").innerText=ai.length;
-}
-
-// Audit
-function renderAudit(){
-  const audits=[{title:"Biosecurity Protocols",date:"12 Feb 2026",participants:"Bji Yak Group",files:["https://via.placeholder.com/100","https://via.placeholder.com/100"]}];
-  const grid=document.getElementById("auditGrid");
-  grid.innerHTML="";
-  audits.forEach(a=>{
-    let card=document.createElement("div");
-    card.className="folder-card";
-    let imgs=a.files.map(f=>`<img src="${f}" class="rounded w-full h-24 object-cover">`).join("");
-    card.innerHTML=`<h3 class="font-bold">${a.title}</h3>
-      <p class="text-sm mt-2">Date: ${a.date}</p>
-      <p class="text-sm">Participants: ${a.participants}</p>
-      <div class="mt-4 grid grid-cols-3 gap-2">${imgs}</div>
-      <div class="mt-4"><a href="#" class="text-blue-600 underline text-sm">Download PDF</a></div>`;
-    grid.appendChild(card);
-  });
-}
-
-// Gallery
-function calculateTotals(){
-  let galleryData={};
-  const dairyReports=JSON.parse(localStorage.getItem("dairyReports")||"[]");
-  galleryData.Dairy={ totalEntries:dairyReports.length, totalProduced:dairyReports.reduce((a,b)=>a+(b.qty||0),0), totalRevenue:dairyReports.reduce((a,b)=>a+(b.price||0),0) };
-  const aiLogs=JSON.parse(localStorage.getItem("aiLogs")||"[]");
-  galleryData.AI={ totalEntries:aiLogs.length, totalProduced:aiLogs.reduce((a,b)=>a+(b.successful||0),0), totalRevenue:aiLogs.reduce((a,b)=>a+(b.revenue||0),0) };
-  const products=JSON.parse(localStorage.getItem("products")||"[]");
-  galleryData.UniqueProducts={ totalEntries:products.length, totalProduced:products.reduce((a,b)=>a+b.qty,0), totalRevenue:products.reduce((a,b)=>a+b.price,0) };
-  return galleryData;
-}
-
-function renderGallery(){
-  updateQuickStats();
-  const data=calculateTotals();
-  const galleryStats=document.getElementById("galleryStats");
-  galleryStats.innerHTML="";
-  for(let sector in data){
-    let card=document.createElement("div");
-    card.className="bg-white p-6 rounded-2xl shadow";
-    card.innerHTML=`<h3 class="font-bold text-lg">${sector}</h3>
-      <p>Total Entries: ${data[sector].totalEntries}</p>
-      <p>Total Produced: ${data[sector].totalProduced}</p>
-      <p>Total Revenue: Nu ${data[sector].totalRevenue}</p>`;
-    galleryStats.appendChild(card);
+  // --- Gallery ---
+  async function renderGallery(){
+    const gallery = document.getElementById("galleryContainer");
+    gallery.innerHTML="";
+    const snap = await getDocs(collection(db,"products"));
+    let totalQty=0, totalRevenue=0;
+    snap.forEach(d=>{
+      const data=d.data();
+      totalQty+=data.qty;
+      totalRevenue+=data.qty*data.price;
+      const div=document.createElement("div");
+      div.className="border p-2 rounded mb-2";
+      div.innerText=`${data.type} | Qty: ${data.qty} | Price: ${data.price} | By: ${data.created_by}`;
+      gallery.appendChild(div);
+    });
+    document.getElementById("totalQty").innerText=totalQty;
+    document.getElementById("totalRevenue").innerText=totalRevenue;
   }
-}
 
-// Documents
-const documentTypes = ["Notesheets","Tender Files","Leave Forms","Official Letters","Spot Quotations"];
-let selectedDocType="";
-function renderDocuments(){
-  const docTypesGrid = document.getElementById("docTypesGrid");
-  docTypesGrid.innerHTML="";
-  documentTypes.forEach(type=>{
-    let div=document.createElement("div");
-    div.className="bg-white p-4 rounded-xl shadow cursor-pointer text-center";
-    div.innerText=type;
-    div.onclick=()=>{ selectedDocType=type; alert("Selected type: "+type);}
-    docTypesGrid.appendChild(div);
-  });
-  renderUploadedDocs();
-}
+  // --- Audit ---
+  async function renderAudit(){
+    const container=document.getElementById("auditContainer");
+    container.innerHTML="";
+    const snap = await getDocs(collection(db,"audit_events"));
+    snap.forEach(d=>{
+      const data=d.data();
+      const div=document.createElement("div");
+      div.className="folder-card";
+      div.innerHTML=`<h3 class="font-bold">${data.title}</h3><p class="text-sm mt-2">Date: ${data.date}</p><p class="text-sm">Participants: ${data.participants}</p>`;
+      container.appendChild(div);
+    });
+  }
 
-const docUploadArea = document.getElementById("docUploadArea");
-const docUploadInput = document.getElementById("docUploadInput");
-docUploadArea.addEventListener("click",()=>docUploadInput.click());
-docUploadArea.addEventListener("dragover", e=>e.preventDefault());
-docUploadArea.addEventListener("drop", e=>{ e.preventDefault(); handleFiles(e.dataTransfer.files); });
-docUploadInput.addEventListener("change", e=>{ handleFiles(e.target.files); });
+  // --- Documents ---
+  async function renderDocuments(){
+    const container=document.getElementById("documentsContainer");
+    container.innerHTML="";
+    const snap = await getDocs(collection(db,"documents"));
+    snap.forEach(d=>{
+      const data=d.data();
+      const div=document.createElement("div");
+      div.className="folder-card";
+      div.innerHTML=`<h3 class="font-bold">${data.name}</h3><p class="text-sm mt-2">Type: ${data.type}</p><a href="${data.url}" target="_blank" class="text-blue-600 underline text-sm">View / Download</a>`;
+      container.appendChild(div);
+    });
+  }
 
-function handleFiles(files){
-  if(!selectedDocType){ alert("Select a document type first"); return; }
-  const user = email.value;
-  let docs = JSON.parse(localStorage.getItem("documents")||"[]");
-  Array.from(files).forEach(file=>{
-    const reader = new FileReader();
-    reader.onload=function(e){
-      docs.push({id:crypto.randomUUID(),type:selectedDocType,name:file.name,dataUrl:e.target.result,uploadedBy:user,approved:false,approvedBy:"",date:new Date().toLocaleDateString()});
-      localStorage.setItem("documents",JSON.stringify(docs));
-      renderUploadedDocs();
-    };
-    reader.readAsDataURL(file);
-  });
-}
+  async function uploadDocument(){
+    const fileInput = document.getElementById("docUpload");
+    const file = fileInput.files[0];
+    if(!file) return alert("Select a file first");
+    const storageRef = ref(storage, `documents/${Date.now()}-${file.name}`);
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
+    const docRef = doc(collection(db,"documents"));
+    await setDoc(docRef,{name:file.name,type:"General",url,uploaded_by:email.value,approved:false,timestamp:new Date()});
+    renderDocuments();
+    fileInput.value="";
+  }
 
-function renderUploadedDocs(){
-  const grid = document.getElementById("uploadedDocsGrid");
-  grid.innerHTML="";
-  const docs = JSON.parse(localStorage.getItem("documents")||"[]");
-  docs.forEach(doc=>{
-    let card=document.createElement("div");
-    card.className="folder-card relative";
-    let approveBtn="";
-    if(role.value==="DLO" || role.value==="ADLO" || role.value==="LPO"){
-      approveBtn=`<button onclick="approveDoc('${doc.id}')" class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-xs">${doc.approved?'Approved':'Approve'}</button>`;
-    }
-    card.innerHTML=`<h3 class="font-bold">${doc.name}</h3>
-      <p class="text-sm">Type: ${doc.type}</p>
-      <p class="text-sm">Uploaded By: ${doc.uploadedBy}</p>
-      <p class="text-sm">Date: ${doc.date}</p>
-      ${approveBtn}
-      <a href="${doc.dataUrl}" download="${doc.name}" class="text-blue-600 underline text-sm mt-2 block">Download</a>`;
-    grid.appendChild(card);
-  });
-}
-
-function approveDoc(id){
-  let docs = JSON.parse(localStorage.getItem("documents")||"[]");
-  let doc = docs.find(d=>d.id===id);
-  if(!doc) return;
-  doc.approved=true;
-  doc.approvedBy=email.value;
-  localStorage.setItem("documents",JSON.stringify(docs));
-  renderUploadedDocs();
-}
-
-updateQuickStats();
 </script>
 </body>
 </html>
-``
