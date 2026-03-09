@@ -68,6 +68,7 @@ Master Login: master@haa.bt / HAA2026
 <button onclick="showView('unique')">Unique Products</button>
 <button onclick="showView('audit')">Training & Audit</button>
 <button onclick="showView('gallery')">Gallery</button>
+<button onclick="showView('documents')">Documents</button>
 <button onclick="showView('admin')">Administration</button>
 
 <button onclick="logout()" class="mt-10 bg-red-600 px-3 py-2 rounded-xl">
@@ -144,6 +145,17 @@ Change Background
 <div id="galleryStats" class="grid grid-cols-3 gap-6"></div>
 </div>
 
+<!-- DOCUMENTS -->
+<div id="documents" class="view">
+<h2 class="text-2xl font-bold mb-6">Document Center</h2>
+<div class="grid grid-cols-5 gap-6 mb-6" id="docTypesGrid"></div>
+<div id="docUploadArea" class="border-2 border-dashed p-10 text-center rounded-xl">
+Drag & Drop files here or click to upload
+<input type="file" id="docUploadInput" multiple class="hidden">
+</div>
+<div class="grid grid-cols-3 gap-4 mt-6" id="uploadedDocsGrid"></div>
+</div>
+
 <!-- ADMIN -->
 <div id="admin" class="view">
 <h2 class="text-2xl font-bold mb-6">Administration</h2>
@@ -166,6 +178,7 @@ function showView(id){
   document.getElementById(id).classList.add('active');
   if(id==="gallery") renderGallery();
   if(id==="audit") renderAudit();
+  if(id==="documents") renderDocuments();
 }
 
 // Signup & Login
@@ -182,9 +195,11 @@ function signup(){
 }
 
 function login(){
+  // Master bypass
   if(email.value=="master@haa.bt" && password.value=="HAA2026"){
     document.getElementById("loginScreen").style.display="none";
     document.getElementById("app").classList.remove("hidden");
+    role.value="Master"; // master role
     return;
   }
   let users=JSON.parse(localStorage.getItem('users')||"[]");
@@ -303,9 +318,79 @@ function renderGallery(){
   }
 }
 
+// Documents Module
+const documentTypes = ["Notesheets","Tender Files","Leave Forms","Official Letters","Spot Quotations"];
+let selectedDocType="";
+function renderDocuments(){
+  const docTypesGrid = document.getElementById("docTypesGrid");
+  docTypesGrid.innerHTML="";
+  documentTypes.forEach(type=>{
+    let div=document.createElement("div");
+    div.className="bg-white p-4 rounded-xl shadow cursor-pointer text-center";
+    div.innerText=type;
+    div.onclick=()=>{ selectedDocType=type; alert("Selected type: "+type);}
+    docTypesGrid.appendChild(div);
+  });
+  renderUploadedDocs();
+}
+
+const docUploadArea = document.getElementById("docUploadArea");
+const docUploadInput = document.getElementById("docUploadInput");
+docUploadArea.addEventListener("click",()=>docUploadInput.click());
+docUploadArea.addEventListener("dragover", e=>e.preventDefault());
+docUploadArea.addEventListener("drop", e=>{
+  e.preventDefault(); handleFiles(e.dataTransfer.files);
+});
+docUploadInput.addEventListener("change", e=>{ handleFiles(e.target.files); });
+
+function handleFiles(files){
+  if(!selectedDocType){ alert("Select a document type first"); return; }
+  const user = email.value;
+  let docs = JSON.parse(localStorage.getItem("documents")||"[]");
+  Array.from(files).forEach(file=>{
+    const reader = new FileReader();
+    reader.onload=function(e){
+      docs.push({id:crypto.randomUUID(),type:selectedDocType,name:file.name,dataUrl:e.target.result,uploadedBy:user,approved:false,approvedBy:"",date:new Date().toLocaleDateString()});
+      localStorage.setItem("documents",JSON.stringify(docs));
+      renderUploadedDocs();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderUploadedDocs(){
+  const grid = document.getElementById("uploadedDocsGrid");
+  grid.innerHTML="";
+  const docs = JSON.parse(localStorage.getItem("documents")||"[]");
+  docs.forEach(doc=>{
+    let card=document.createElement("div");
+    card.className="folder-card relative";
+    let approveBtn="";
+    if(role.value==="DLO" || role.value==="ADLO" || role.value==="Master"){
+      approveBtn=`<button onclick="approveDoc('${doc.id}')" class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-xs">${doc.approved?'Approved':'Approve'}</button>`;
+    }
+    card.innerHTML=`<h3 class="font-bold">${doc.name}</h3>
+      <p class="text-sm">Type: ${doc.type}</p>
+      <p class="text-sm">Uploaded By: ${doc.uploadedBy}</p>
+      <p class="text-sm">Date: ${doc.date}</p>
+      ${approveBtn}
+      <a href="${doc.dataUrl}" download="${doc.name}" class="text-blue-600 underline text-sm mt-2 block">Download</a>`;
+    grid.appendChild(card);
+  });
+}
+
+function approveDoc(id){
+  let docs = JSON.parse(localStorage.getItem("documents")||"[]");
+  let doc = docs.find(d=>d.id===id);
+  if(!doc) return;
+  doc.approved=true;
+  doc.approvedBy=email.value;
+  localStorage.setItem("documents",JSON.stringify(docs));
+  renderUploadedDocs();
+}
+
 // Initialize
 updateQuickStats();
-
 </script>
 </body>
 </html>
