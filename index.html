@@ -23,12 +23,10 @@ box-shadow:0 4px 12px rgba(0,0,0,0.05);cursor:pointer}
 </head>
 <body>
 
-<!-- MAIN APP (direct access, login/signup removed) -->
 <div id="app">
 
 <div class="flex min-h-screen">
 
-<!-- SIDEBAR -->
 <div class="sidebar text-white w-64 p-6 space-y-4">
 
 <h2 class="text-xl font-bold mb-6">Haa Enterprise</h2>
@@ -48,10 +46,8 @@ box-shadow:0 4px 12px rgba(0,0,0,0.05);cursor:pointer}
 
 </div>
 
-<!-- CONTENT -->
 <div class="flex-1 p-8">
 
-<!-- DASHBOARD -->
 <div id="dashboard" class="view active">
 
 <div class="relative rounded-3xl overflow-hidden mb-8">
@@ -81,7 +77,6 @@ class="w-full h-72 object-cover rounded-3xl">
 </div>
 </div>
 
-<!-- UNIQUE PRODUCTS -->
 <div id="unique" class="view">
 <h2 class="text-2xl font-bold mb-4">Unique Products – Haa Heritage</h2>
 <select id="uniqueType" class="border p-3 rounded-xl mb-4 w-60">
@@ -99,13 +94,11 @@ class="w-full h-72 object-cover rounded-3xl">
 <button onclick="saveUniqueProduct()" class="button-success px-4 py-2 rounded-xl">Save Entry</button>
 </div>
 
-<!-- AUDIT / TRAINING -->
 <div id="audit" class="view">
 <h2 class="text-2xl font-bold mb-4">Training & Audit Archive</h2>
 <div id="auditContainer" class="grid grid-cols-3 gap-6"></div>
 </div>
 
-<!-- GALLERY -->
 <div id="gallery" class="view">
 <h2 class="text-2xl font-bold mb-4">Gallery / Summary</h2>
 <div id="galleryContainer" class="grid grid-cols-3 gap-4 mb-4"></div>
@@ -113,7 +106,6 @@ class="w-full h-72 object-cover rounded-3xl">
 <p>Total Revenue: <span id="totalRevenue">0</span></p>
 </div>
 
-<!-- DOCUMENTS / ADMIN -->
 <div id="admin" class="view">
 <h2 class="text-2xl font-bold mb-4">Administration / Documents</h2>
 <div id="documentsContainer" class="grid grid-cols-3 gap-4"></div>
@@ -148,15 +140,16 @@ class="w-full h-72 object-cover rounded-3xl">
   const role = { value: "LPO" };
   const email = { value: MASTER_EMAIL };
 
-  // Views
-  function showView(id){
+  // --- INTEGRATED LOGIC (Attached to window for HTML accessibility) ---
+
+  window.showView = function(id){
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
 
-  // Announcements
-  function addAnnouncement(){
+  window.addAnnouncement = function(){
     const text = document.getElementById("announcementText").value;
+    if(!text) return;
     const list = document.getElementById("announcementList");
     const div = document.createElement("div");
     div.className = "border-b py-2";
@@ -165,16 +158,8 @@ class="w-full h-72 object-cover rounded-3xl">
     document.getElementById("announcementText").value = "";
   }
 
-  // Direct Master Access
-  window.onload = async function(){
-    // Load gallery, audit, documents
-    renderGallery();
-    renderAudit();
-    renderDocuments();
-  }
-
   // --- Unique Products ---
-  async function saveUniqueProduct(){
+  window.saveUniqueProduct = async function(){
     const type = document.getElementById("uniqueType").value;
     const qty = Number(document.getElementById("uniqueQty").value);
     const price = Number(document.getElementById("uniquePrice").value);
@@ -196,24 +181,27 @@ class="w-full h-72 object-cover rounded-3xl">
       totalQty+=data.qty;
       totalRevenue+=data.qty*data.price;
       const div=document.createElement("div");
-      div.className="border p-2 rounded mb-2";
-      div.innerText=`${data.type} | Qty: ${data.qty} | Price: ${data.price} | By: ${data.created_by}`;
+      div.className="border p-2 rounded mb-2 bg-white";
+      div.innerText=`${data.type} | Qty: ${data.qty} | Price: ${data.price}`;
       gallery.appendChild(div);
     });
     document.getElementById("totalQty").innerText=totalQty;
     document.getElementById("totalRevenue").innerText=totalRevenue;
+    // Update dashboard stats
+    if(document.getElementById("totalProducts")) document.getElementById("totalProducts").innerText = snap.size;
   }
 
   // --- Audit ---
   async function renderAudit(){
     const container=document.getElementById("auditContainer");
+    if(!container) return;
     container.innerHTML="";
     const snap = await getDocs(collection(db,"audit_events"));
     snap.forEach(d=>{
       const data=d.data();
       const div=document.createElement("div");
       div.className="folder-card";
-      div.innerHTML=`<h3 class="font-bold">${data.title}</h3><p class="text-sm mt-2">Date: ${data.date}</p><p class="text-sm">Participants: ${data.participants}</p>`;
+      div.innerHTML=`<h3 class="font-bold">${data.title}</h3><p class="text-sm mt-2">Date: ${data.date}</p>`;
       container.appendChild(div);
     });
   }
@@ -221,18 +209,19 @@ class="w-full h-72 object-cover rounded-3xl">
   // --- Documents ---
   async function renderDocuments(){
     const container=document.getElementById("documentsContainer");
+    if(!container) return;
     container.innerHTML="";
     const snap = await getDocs(collection(db,"documents"));
     snap.forEach(d=>{
       const data=d.data();
       const div=document.createElement("div");
       div.className="folder-card";
-      div.innerHTML=`<h3 class="font-bold">${data.name}</h3><p class="text-sm mt-2">Type: ${data.type}</p><a href="${data.url}" target="_blank" class="text-blue-600 underline text-sm">View / Download</a>`;
+      div.innerHTML=`<h3 class="font-bold">${data.name}</h3><a href="${data.url}" target="_blank" class="text-blue-600 underline text-sm">View</a>`;
       container.appendChild(div);
     });
   }
 
-  async function uploadDocument(){
+  window.uploadDocument = async function(){
     const fileInput = document.getElementById("docUpload");
     const file = fileInput.files[0];
     if(!file) return alert("Select a file first");
@@ -244,6 +233,13 @@ class="w-full h-72 object-cover rounded-3xl">
     renderDocuments();
     fileInput.value="";
   }
+
+  // Direct Master Access - Initial Load
+  window.addEventListener('DOMContentLoaded', async () => {
+    await renderGallery();
+    await renderAudit();
+    await renderDocuments();
+  });
 
 </script>
 </body>
