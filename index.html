@@ -3,271 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haa Livestock Enterprise Portal</title>
+    <title>Haa District Livestock Master Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; color: #222222; }
-        .sidebar { height: 100vh; background: #ffffff; border-right: 1px solid #ebebeb; position: sticky; top: 0; }
-        .nav-btn { width: 100%; text-align: left; padding: 12px 16px; border-radius: 8px; transition: all 0.2s; font-size: 14px; font-weight: 500; color: #717171; display: flex; align-items: center; gap: 12px; }
-        .nav-btn:hover { background: #F7F7F7; color: #000; }
-        .nav-btn.active { background: #F7F7F7; color: #ff385c; font-weight: 700; }
-        .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-        .card { background: #ffffff; border-radius: 12px; border: 1px solid #dddddd; transition: box-shadow 0.3s; }
-        .card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
-        .input-field { border: 1px solid #b0b0b0; border-radius: 8px; padding: 12px; width: 100%; font-size: 14px; outline: none; }
-        .input-field:focus { border: 2px solid #222222; padding: 11px; }
-        .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #717171; letter-spacing: 1px; margin-bottom: 8px; }
-        .announcement-bar { background: #f7f7f7; border-bottom: 1px solid #ebebeb; padding: 10px 40px; font-size: 13px; font-weight: 600; }
-        .btn-primary { background: #ff385c; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 700; transition: transform 0.1s; }
-        .btn-primary:active { transform: scale(0.98); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8FAFC; color: #0F172A; }
+        .sidebar { background: #FFFFFF; border-right: 1px solid #E2E8F0; height: 100vh; position: sticky; top: 0; transition: all 0.3s; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 8px; color: #64748B; font-weight: 600; transition: 0.2s; cursor: pointer; margin-bottom: 4px; }
+        .nav-item:hover { background: #F1F5F9; color: #0F172A; }
+        .nav-item.active { background: #0F172A; color: #FFFFFF; }
+        .section-content { display: none; animation: slideUp 0.4s ease-out; }
+        .section-content.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .glass-card { background: white; border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); padding: 24px; }
+        .input-field { width: 100%; background: #FDFDFD; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px 12px; font-size: 14px; outline: none; transition: 0.2s; }
+        .input-field:focus { border-color: #0F172A; ring: 2px solid #F1F5F9; }
+        .label-style { font-size: 11px; font-weight: 800; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block; }
+        .btn-primary { background: #0F172A; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 700; transition: 0.2s; width: 100%; }
+        .btn-primary:hover { background: #1E293B; transform: translateY(-1px); }
     </style>
 </head>
 <body class="flex">
 
-    <aside class="w-72 sidebar flex flex-col p-6 shrink-0">
-        <div class="mb-10 px-2">
-            <h1 class="text-xl font-extrabold tracking-tighter text-[#ff385c]">HAA DISTRICT</h1>
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Livestock Portal 2026</p>
+    <aside class="w-80 sidebar p-6 shrink-0 flex flex-col">
+        <div class="mb-10 flex items-center gap-3">
+            <div class="bg-black p-2 rounded-xl text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-xl tracking-tighter">HAA LIVESTOCK</h1>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Portal</p>
+            </div>
         </div>
 
-        <nav class="space-y-1 overflow-y-auto pr-2">
-            <button onclick="showView('dashboard', this)" class="nav-btn active">🏠 Overview</button>
+        <nav class="flex-grow space-y-1 overflow-y-auto pr-2">
+            <div onclick="showSection('dashboard')" class="nav-item active" id="btn-dashboard">🏠 Dashboard</div>
             
-            <p class="section-label mt-6 px-2">Production Sectors</p>
-            <button onclick="showView('dairy', this)" class="nav-btn">🐄 Dairy Sector</button>
-            <button onclick="showView('breeding', this)" class="nav-btn">🧬 Natural Breeding</button>
-            <button onclick="showView('fishery', this)" class="nav-btn">🐟 Fishery Sector</button>
-            <button onclick="showView('nutrition', this)" class="nav-btn">🌾 Animal Nutrition</button>
-            <button onclick="showView('apiculture', this)" class="nav-btn">🐝 Apiculture</button>
-            <button onclick="showView('sheepgoat', this)" class="nav-btn">🐑 Sheep & Goat</button>
+            <div class="pt-4 pb-2 text-[10px] font-bold text-slate-400 uppercase">Production Units</div>
+            <div onclick="showSection('dairy')" class="nav-item" id="btn-dairy">🥛 Dairy & Groups</div>
+            <div onclick="showSection('fishery')" class="nav-item" id="btn-fishery">🐟 Fishery Sector</div>
+            <div onclick="showSection('apiculture')" class="nav-item" id="btn-apiculture">🐝 Apiculture</div>
+            <div onclick="showSection('sheep')" class="nav-item" id="btn-sheep">🐑 Sheep & Goat</div>
+            <div onclick="showSection('nutrition')" class="nav-item" id="btn-nutrition">🌾 Animal Nutrition</div>
+            <div onclick="showSection('breeding')" class="nav-item" id="btn-breeding">🧬 Natural Breeding</div>
 
-            <p class="section-label mt-6 px-2">Operations</p>
-            <button onclick="showView('admin', this)" class="nav-btn">📁 Administration</button>
-            <button onclick="showView('dvh', this)" class="nav-btn">🏥 DVH & Health</button>
-            <button onclick="showView('brand', this)" class="nav-btn">✨ Haa Brand Products</button>
-            <button onclick="showView('staff', this)" class="nav-btn">👥 Staff Info</button>
+            <div class="pt-4 pb-2 text-[10px] font-bold text-slate-400 uppercase">Admin & Health</div>
+            <div onclick="showSection('health')" class="nav-item" id="btn-health">🏥 DVH & Health</div>
+            <div onclick="showSection('staff')" class="nav-item" id="btn-staff">👥 Staff Profile</div>
+            <div onclick="showSection('admin')" class="nav-item" id="btn-admin">📂 Administration</div>
+            <div onclick="showSection('products')" class="nav-item" id="btn-products">✨ Haa Unique Brand</div>
         </nav>
     </aside>
 
-    <div class="flex-grow flex flex-col">
-        <div class="announcement-bar flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <span class="bg-[#ff385c] text-white text-[10px] px-2 py-0.5 rounded">NEW</span>
-                <p>Welcome to the unified livestock data portal. Monthly reports are due by the 25th.</p>
+    <main class="flex-grow p-10 max-h-screen overflow-y-auto">
+
+        <section id="dashboard" class="section-content active">
+            <header class="mb-8">
+                <h2 class="text-4xl font-extrabold tracking-tight mb-2">Executive Summary</h2>
+                <p class="text-slate-500 font-medium">District-wide statistics and official announcements.</p>
+            </header>
+
+            <div class="bg-indigo-600 rounded-2xl p-8 text-white mb-10 shadow-lg shadow-indigo-100 relative overflow-hidden">
+                <div class="relative z-10 flex justify-between items-start">
+                    <div>
+                        <span class="bg-indigo-500 text-[10px] font-bold py-1 px-3 rounded-full mb-4 inline-block uppercase tracking-wider">Live Updates</span>
+                        <h3 class="text-2xl font-bold mb-4">📢 Official Announcements</h3>
+                        <ul class="space-y-3 opacity-90 text-sm">
+                            <li class="flex items-center gap-3">✦ <strong>Notice:</strong> Monthly production reports due by the 25th of each month.</li>
+                            <li class="flex items-center gap-3">✦ <strong>DVH Alert:</strong> FMD vaccine stock replenished for Bji and Katsho Gewogs.</li>
+                            <li class="flex items-center gap-3">✦ <strong>Training:</strong> Improved fodder seed distribution at RNR Center next Tuesday.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="absolute right-[-20px] bottom-[-20px] text-[160px] opacity-10 rotate-12">📢</div>
             </div>
-            <div class="text-gray-400">Tuesday, March 10, 2026</div>
-        </div>
 
-        <main class="p-10 max-w-7xl">
+            <div class="grid grid-cols-4 gap-6">
+                <div class="glass-card border-l-4 border-l-blue-500">
+                    <label class="label-style">Total Milk (L)</label>
+                    <div class="text-3xl font-black">24,102.50</div>
+                </div>
+                <div class="glass-card border-l-4 border-l-amber-500">
+                    <label class="label-style">Honey Prod (Kg)</label>
+                    <div class="text-3xl font-black">412.00</div>
+                </div>
+                <div class="glass-card border-l-4 border-l-emerald-500">
+                    <label class="label-style">Active Farms</label>
+                    <div class="text-3xl font-black">182 Units</div>
+                </div>
+                <div class="glass-card border-l-4 border-l-rose-500">
+                    <label class="label-style">Total Revenue</label>
+                    <div class="text-3xl font-black">Nu. 1.2M</div>
+                </div>
+            </div>
+        </section>
 
-            <section id="dashboard" class="view active">
-                <h2 class="text-3xl font-extrabold mb-8 tracking-tight">Haa Livestock Overview</h2>
-                <div class="grid grid-cols-3 gap-6 mb-10">
-                    <div class="card p-6">
-                        <p class="section-label">Total Annual Revenue</p>
-                        <h3 class="text-3xl font-bold">Nu. <span id="dash-rev">0.00</span></h3>
+        <section id="dairy" class="section-content">
+            <h2 class="text-3xl font-extrabold mb-8">Dairy Production & Registry</h2>
+            <div class="glass-card">
+                <div class="grid grid-cols-2 gap-8 mb-8 pb-8 border-b border-slate-100">
+                    <div>
+                        <label class="label-style text-indigo-600">Gewog Selector</label>
+                        <select id="dairy-gewog" onchange="updateFarmerGroups()" class="input-field">
+                            <option value="">Select Gewog</option>
+                            <option value="Bji">Bji</option>
+                            <option value="Katsho">Katsho</option>
+                            <option value="Uesu">Uesu</option>
+                            <option value="Gakiling">Gakiling</option>
+                            <option value="Samar">Samar</option>
+                            <option value="Sangbay">Sangbay</option>
+                        </select>
                     </div>
-                    <div class="card p-6">
-                        <p class="section-label">Active Farmers Groups</p>
-                        <h3 class="text-3xl font-bold">12 Groups</h3>
-                    </div>
-                    <div class="card p-6">
-                        <p class="section-label">System Health</p>
-                        <h3 class="text-3xl font-bold text-green-500">Live</h3>
+                    <div>
+                        <label class="label-style text-indigo-600">Farmer Group / Cooperative</label>
+                        <select id="dairy-group" class="input-field">
+                            <option>Please select a Gewog first...</option>
+                        </select>
                     </div>
                 </div>
-            </section>
 
-            <section id="dairy" class="view">
-                <h2 class="text-3xl font-extrabold mb-8">Dairy Production Record</h2>
-                <div class="card p-8 space-y-8">
-                    <div class="grid grid-cols-3 gap-6">
-                        <div><label class="section-label">Gewog</label>
-                            <select id="d-gewog" class="input-field" onchange="updateDairyGroups()">
-                                <option value="">Select Gewog</option>
-                                <option value="Bji">Bji</option>
-                                <option value="Gakiling">Gakiling</option>
-                                <option value="Kar-tshog">Kar-tshog</option>
-                                <option value="Samar">Samar</option>
-                                <option value="Sangbay">Sangbay</option>
-                                <option value="Uesu">Uesu</option>
-                            </select>
-                        </div>
-                        <div><label class="section-label">Farmer Group</label><select id="d-group" class="input-field"></select></div>
-                        <div><label class="section-label">Month/Year</label><input type="month" class="input-field"></div>
-                    </div>
-
-                    <div class="border-t pt-6"><p class="font-bold mb-4">Membership & Herd</p>
-                        <div class="grid grid-cols-3 gap-6">
-                            <input type="number" placeholder="Total members" class="input-field">
-                            <input type="number" placeholder="No. Active Members" class="input-field">
-                            <input type="number" placeholder="No. Milking Cows" class="input-field">
-                        </div>
-                    </div>
-
-                    <div class="border-t pt-6"><p class="font-bold mb-4">Production & Sales (Milk, Butter, Cheese, Chugo, Paneer, Curd)</p>
-                        <div class="grid grid-cols-4 gap-4">
-                            <input type="number" placeholder="Milk Collected (L)" class="input-field">
-                            <input type="number" placeholder="Milk Sold (L)" class="input-field" id="m-q" oninput="calcDairy()">
-                            <input type="number" placeholder="Selling Price (Nu/L)" class="input-field" id="m-p" oninput="calcDairy()">
-                            <div class="bg-gray-50 p-3 rounded text-right font-bold" id="m-res">0.00</div>
-                            
-                            <input type="number" placeholder="Butter Produced (kg)" class="input-field">
-                            <input type="number" placeholder="Butter Sold (kg)" class="input-field" id="b-q" oninput="calcDairy()">
-                            <input type="number" placeholder="Selling Price (Nu/kg)" class="input-field" id="b-p" oninput="calcDairy()">
-                            <div class="bg-gray-50 p-3 rounded text-right font-bold" id="b-res">0.00</div>
-
-                            <input type="number" placeholder="Cheese Produced (kg)" class="input-field">
-                            <input type="number" placeholder="Cheese Sold (kg)" class="input-field" id="c-q" oninput="calcDairy()">
-                            <input type="number" placeholder="Selling Price (Nu/kg)" class="input-field" id="c-p" oninput="calcDairy()">
-                            <div class="bg-gray-50 p-3 rounded text-right font-bold" id="c-res">0.00</div>
-                        </div>
-                        </div>
-                    
-                    <div class="flex justify-between items-center pt-10 border-t">
-                        <div class="text-2xl font-black">Total Revenue: Nu. <span id="dairy-total">0.00</span></div>
-                        <button class="btn-primary">SUBMIT DAIRY REPORT</button>
-                    </div>
+                <div class="grid grid-cols-4 gap-6 mb-8">
+                    <div><label class="label-style">Total Members</label><input type="number" class="input-field"></div>
+                    <div><label class="label-style">Active Milking Cows</label><input type="number" class="input-field"></div>
+                    <div><label class="label-style">Milk Collected (L)</label><input type="number" class="input-field"></div>
+                    <div><label class="label-style">Milk Sold (L)</label><input type="number" class="input-field"></div>
                 </div>
-            </section>
 
-            <section id="admin" class="view">
-                <h2 class="text-3xl font-extrabold mb-8">Administrative Hub</h2>
-                <div class="grid grid-cols-2 gap-8">
-                    <div class="card p-8">
-                        <h3 class="font-bold text-lg mb-6">Document Management</h3>
-                        <div class="space-y-4">
-                            <div class="p-4 border border-dashed rounded-xl flex justify-between items-center">
-                                <div><p class="font-bold">Upload Note Sheet</p><p class="text-xs text-gray-500">PDF, Word, or Scanned Images</p></div>
-                                <input type="file" class="hidden" id="file1">
-                                <button onclick="document.getElementById('file1').click()" class="text-[#ff385c] font-bold">Upload</button>
-                            </div>
-                            <div class="p-4 border border-dashed rounded-xl flex justify-between items-center">
-                                <div><p class="font-bold">Leave Application</p><p class="text-xs text-gray-500">Request for leave directly to DLO</p></div>
-                                <button class="text-[#ff385c] font-bold">New Draft</button>
-                            </div>
-                            <div class="p-4 border border-dashed rounded-xl flex justify-between items-center">
-                                <div><p class="font-bold">Official Tender/Letters</p><p class="text-xs text-gray-500">Upload tender documents</p></div>
-                                <button class="text-[#ff385c] font-bold">Browse</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card p-8">
-                        <h3 class="font-bold text-lg mb-6">Recent Archives</h3>
+                <div class="grid grid-cols-3 gap-8 p-6 bg-slate-50 rounded-xl">
+                    <div>
+                        <h4 class="font-bold text-sm mb-4">Butter & Cheese</h4>
                         <div class="space-y-3">
-                            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg text-sm">📄 Note_Sheet_Fodder_01.pdf <span class="ml-auto text-gray-400">Yesterday</span></div>
-                            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg text-sm">📄 Leave_Wangdi_March.docx <span class="ml-auto text-gray-400">2 days ago</span></div>
+                            <input type="number" placeholder="Butter Prod (kg)" class="input-field">
+                            <input type="number" placeholder="Cheese Prod (kg)" class="input-field">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm mb-4">Value Addition</h4>
+                        <div class="space-y-3">
+                            <input type="number" placeholder="Yoghurt (L)" class="input-field">
+                            <input type="number" placeholder="Paneer (kg)" class="input-field">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm mb-4">Chugo Specialist</h4>
+                        <div class="space-y-3">
+                            <input type="number" placeholder="Hard Chugo (Shey)" class="input-field">
+                            <input type="number" placeholder="Soft Chugo (kg)" class="input-field">
                         </div>
                     </div>
                 </div>
-            </section>
+                <button class="btn-primary mt-8">SYNC DAIRY DATA</button>
+            </div>
+        </section>
 
-            <section id="staff" class="view">
-                <h2 class="text-3xl font-extrabold mb-8">District Staff Directory</h2>
-                <div class="grid grid-cols-2 gap-6">
-                    <div class="card p-6 flex items-center gap-6">
-                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center font-bold text-xl">DT</div>
-                        <div>
-                            <p class="font-extrabold text-lg">DLO Tshenden</p>
-                            <p class="text-sm text-[#ff385c] font-bold">District Livestock Officer</p>
-                            <p class="text-xs text-gray-400 mt-1">haa_dlo@moal.gov.bt</p>
+        <section id="fishery" class="section-content">
+            <h2 class="text-3xl font-extrabold mb-8">Fishery Sector Data</h2>
+            <div class="glass-card">
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <div><label class="label-style">Pond Under Utilization (m³)</label><input type="number" class="input-field"></div>
+                    <div><label class="label-style">Number of Ponds</label><input type="number" class="input-field"></div>
+                    <div><label class="label-style">Fingerlings Supplied</label><input type="number" class="input-field"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="p-6 border border-slate-100 rounded-xl">
+                        <label class="label-style text-blue-600">Carp Farming</label>
+                        <input type="number" placeholder="Harvest (kg)" class="input-field mb-4">
+                        <input type="number" placeholder="No. Households" class="input-field">
+                    </div>
+                    <div class="p-6 border border-slate-100 rounded-xl">
+                        <label class="label-style text-cyan-600">Trout Farming</label>
+                        <input type="number" placeholder="Total Trout Harvested (kg)" class="input-field mb-4">
+                        <input type="number" placeholder="No. Households" class="input-field">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="apiculture" class="section-content">
+            <h2 class="text-3xl font-extrabold mb-8">Apiculture Development</h2>
+            <div class="glass-card grid grid-cols-4 gap-6">
+                <div><label class="label-style">Local Hives (No)</label><input type="number" class="input-field"></div>
+                <div><label class="label-style">Improved Hives (No)</label><input type="number" class="input-field"></div>
+                <div><label class="label-style">Honey Harvested (kg)</label><input type="number" class="input-field"></div>
+                <div><label class="label-style">Honey Sold (kg)</label><input type="number" class="input-field"></div>
+            </div>
+        </section>
+
+        <section id="sheep" class="section-content">
+            <h2 class="text-3xl font-extrabold mb-8">Sheep & Goat Population</h2>
+            <div class="glass-card space-y-8">
+                <div class="grid grid-cols-3 gap-6">
+                    <div><label class="label-style">Wool Produced (kg)</label><input type="number" class="input-field"></div>
+                    <div><label class="label-style">Wool Sold (kg)</label><input type="number" class="input-field"></div>
+                    <div><label class="label-style">Mutton Produced (kg)</label><input type="number" class="input-field"></div>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="bg-slate-50 p-6 rounded-xl">
+                        <h4 class="font-bold text-sm mb-4">Improved Breeds</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="number" placeholder="Male Pop" class="input-field">
+                            <input type="number" placeholder="Female Pop" class="input-field">
                         </div>
                     </div>
-                    <div class="card p-6 flex items-center gap-6">
-                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center font-bold text-xl">SW</div>
-                        <div>
-                            <p class="font-extrabold text-lg">Sangay Wangdi</p>
-                            <p class="text-sm text-[#ff385c] font-bold">LPO / System Admin</p>
-                            <p class="text-xs text-gray-400 mt-1">swangdi@haa.gov.bt</p>
+                    <div class="bg-slate-50 p-6 rounded-xl">
+                        <h4 class="font-bold text-sm mb-4">Local Breeds</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="number" placeholder="Male Pop" class="input-field">
+                            <input type="number" placeholder="Female Pop" class="input-field">
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section id="brand" class="view">
-                <h2 class="text-3xl font-extrabold mb-2">Haa Brand Products</h2>
-                <p class="text-gray-500 mb-8">High-altitude specialty items unique to the Haa Highlands.</p>
-                <div class="grid grid-cols-3 gap-8">
-                    <div class="group cursor-pointer">
-                        <div class="aspect-square bg-gray-100 rounded-2xl mb-4 overflow-hidden relative">
-                             <div class="absolute inset-0 flex items-center justify-center font-black text-gray-300">YAKSHA</div>
-                        </div>
-                        <h4 class="font-bold">Air-dried Yak Meat (Yaksha)</h4>
-                        <p class="text-sm text-gray-500">Premium Highland Beef</p>
-                        <p class="mt-2 font-bold">Nu. 1,500 /kg</p>
-                    </div>
-                    <div class="group cursor-pointer">
-                        <div class="aspect-square bg-gray-100 rounded-2xl mb-4 overflow-hidden relative">
-                             <div class="absolute inset-0 flex items-center justify-center font-black text-gray-300">CHIGO</div>
-                        </div>
-                        <h4 class="font-bold">Hard Chugo (Shey)</h4>
-                        <p class="text-sm text-gray-500">Traditional String Cheese</p>
-                        <p class="mt-2 font-bold">Nu. 450 /string</p>
-                    </div>
-                    <div class="group cursor-pointer">
-                        <div class="aspect-square bg-gray-100 rounded-2xl mb-4 overflow-hidden relative">
-                             <div class="absolute inset-0 flex items-center justify-center font-black text-gray-300">DATSHI</div>
-                        </div>
-                        <h4 class="font-bold">Gangphu Datshi</h4>
-                        <p class="text-sm text-gray-500">Signature Highland Cheese Ball</p>
-                        <p class="mt-2 font-bold">Nu. 800 /ball</p>
+        <section id="nutrition" class="section-content">
+            <h2 class="text-3xl font-extrabold mb-8">Animal Nutrition & Pasture</h2>
+            <div class="glass-card grid grid-cols-3 gap-6">
+                <div><label class="label-style">Temperate Pasture (Acre)</label><input type="number" class="input-field"></div>
+                <div><label class="label-style">Sub-Tropical Pasture (Acre)</label><input type="number" class="input-field"></div>
+                <div><label class="label-style">Fodder Slip Supplied</label><input type="number" class="input-field"></div>
+                <div><label class="label-style">Winter Oat (Acres)</label><input type="number" class="input-field"></div>
+                <div><label class="label-style">Silage Produced (MT)</label><input type="number" class="input-field"></div>
+                <div><label class="label-style">TMR Feed Qty (MT)</label><input type="number" class="input-field"></div>
+            </div>
+        </section>
+
+        <section id="breeding" class="section-content">
+            <h2 class="text-3xl font-extrabold mb-8">Natural Breeding Service</h2>
+            <div class="glass-card grid grid-cols-4 gap-6">
+                <div><label class="label-style">Animal ID</label><input type="text" class="input-field" placeholder="ID-000"></div>
+                <div><label class="label-style">Breed Type</label><input type="text" class="input-field" placeholder="e.g. Jersey"></div>
+                <div><label class="label-style">Placement Date</label><input type="date" class="input-field"></div>
+                <div><label class="label-style">Male Progeny Born</label><input type="number" class="input-field"></div>
+                <div><label class="label-style">Female Progeny Born</label><input type="number" class="input-field"></div>
+            </div>
+        </section>
+
+        <section id="admin" class="section-content">
+            <h2 class="text-3xl font-extrabold mb-8">Administration Control</h2>
+            <div class="grid grid-cols-2 gap-10">
+                <div class="glass-card">
+                    <h4 class="font-bold text-lg mb-6">Document Gateway</h4>
+                    <div class="border-2 border-dashed border-slate-200 rounded-2xl p-10 text-center hover:border-black transition cursor-pointer">
+                        <p class="text-slate-400 text-sm font-medium">Click to upload Note-sheets, Tenders, or Leave Applications</p>
+                        <input type="file" class="hidden" id="file-upload">
                     </div>
                 </div>
-            </section>
+                <div class="glass-card">
+                    <h4 class="font-bold text-lg mb-6">Process Log</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between p-4 bg-emerald-50 rounded-xl text-sm font-bold text-emerald-700">Annual_Work_Plan_2026.pdf <span>Verified</span></div>
+                        <div class="flex justify-between p-4 bg-slate-50 rounded-xl text-sm font-bold text-slate-500">Tender_Fodder_Seeds.docx <span>In Review</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-            <section id="breeding" class="view"><h2 class="text-3xl font-black">Natural Breeding & AI</h2><div class="card p-8 mt-6">Exact fields for ID, Bloodline, Mating, and Progeny integrated.</div></section>
-            <section id="fishery" class="view"><h2 class="text-3xl font-black">Fishery Records</h2><div class="card p-8 mt-6">Carp/Trout ponds, stocking, and harvest data.</div></section>
-            <section id="nutrition" class="view"><h2 class="text-3xl font-black">Animal Nutrition</h2><div class="card p-8 mt-6">Fields for Trifolium, Cocksfoot, Oat, and Silage mapping.</div></section>
-            <section id="dvh" class="view"><h2 class="text-3xl font-black">DVH Hospital Records</h2><div class="card p-8 mt-6">Cases treated, vaccine stock, and medicine inventory.</div></section>
-            <section id="sheepgoat" class="view"><h2 class="text-3xl font-black">Sheep & Goat</h2><div class="card p-8 mt-6">Wool production, mutton harvest, and population tracking.</div></section>
+        <section id="products" class="section-content">
+            <h2 class="text-3xl font-extrabold mb-2">Haa Highlands Specialty</h2>
+            <p class="text-slate-500 mb-10 font-medium">Marketing and production tracking for unique regional identifiers.</p>
+            
+            <div class="grid grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center font-bold mb-4">🥛</div>
+                    <h4 class="font-extrabold">Gangphu Datshi</h4>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Premium Cheese</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center font-bold mb-4">🧀</div>
+                    <h4 class="font-extrabold">Hard Chugo (Shey)</h4>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Dehydrated Yak Milk</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center font-bold mb-4">🥩</div>
+                    <h4 class="font-extrabold">Yaksha</h4>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Air-dried Yak Meat</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center font-bold mb-4">🍖</div>
+                    <h4 class="font-extrabold">Phelu</h4>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Highland Delicacy</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center font-bold mb-4">🍯</div>
+                    <h4 class="font-extrabold">Alpine Honey</h4>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">High Altitude Wild Flora</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center font-bold mb-4">🧈</div>
+                    <h4 class="font-extrabold">Alpine Ghee (Mar)</h4>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Traditional Butter</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center font-bold mb-4">🥚</div>
+                    <h4 class="font-extrabold">Haa Organic Eggs</h4>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Free Range Production</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center font-bold mb-4">🍦</div>
+                    <h4 class="font-extrabold">Mountain Yoghurt</h4>
+                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">High Fat Culture</p>
+                </div>
+            </div>
+        </section>
 
-        </main>
-    </div>
+    </main>
 
     <script>
-        const groupsByGewog = {
-            'Bji': ['Yangthang Om Gongphel Detshen'],
-            'Gakiling': ['Dorithasa Dairy Group'],
-            'Kar-tshog': ['Ketshen Amtsu Namrub Tshongdrel Detshen'],
-            'Samar': ['Lhakhang Chen Norlha Detshen'],
-            'Sangbay': ['Sangbayama Gonor Gongphel Detshen', 'Doriub Noryang Layjay Detshen'],
-            'Uesu': ['Uesu Meriphensum cooperative']
+        // MASTER REGISTRY OF FARMER GROUPS
+        const farmerGroups = {
+            'Bji': ['Yangthang Om Gongphel Detshen', 'Talung Om Tshongdrel Detshen', 'Hatey Om Tshongdrel Detshen'],
+            'Katsho': ['Ketshen Amtsu Namrub Tshongdrel Detshen', 'Kango Om Gongphel Detshen', 'Nyamley Om Tshongdrel Detshen'],
+            'Uesu': ['Uesu Meriphensum Cooperative', 'Pajekha Om Gongphel Detshen'],
+            'Gakiling': ['Dorithasa Dairy Group', 'Sangkha Gonor Gongphel Detshen'],
+            'Samar': ['Lhakhang Chen Norlha Detshen', 'Samarphel Gonor Gongphel Detshen'],
+            'Sangbay': ['Sangbayama Gonor Gongphel Detshen', 'Doriub Noryang Layjay Detshen']
         };
 
-        function showView(viewId, btn) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        }
+        function updateFarmerGroups() {
+            const gewog = document.getElementById('dairy-gewog').value;
+            const groupSelect = document.getElementById('dairy-group');
+            groupSelect.innerHTML = '';
 
-        function updateDairyGroups() {
-            const gewog = document.getElementById('d-gewog').value;
-            const groupSelect = document.getElementById('d-group');
-            groupSelect.innerHTML = '<option value="">Select Group</option>';
-            if(groupsByGewog[gewog]) {
-                groupsByGewog[gewog].forEach(g => {
+            if (farmerGroups[gewog]) {
+                farmerGroups[gewog].forEach(group => {
                     const opt = document.createElement('option');
-                    opt.value = g; opt.text = g;
-                    groupSelect.add(opt);
+                    opt.value = group;
+                    opt.textContent = group;
+                    groupSelect.appendChild(opt);
                 });
+            } else {
+                const opt = document.createElement('option');
+                opt.textContent = "Please select a Gewog first...";
+                groupSelect.appendChild(opt);
             }
         }
 
-        function calcDairy() {
-            const milk = (parseFloat(document.getElementById('m-q').value) || 0) * (parseFloat(document.getElementById('m-p').value) || 0);
-            const butter = (parseFloat(document.getElementById('b-q').value) || 0) * (parseFloat(document.getElementById('b-p').value) || 0);
-            const cheese = (parseFloat(document.getElementById('c-q').value) || 0) * (parseFloat(document.getElementById('c-p').value) || 0);
+        // VIEW NAVIGATION LOGIC
+        function showSection(id) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+            // Remove active style from all nav items
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
-            document.getElementById('m-res').innerText = milk.toLocaleString();
-            document.getElementById('b-res').innerText = butter.toLocaleString();
-            document.getElementById('c-res').innerText = cheese.toLocaleString();
-            
-            const total = milk + butter + cheese;
-            document.getElementById('dairy-total').innerText = total.toLocaleString();
+            // Show selected section
+            document.getElementById(id).classList.add('active');
+            // Style active nav item
+            document.getElementById('btn-' + id).classList.add('active');
         }
     </script>
 </body>
