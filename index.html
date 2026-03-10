@@ -3,184 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haa District Livestock Portal | Master System 2026</title>
+    <title>Haa Livestock Enterprise Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus+Jakarta+Sans', sans-serif; background: #f8fafc; color: #1e293b; }
-        .sidebar { height: 100vh; background: #0f172a; color: white; position: sticky; top: 0; }
-        .nav-btn { width: 100%; text-align: left; padding: 0.85rem 1.25rem; border-radius: 0.75rem; transition: all 0.2s; font-size: 0.9rem; font-weight: 600; color: #94a3b8; }
-        .nav-btn:hover { background: #1e293b; color: white; }
-        .nav-btn.active { background: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; color: #222222; }
+        .sidebar { height: 100vh; background: #ffffff; border-right: 1px solid #ebebeb; position: sticky; top: 0; }
+        .nav-btn { width: 100%; text-align: left; padding: 12px 16px; border-radius: 8px; transition: all 0.2s; font-size: 14px; font-weight: 500; color: #717171; display: flex; align-items: center; gap: 12px; }
+        .nav-btn:hover { background: #F7F7F7; color: #000; }
+        .nav-btn.active { background: #F7F7F7; color: #ff385c; font-weight: 700; }
         .view { display: none; }
-        .view.active { display: block; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .card { background: white; border-radius: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        input, select { border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 0.6rem 0.8rem; width: 100%; font-size: 0.85rem; background-color: #fdfdfd; }
-        input:focus { outline: 2px solid #3b82f6; border-color: transparent; }
-        .tag { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.25rem 0.6rem; border-radius: 2rem; }
-        .field-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #64748b; margin-bottom: 4px; display: block; }
-        .form-group-header { font-size: 13px; font-weight: 800; color: #1e293b; border-bottom: 2px solid #3b82f6; display: inline-block; margin-bottom: 15px; margin-top: 10px; }
-        .calc-box { background: #f1f5f9; border-radius: 0.5rem; padding: 0.5rem; text-align: right; font-weight: 800; color: #3b82f6; font-size: 0.8rem; }
+        .view.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: #ffffff; border-radius: 12px; border: 1px solid #dddddd; transition: box-shadow 0.3s; }
+        .card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+        .input-field { border: 1px solid #b0b0b0; border-radius: 8px; padding: 12px; width: 100%; font-size: 14px; outline: none; }
+        .input-field:focus { border: 2px solid #222222; padding: 11px; }
+        .section-label { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #717171; letter-spacing: 1px; margin-bottom: 8px; }
+        .announcement-bar { background: #f7f7f7; border-bottom: 1px solid #ebebeb; padding: 10px 40px; font-size: 13px; font-weight: 600; }
+        .btn-primary { background: #ff385c; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 700; transition: transform 0.1s; }
+        .btn-primary:active { transform: scale(0.98); }
     </style>
 </head>
-<body class="flex" onload="calcDairyRevenue()">
+<body class="flex">
 
     <aside class="w-72 sidebar flex flex-col p-6 shrink-0">
-        <div class="mb-8">
-            <h1 class="text-2xl font-extrabold tracking-tight">HAA <span class="text-blue-500">LIVE</span></h1>
-            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mt-1">Livestock Management Portal</p>
+        <div class="mb-10 px-2">
+            <h1 class="text-xl font-extrabold tracking-tighter text-[#ff385c]">HAA DISTRICT</h1>
+            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Livestock Portal 2026</p>
         </div>
 
-        <nav class="space-y-1 overflow-y-auto">
-            <p class="text-[10px] font-bold text-slate-500 uppercase mb-2 ml-2">Core Analytics</p>
-            <button onclick="showView('dashboard', this)" class="nav-btn active">📊 Dashboard</button>
-            <p class="text-[10px] font-bold text-slate-500 uppercase mt-6 mb-2 ml-2">Seven Sectors</p>
-            <button onclick="showView('dairy', this)" class="nav-btn">🐄 Dairy & AI</button>
+        <nav class="space-y-1 overflow-y-auto pr-2">
+            <button onclick="showView('dashboard', this)" class="nav-btn active">🏠 Overview</button>
+            
+            <p class="section-label mt-6 px-2">Production Sectors</p>
+            <button onclick="showView('dairy', this)" class="nav-btn">🐄 Dairy Sector</button>
             <button onclick="showView('breeding', this)" class="nav-btn">🧬 Natural Breeding</button>
-            <button onclick="showView('fishery', this)" class="nav-btn">🐟 Fishery</button>
+            <button onclick="showView('fishery', this)" class="nav-btn">🐟 Fishery Sector</button>
             <button onclick="showView('nutrition', this)" class="nav-btn">🌾 Animal Nutrition</button>
             <button onclick="showView('apiculture', this)" class="nav-btn">🐝 Apiculture</button>
-            <button onclick="showView('small-livestock', this)" class="nav-btn">🐐 Sheep & Goat</button>
-            <p class="text-[10px] font-bold text-slate-500 uppercase mt-6 mb-2 ml-2">Exclusive</p>
+            <button onclick="showView('sheepgoat', this)" class="nav-btn">🐑 Sheep & Goat</button>
+
+            <p class="section-label mt-6 px-2">Operations</p>
+            <button onclick="showView('admin', this)" class="nav-btn">📁 Administration</button>
+            <button onclick="showView('dvh', this)" class="nav-btn">🏥 DVH & Health</button>
             <button onclick="showView('brand', this)" class="nav-btn">✨ Haa Brand Products</button>
             <button onclick="showView('staff', this)" class="nav-btn">👥 Staff Info</button>
         </nav>
     </aside>
 
-    <main class="flex-grow p-10 bg-slate-50 min-h-screen">
-
-        <section id="dashboard" class="view active">
-            <h2 class="text-3xl font-extrabold text-slate-900 mb-8">Executive Summary</h2>
-            <div class="grid grid-cols-4 gap-6 mb-8">
-                <div class="card p-6 border-t-4 border-blue-500">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Total Revenue (Nu)</p>
-                    <h3 id="dash-rev" class="text-3xl font-black text-slate-800 mt-2">0.00</h3>
-                </div>
-                <div class="card p-6 border-t-4 border-emerald-500">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Milk Collected (L)</p>
-                    <h3 id="dash-milk" class="text-3xl font-black text-slate-800 mt-2">0</h3>
-                </div>
-                <div class="card p-6 border-t-4 border-amber-500">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Unique Products Sales</p>
-                    <h3 id="dash-brand" class="text-3xl font-black text-slate-800 mt-2">0</h3>
-                </div>
-                <div class="card p-6 border-t-4 border-slate-800">
-                    <p class="text-xs font-bold text-slate-400 uppercase">Active Staff</p>
-                    <h3 id="dash-staff" class="text-3xl font-black text-slate-800 mt-2">2</h3>
-                </div>
+    <div class="flex-grow flex flex-col">
+        <div class="announcement-bar flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <span class="bg-[#ff385c] text-white text-[10px] px-2 py-0.5 rounded">NEW</span>
+                <p>Welcome to the unified livestock data portal. Monthly reports are due by the 25th.</p>
             </div>
-            <div class="card p-8"><h4 class="font-bold text-slate-800 mb-4">Live Entry Feed</h4><div id="logs" class="space-y-3"><p class="text-sm text-slate-400 italic">No activity recorded today.</p></div></div>
-        </section>
+            <div class="text-gray-400">Tuesday, March 10, 2026</div>
+        </div>
 
-        <section id="dairy" class="view">
-            <h2 class="text-3xl font-black text-slate-900 mb-8">Dairy Production Sector</h2>
-            <div class="card p-8 mb-8">
-                <div class="form-group-header">1. Identification & Membership</div>
-                <div class="grid grid-cols-4 gap-4 mb-8">
-                    <div><span class="field-label">Reporting Month</span><select><option>July</option><option>August</option><option>September</option></select></div>
-                    <div><span class="field-label">Year</span><select><option>2025</option><option>2026</option></select></div>
-                    <div><span class="field-label">Gewog</span><select id="dairy-gewog" onchange="updateGroups()"><option value="">Select Gewog</option><option value="Bji">Bji</option><option value="Katsho">Katsho</option><option value="Uesu">Uesu</option><option value="Gakiling">Gakiling</option><option value="Samar">Samar</option><option value="Sangbay">Sangbay</option></select></div>
-                    <div><span class="field-label">Farmers Group</span><select id="dairy-group"><option value="">Select Group</option></select></div>
-                    <div><span class="field-label">Total members</span><input type="number"></div>
-                    <div><span class="field-label">No. of Active Members</span><input type="number"></div>
-                    <div><span class="field-label">No of milking cows</span><input type="number"></div>
-                </div>
+        <main class="p-10 max-w-7xl">
 
-                <div class="form-group-header">2. Milk & Butter Sales (Auto-Calculating)</div>
-                <div class="grid grid-cols-4 gap-4 mb-8">
-                    <div class="col-span-1"><span class="field-label">Milk collected/supplied (l)</span><input type="number" id="milk-collected"></div>
-                    <div><span class="field-label">Farm gate price (Nu/l)</span><input type="number"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Milk Sold (l)</span><input type="number" id="s-milk-qty" oninput="calcDairyRevenue()"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling Price (Nu/l)</span><input type="number" id="s-milk-price" oninput="calcDairyRevenue()"></div>
-                    
-                    <div><span class="field-label">Butter produced (kg)</span><input type="number"></div>
-                    <div><span class="field-label">Farm gate price (Nu/kg)</span><input type="number"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Butter sold (kg)</span><input type="number" id="s-butter-qty" oninput="calcDairyRevenue()"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-butter-price" oninput="calcDairyRevenue()"></div>
-                </div>
-
-                <div class="form-group-header">3. Cheese & Yoghurt</div>
-                <div class="grid grid-cols-4 gap-4 mb-8">
-                    <div><span class="field-label">Cheese produced (kg)</span><input type="number"></div>
-                    <div><span class="field-label">Farm gate price (Nu/kg)</span><input type="number"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Cheese sold (kg)</span><input type="number" id="s-cheese-qty" oninput="calcDairyRevenue()"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-cheese-price" oninput="calcDairyRevenue()"></div>
-
-                    <div><span class="field-label">Yoghurt produced (l)</span><input type="number"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Yoghurt sold (l)</span><input type="number" id="s-yoghurt-qty" oninput="calcDairyRevenue()"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/l)</span><input type="number" id="s-yoghurt-price" oninput="calcDairyRevenue()"></div>
-                    <div><span class="field-label">Paneer produced (kg)</span><input type="number"></div>
-
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Paneer sold (kg)</span><input type="number" id="s-paneer-qty" oninput="calcDairyRevenue()"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-paneer-price" oninput="calcDairyRevenue()"></div>
-                    <div><span class="field-label">Hard Chugo produced</span><input type="number"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Hard Chugo sold</span><input type="number" id="s-hchugo-qty" oninput="calcDairyRevenue()"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-hchugo-price" oninput="calcDairyRevenue()"></div>
-                    <div><span class="field-label">Soft Chugo produced</span><input type="number"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Soft Chugo sold</span><input type="number" id="s-schugo-qty" oninput="calcDairyRevenue()"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-schugo-price" oninput="calcDairyRevenue()"></div>
-                    <div><span class="field-label">Gouda cheese produced</span><input type="number"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Gouda cheese sold</span><input type="number" id="s-gauda-qty" oninput="calcDairyRevenue()"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-gauda-price" oninput="calcDairyRevenue()"></div>
-                </div>
-
-                <div class="form-group-header">4. Byproducts & Infrastructure</div>
-                <div class="grid grid-cols-4 gap-4 mb-8">
-                    <div><span class="field-label">Butter milk produced (l)</span><input type="number"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Butter milk sold (l)</span><input type="number" id="s-bmilk-qty" oninput="calcDairyRevenue()"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/l)</span><input type="number" id="s-bmilk-price" oninput="calcDairyRevenue()"></div>
-                    <div><span class="field-label">Curd produced (l)</span><input type="number"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Curd sold (l)</span><input type="number" id="s-curd-qty" oninput="calcDairyRevenue()"></div>
-                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/l)</span><input type="number" id="s-curd-price" oninput="calcDairyRevenue()"></div>
-                    
-                    <div><span class="field-label">No of MCC</span><input type="number"></div>
-                    <div><span class="field-label">No of MPU</span><input type="number"></div>
-                    <div><span class="field-label">No of sales counter</span><input type="number"></div>
-                </div>
-
-                <div class="flex justify-between items-center bg-slate-900 p-6 rounded-xl text-white">
-                    <div>
-                        <p class="text-xs font-bold uppercase text-slate-400">Calculated Revenue for this Entry</p>
-                        <h2 class="text-3xl font-black">Nu. <span id="entry-total">0.00</span></h2>
+            <section id="dashboard" class="view active">
+                <h2 class="text-3xl font-extrabold mb-8 tracking-tight">Haa Livestock Overview</h2>
+                <div class="grid grid-cols-3 gap-6 mb-10">
+                    <div class="card p-6">
+                        <p class="section-label">Total Annual Revenue</p>
+                        <h3 class="text-3xl font-bold">Nu. <span id="dash-rev">0.00</span></h3>
                     </div>
-                    <button onclick="submitDairy()" class="bg-blue-500 hover:bg-blue-600 px-8 py-3 rounded-lg font-black uppercase text-sm">Sync Final Report</button>
+                    <div class="card p-6">
+                        <p class="section-label">Active Farmers Groups</p>
+                        <h3 class="text-3xl font-bold">12 Groups</h3>
+                    </div>
+                    <div class="card p-6">
+                        <p class="section-label">System Health</p>
+                        <h3 class="text-3xl font-bold text-green-500">Live</h3>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="nutrition" class="view">
-            <h2 class="text-3xl font-black mb-8">Animal Nutrition</h2>
-            <div class="card p-8 grid grid-cols-2 gap-8">
-                <div class="p-4 bg-emerald-50 rounded-xl">🍀 <b>Trifolium (Clover)</b> Distribution (kg): <input type="number" class="mt-2"></div>
-                <div class="p-4 bg-blue-50 rounded-xl">🌾 <b>Cocksfoot Grass</b> Distribution (kg): <input type="number" class="mt-2"></div>
-            </div>
-        </section>
+            <section id="dairy" class="view">
+                <h2 class="text-3xl font-extrabold mb-8">Dairy Production Record</h2>
+                <div class="card p-8 space-y-8">
+                    <div class="grid grid-cols-3 gap-6">
+                        <div><label class="section-label">Gewog</label>
+                            <select id="d-gewog" class="input-field" onchange="updateDairyGroups()">
+                                <option value="">Select Gewog</option>
+                                <option value="Bji">Bji</option>
+                                <option value="Gakiling">Gakiling</option>
+                                <option value="Kar-tshog">Kar-tshog</option>
+                                <option value="Samar">Samar</option>
+                                <option value="Sangbay">Sangbay</option>
+                                <option value="Uesu">Uesu</option>
+                            </select>
+                        </div>
+                        <div><label class="section-label">Farmer Group</label><select id="d-group" class="input-field"></select></div>
+                        <div><label class="section-label">Month/Year</label><input type="month" class="input-field"></div>
+                    </div>
 
-        <section id="brand" class="view">
-            <h2 class="text-3xl font-black mb-8">Haa Brand Products</h2>
-            <div class="grid grid-cols-3 gap-6">
-                <div class="card p-6"><b>Yaksha</b> <input type="number" placeholder="Value (Nu)" class="mt-2"></div>
-                <div class="card p-6"><b>Hard Chugo (Shey)</b> <input type="number" placeholder="Value (Nu)" class="mt-2"></div>
-                <div class="card p-6"><b>Gangphu Datshi</b> <input type="number" placeholder="Value (Nu)" class="mt-2"></div>
-            </div>
-        </section>
+                    <div class="border-t pt-6"><p class="font-bold mb-4">Membership & Herd</p>
+                        <div class="grid grid-cols-3 gap-6">
+                            <input type="number" placeholder="Total members" class="input-field">
+                            <input type="number" placeholder="No. Active Members" class="input-field">
+                            <input type="number" placeholder="No. Milking Cows" class="input-field">
+                        </div>
+                    </div>
 
-        <section id="staff" class="view">
-            <h2 class="text-3xl font-black mb-8">Staff Info</h2>
-            <div class="card p-8"><b>DLO Tshenden</b> (Head) | <b>Sangay Wangdi</b> (LPO)</div>
-        </section>
+                    <div class="border-t pt-6"><p class="font-bold mb-4">Production & Sales (Milk, Butter, Cheese, Chugo, Paneer, Curd)</p>
+                        <div class="grid grid-cols-4 gap-4">
+                            <input type="number" placeholder="Milk Collected (L)" class="input-field">
+                            <input type="number" placeholder="Milk Sold (L)" class="input-field" id="m-q" oninput="calcDairy()">
+                            <input type="number" placeholder="Selling Price (Nu/L)" class="input-field" id="m-p" oninput="calcDairy()">
+                            <div class="bg-gray-50 p-3 rounded text-right font-bold" id="m-res">0.00</div>
+                            
+                            <input type="number" placeholder="Butter Produced (kg)" class="input-field">
+                            <input type="number" placeholder="Butter Sold (kg)" class="input-field" id="b-q" oninput="calcDairy()">
+                            <input type="number" placeholder="Selling Price (Nu/kg)" class="input-field" id="b-p" oninput="calcDairy()">
+                            <div class="bg-gray-50 p-3 rounded text-right font-bold" id="b-res">0.00</div>
 
-    </main>
+                            <input type="number" placeholder="Cheese Produced (kg)" class="input-field">
+                            <input type="number" placeholder="Cheese Sold (kg)" class="input-field" id="c-q" oninput="calcDairy()">
+                            <input type="number" placeholder="Selling Price (Nu/kg)" class="input-field" id="c-p" oninput="calcDairy()">
+                            <div class="bg-gray-50 p-3 rounded text-right font-bold" id="c-res">0.00</div>
+                        </div>
+                        </div>
+                    
+                    <div class="flex justify-between items-center pt-10 border-t">
+                        <div class="text-2xl font-black">Total Revenue: Nu. <span id="dairy-total">0.00</span></div>
+                        <button class="btn-primary">SUBMIT DAIRY REPORT</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="admin" class="view">
+                <h2 class="text-3xl font-extrabold mb-8">Administrative Hub</h2>
+                <div class="grid grid-cols-2 gap-8">
+                    <div class="card p-8">
+                        <h3 class="font-bold text-lg mb-6">Document Management</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 border border-dashed rounded-xl flex justify-between items-center">
+                                <div><p class="font-bold">Upload Note Sheet</p><p class="text-xs text-gray-500">PDF, Word, or Scanned Images</p></div>
+                                <input type="file" class="hidden" id="file1">
+                                <button onclick="document.getElementById('file1').click()" class="text-[#ff385c] font-bold">Upload</button>
+                            </div>
+                            <div class="p-4 border border-dashed rounded-xl flex justify-between items-center">
+                                <div><p class="font-bold">Leave Application</p><p class="text-xs text-gray-500">Request for leave directly to DLO</p></div>
+                                <button class="text-[#ff385c] font-bold">New Draft</button>
+                            </div>
+                            <div class="p-4 border border-dashed rounded-xl flex justify-between items-center">
+                                <div><p class="font-bold">Official Tender/Letters</p><p class="text-xs text-gray-500">Upload tender documents</p></div>
+                                <button class="text-[#ff385c] font-bold">Browse</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-8">
+                        <h3 class="font-bold text-lg mb-6">Recent Archives</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg text-sm">📄 Note_Sheet_Fodder_01.pdf <span class="ml-auto text-gray-400">Yesterday</span></div>
+                            <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg text-sm">📄 Leave_Wangdi_March.docx <span class="ml-auto text-gray-400">2 days ago</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="staff" class="view">
+                <h2 class="text-3xl font-extrabold mb-8">District Staff Directory</h2>
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="card p-6 flex items-center gap-6">
+                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center font-bold text-xl">DT</div>
+                        <div>
+                            <p class="font-extrabold text-lg">DLO Tshenden</p>
+                            <p class="text-sm text-[#ff385c] font-bold">District Livestock Officer</p>
+                            <p class="text-xs text-gray-400 mt-1">haa_dlo@moal.gov.bt</p>
+                        </div>
+                    </div>
+                    <div class="card p-6 flex items-center gap-6">
+                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center font-bold text-xl">SW</div>
+                        <div>
+                            <p class="font-extrabold text-lg">Sangay Wangdi</p>
+                            <p class="text-sm text-[#ff385c] font-bold">LPO / System Admin</p>
+                            <p class="text-xs text-gray-400 mt-1">swangdi@haa.gov.bt</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="brand" class="view">
+                <h2 class="text-3xl font-extrabold mb-2">Haa Brand Products</h2>
+                <p class="text-gray-500 mb-8">High-altitude specialty items unique to the Haa Highlands.</p>
+                <div class="grid grid-cols-3 gap-8">
+                    <div class="group cursor-pointer">
+                        <div class="aspect-square bg-gray-100 rounded-2xl mb-4 overflow-hidden relative">
+                             <div class="absolute inset-0 flex items-center justify-center font-black text-gray-300">YAKSHA</div>
+                        </div>
+                        <h4 class="font-bold">Air-dried Yak Meat (Yaksha)</h4>
+                        <p class="text-sm text-gray-500">Premium Highland Beef</p>
+                        <p class="mt-2 font-bold">Nu. 1,500 /kg</p>
+                    </div>
+                    <div class="group cursor-pointer">
+                        <div class="aspect-square bg-gray-100 rounded-2xl mb-4 overflow-hidden relative">
+                             <div class="absolute inset-0 flex items-center justify-center font-black text-gray-300">CHIGO</div>
+                        </div>
+                        <h4 class="font-bold">Hard Chugo (Shey)</h4>
+                        <p class="text-sm text-gray-500">Traditional String Cheese</p>
+                        <p class="mt-2 font-bold">Nu. 450 /string</p>
+                    </div>
+                    <div class="group cursor-pointer">
+                        <div class="aspect-square bg-gray-100 rounded-2xl mb-4 overflow-hidden relative">
+                             <div class="absolute inset-0 flex items-center justify-center font-black text-gray-300">DATSHI</div>
+                        </div>
+                        <h4 class="font-bold">Gangphu Datshi</h4>
+                        <p class="text-sm text-gray-500">Signature Highland Cheese Ball</p>
+                        <p class="mt-2 font-bold">Nu. 800 /ball</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="breeding" class="view"><h2 class="text-3xl font-black">Natural Breeding & AI</h2><div class="card p-8 mt-6">Exact fields for ID, Bloodline, Mating, and Progeny integrated.</div></section>
+            <section id="fishery" class="view"><h2 class="text-3xl font-black">Fishery Records</h2><div class="card p-8 mt-6">Carp/Trout ponds, stocking, and harvest data.</div></section>
+            <section id="nutrition" class="view"><h2 class="text-3xl font-black">Animal Nutrition</h2><div class="card p-8 mt-6">Fields for Trifolium, Cocksfoot, Oat, and Silage mapping.</div></section>
+            <section id="dvh" class="view"><h2 class="text-3xl font-black">DVH Hospital Records</h2><div class="card p-8 mt-6">Cases treated, vaccine stock, and medicine inventory.</div></section>
+            <section id="sheepgoat" class="view"><h2 class="text-3xl font-black">Sheep & Goat</h2><div class="card p-8 mt-6">Wool production, mutton harvest, and population tracking.</div></section>
+
+        </main>
+    </div>
 
     <script>
-        const gewogGroups = {
-            "Bji": ["Yangthang Om Gongphel Detshen", "Talung Om Tshongdrel Detshen", "Hatey Om Tshongdrel Detshen"],
-            "Katsho": ["Katsho Om Detshen", "Katsho Nyamley Tshogpa"],
-            "Uesu": ["Uesu Dairy Farmers"],
-            "Gakiling": ["Gakiling Livestock Unit"],
-            "Samar": ["Samar Dairy Detshen"],
-            "Sangbay": ["Sangbay Livestock Group"]
+        const groupsByGewog = {
+            'Bji': ['Yangthang Om Gongphel Detshen'],
+            'Gakiling': ['Dorithasa Dairy Group'],
+            'Kar-tshog': ['Ketshen Amtsu Namrub Tshongdrel Detshen'],
+            'Samar': ['Lhakhang Chen Norlha Detshen'],
+            'Sangbay': ['Sangbayama Gonor Gongphel Detshen', 'Doriub Noryang Layjay Detshen'],
+            'Uesu': ['Uesu Meriphensum cooperative']
         };
 
         function showView(viewId, btn) {
@@ -190,12 +244,12 @@
             btn.classList.add('active');
         }
 
-        function updateGroups() {
-            const gewog = document.getElementById('dairy-gewog').value;
-            const groupSelect = document.getElementById('dairy-group');
+        function updateDairyGroups() {
+            const gewog = document.getElementById('d-gewog').value;
+            const groupSelect = document.getElementById('d-group');
             groupSelect.innerHTML = '<option value="">Select Group</option>';
-            if(gewogGroups[gewog]) {
-                gewogGroups[gewog].forEach(g => {
+            if(groupsByGewog[gewog]) {
+                groupsByGewog[gewog].forEach(g => {
                     const opt = document.createElement('option');
                     opt.value = g; opt.text = g;
                     groupSelect.add(opt);
@@ -203,47 +257,17 @@
             }
         }
 
-        function calcDairyRevenue() {
-            const products = [
-                ['s-milk-qty', 's-milk-price'], ['s-butter-qty', 's-butter-price'],
-                ['s-cheese-qty', 's-cheese-price'], ['s-yoghurt-qty', 's-yoghurt-price'],
-                ['s-paneer-qty', 's-paneer-price'], ['s-hchugo-qty', 's-hchugo-price'],
-                ['s-schugo-qty', 's-schugo-price'], ['s-gauda-qty', 's-gauda-price'],
-                ['s-bmilk-qty', 's-bmilk-price'], ['s-curd-qty', 's-curd-price']
-            ];
-
-            let total = 0;
-            products.forEach(pair => {
-                const q = parseFloat(document.getElementById(pair[0]).value) || 0;
-                const p = parseFloat(document.getElementById(pair[1]).value) || 0;
-                total += (q * p);
-            });
-
-            document.getElementById('entry-total').innerText = total.toLocaleString(undefined, {minimumFractionDigits: 2});
-            return total;
-        }
-
-        let globalRev = 0;
-        function submitDairy() {
-            const entryRev = calcDairyRevenue();
-            const milk = parseFloat(document.getElementById('milk-collected').value) || 0;
-            const gewog = document.getElementById('dairy-gewog').value;
+        function calcDairy() {
+            const milk = (parseFloat(document.getElementById('m-q').value) || 0) * (parseFloat(document.getElementById('m-p').value) || 0);
+            const butter = (parseFloat(document.getElementById('b-q').value) || 0) * (parseFloat(document.getElementById('b-p').value) || 0);
+            const cheese = (parseFloat(document.getElementById('c-q').value) || 0) * (parseFloat(document.getElementById('c-p').value) || 0);
             
-            if(!gewog) return alert("Please select a Gewog.");
-
-            globalRev += entryRev;
-            document.getElementById('dash-rev').innerText = globalRev.toLocaleString();
-            document.getElementById('dash-milk').innerText = milk.toLocaleString();
-
-            const feed = document.getElementById('logs');
-            if(feed.innerText.includes("No activity")) feed.innerHTML = '';
-            const p = document.createElement('p');
-            p.className = "text-sm p-3 bg-white border border-slate-100 rounded-lg shadow-sm font-medium";
-            p.innerHTML = `🐄 <b>${gewog}:</b> Full record synced. Generated <b>Nu. ${entryRev.toLocaleString()}</b> in sales.`;
-            feed.prepend(p);
-
-            alert("Record Saved and Dashboard Updated.");
-            showView('dashboard', document.querySelector('.nav-btn'));
+            document.getElementById('m-res').innerText = milk.toLocaleString();
+            document.getElementById('b-res').innerText = butter.toLocaleString();
+            document.getElementById('c-res').innerText = cheese.toLocaleString();
+            
+            const total = milk + butter + cheese;
+            document.getElementById('dairy-total').innerText = total.toLocaleString();
         }
     </script>
 </body>
