@@ -4,314 +4,229 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Haa District Livestock Portal | Master System 2026</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-indigo: #4f46e5;
-            --ha-slate: #0f172a;
-            --accent-emerald: #10b981;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        /* Layout */
-        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
-        .sidebar-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-        .main-container { height: 100vh; overflow-y: auto; scroll-behavior: smooth; }
-
-        /* Components */
-        .card-glass { 
-            background: white; 
-            border-radius: 2rem; 
-            padding: 2.5rem; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid #f1f5f9;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .card-glass:hover {
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05);
-            transform: translateY(-2px);
-        }
-
+        body { font-family: 'Plus+Jakarta+Sans', sans-serif; background: #f8fafc; color: #1e293b; }
+        .sidebar { height: 100vh; background: #0f172a; color: white; position: sticky; top: 0; }
+        .nav-btn { width: 100%; text-align: left; padding: 0.85rem 1.25rem; border-radius: 0.75rem; transition: all 0.2s; font-size: 0.9rem; font-weight: 600; color: #94a3b8; }
+        .nav-btn:hover { background: #1e293b; color: white; }
+        .nav-btn.active { background: #3b82f6; color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
         .view { display: none; }
-        .view.active { display: block; animation: viewEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        @keyframes viewEnter { 
-            from { opacity: 0; transform: translateY(15px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
-        /* Form Elements */
-        .form-input { 
-            width: 100%; 
-            border: 1px solid #e2e8f0; 
-            border-radius: 1rem; 
-            padding: 0.75rem 1.25rem; 
-            background: #fdfdfd;
-            font-size: 0.875rem;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-indigo);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-        }
-
-        /* Navigation */
-        .nav-link { 
-            width: 100%; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            padding: 1rem; 
-            border-radius: 1.25rem; 
-            color: #64748b; 
-            font-weight: 600; 
-            transition: all 0.3s;
-            text-align: left;
-        }
-
-        .nav-link:hover { background: #f1f5f9; color: var(--primary-indigo); }
-        
-        .nav-link-active { 
-            background: var(--primary-indigo); 
-            color: white !important; 
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
-        }
-
-        /* Section Specifics */
-        .calc-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1.5fr;
-            gap: 1rem;
-            align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        @media print {
-            aside, .no-print { display: none !important; }
-            main { width: 100% !important; padding: 0 !important; }
-            .card-glass { box-shadow: none !important; border: 1px solid #ddd !important; }
-        }
+        .view.active { display: block; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: white; border-radius: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        input, select { border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 0.6rem 0.8rem; width: 100%; font-size: 0.9rem; }
+        input:focus { outline: 2px solid #3b82f6; border-color: transparent; }
+        .tag { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.25rem 0.6rem; border-radius: 2rem; }
     </style>
 </head>
+<body class="flex">
 
-<body class="flex min-h-screen">
-
-    <aside class="w-80 bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 z-50">
-        <div class="p-8">
-            <h1 class="text-3xl font-black text-slate-900 tracking-tighter flex items-center gap-3">
-                <div class="w-10 h-10 bg-indigo-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg">H</div>
-                HAA<span class="text-indigo-600">LIVE</span>
-            </h1>
-            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mt-3 ml-1">Master Portal v3.0</p>
+    <aside class="w-72 sidebar flex flex-col p-6 shrink-0">
+        <div class="mb-8">
+            <h1 class="text-2xl font-extrabold tracking-tight">HAA <span class="text-blue-500">LIVE</span></h1>
+            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mt-1">Livestock Management Portal</p>
         </div>
 
-        <nav class="flex-grow px-4 space-y-2 overflow-y-auto sidebar-scroll">
-            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-2 mt-4">Insights</p>
-            <button onclick="showView('gallery', this)" class="nav-link nav-link-active"><span>📊</span> Data Gallery</button>
+        <nav class="space-y-1 overflow-y-auto">
+            <p class="text-[10px] font-bold text-slate-500 uppercase mb-2 ml-2">Core Analytics</p>
+            <button onclick="showView('dashboard', this)" class="nav-btn active">📊 Dashboard</button>
             
-            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-2 mt-6">Operations</p>
-            <button onclick="showView('dairy', this)" class="nav-link"><span>🐄</span> Dairy Production</button>
-            <button onclick="showView('apiculture', this)" class="nav-link"><span>🐝</span> Apiculture</button>
-            <button onclick="showView('fishery', this)" class="nav-link"><span>🐟</span> Fishery Sector</button>
-            <button onclick="showView('unique', this)" class="nav-link"><span>✨</span> Unique Products</button>
+            <p class="text-[10px] font-bold text-slate-500 uppercase mt-6 mb-2 ml-2">Seven Sectors</p>
+            <button onclick="showView('dairy', this)" class="nav-btn">🐄 Dairy & AI</button>
+            <button onclick="showView('breeding', this)" class="nav-btn">🧬 Natural Breeding</button>
+            <button onclick="showView('fishery', this)" class="nav-btn">🐟 Fishery</button>
+            <button onclick="showView('nutrition', this)" class="nav-btn">🌾 Animal Nutrition</button>
+            <button onclick="showView('apiculture', this)" class="nav-btn">🐝 Apiculture</button>
+            <button onclick="showView('small-livestock', this)" class="nav-btn">🐐 Sheep & Goat</button>
             
-            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-2 mt-6">Management</p>
-            <button onclick="showView('dvh', this)" class="nav-link"><span>🏥</span> DVH Hospital</button>
-            <button onclick="showView('staff', this)" class="nav-link"><span>👥</span> Staff Directory</button>
+            <p class="text-[10px] font-bold text-slate-500 uppercase mt-6 mb-2 ml-2">Exclusive</p>
+            <button onclick="showView('brand', this)" class="nav-btn">✨ Haa Brand Products</button>
+            <button onclick="showView('staff', this)" class="nav-btn">👥 Staff Info</button>
         </nav>
-
-        <div class="p-6 mt-auto border-t border-slate-50">
-            <div class="bg-slate-50 rounded-[24px] p-5 flex items-center gap-4 border border-slate-100">
-                <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center font-black text-indigo-600 shadow-sm border border-slate-200">DT</div>
-                <div>
-                    <p class="text-sm font-bold text-slate-900 leading-none">DLO Tshenden</p>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mt-1.5">District Officer</p>
-                </div>
-            </div>
-        </div>
     </aside>
 
-    <main class="main-container flex-grow p-12">
+    <main class="flex-grow p-10 bg-slate-50 min-h-screen">
 
-        <section id="gallery" class="view active">
-            <div class="flex justify-between items-end mb-12">
-                <div>
-                    <h2 class="text-5xl font-black text-slate-900 tracking-tight">District Gallery</h2>
-                    <p class="text-slate-500 font-medium text-xl mt-3">Real-time production and health status</p>
+        <section id="dashboard" class="view active">
+            <h2 class="text-3xl font-extrabold text-slate-900 mb-8">Executive Summary</h2>
+            <div class="grid grid-cols-4 gap-6 mb-8">
+                <div class="card p-6 border-t-4 border-blue-500">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Total Revenue (Nu)</p>
+                    <h3 id="dash-rev" class="text-3xl font-black text-slate-800 mt-2">0.00</h3>
                 </div>
-                <div class="flex gap-4 no-print">
-                    <button onclick="window.print()" class="bg-slate-900 text-white px-8 py-4 rounded-full font-bold hover:bg-slate-800 transition-all shadow-xl text-sm">🖨️ Print Report</button>
+                <div class="card p-6 border-t-4 border-emerald-500">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Milk Collected (L)</p>
+                    <h3 id="dash-milk" class="text-3xl font-black text-slate-800 mt-2">0</h3>
                 </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div class="card-glass relative overflow-hidden group">
-                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">Milk Collection</p>
-                    <h3 class="text-6xl font-black text-slate-900 mt-6" id="gal-milk">12,480 <span class="text-2xl font-medium text-slate-300 italic">L</span></h3>
-                    <div class="mt-8 flex items-center gap-3 text-emerald-500 font-bold text-sm bg-emerald-50 w-fit px-4 py-2 rounded-2xl border border-emerald-100">
-                        <span class="animate-bounce">↑</span> 12.4% vs Last Month
-                    </div>
+                <div class="card p-6 border-t-4 border-amber-500">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Unique Products Sales</p>
+                    <h3 id="dash-brand" class="text-3xl font-black text-slate-800 mt-2">0</h3>
                 </div>
-
-                <div class="card-glass">
-                    <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">Annual Goal</p>
-                    <h3 class="text-6xl font-black text-slate-900 mt-6">75%</h3>
-                    <div class="w-full bg-slate-100 h-3 rounded-full mt-10 overflow-hidden shadow-inner">
-                        <div class="bg-gradient-to-r from-amber-400 to-amber-500 h-full w-[75%] rounded-full"></div>
-                    </div>
-                </div>
-
-                <div class="card-glass bg-slate-900 border-none shadow-2xl">
-                    <p class="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">Total Revenue</p>
-                    <h3 class="text-6xl font-black text-white mt-6 tracking-tighter">Nu. <span id="gal-rev">0</span></h3>
-                    <p class="text-[10px] text-indigo-400 mt-10 font-black uppercase tracking-widest flex items-center gap-2">
-                        <span class="w-2 h-2 bg-indigo-400 rounded-full animate-pulse"></span> Live Specialty Index
-                    </p>
+                <div class="card p-6 border-t-4 border-slate-800">
+                    <p class="text-xs font-bold text-slate-400 uppercase">Active Staff</p>
+                    <h3 id="dash-staff" class="text-3xl font-black text-slate-800 mt-2">2</h3>
                 </div>
             </div>
-
-            <div class="card-glass">
-                <h3 class="text-2xl font-black text-slate-800 mb-8 flex items-center gap-4">
-                    <span class="w-4 h-4 bg-emerald-500 rounded-full animate-ping"></span> Real-Time Field Submissions
-                </h3>
-                <div id="master-live-feed" class="space-y-4">
-                    <div class="flex items-center justify-between p-6 rounded-[32px] border border-slate-50 bg-slate-50/50">
-                        <div class="flex items-center gap-6">
-                            <div class="w-14 h-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-3xl shadow-xl">🐄</div>
-                            <div>
-                                <p class="text-lg font-black text-slate-800">Bji Gewog Entry</p>
-                                <p class="text-xs text-slate-400 font-bold uppercase">Officer: Sangay Wangdi | Today 10:15 AM</p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xl font-black text-slate-900">+450 Ltrs</p>
-                            <span class="text-[10px] font-black text-emerald-500 uppercase bg-emerald-100 px-3 py-1 rounded-full">Verified</span>
-                        </div>
-                    </div>
+            
+            <div class="card p-8">
+                <h4 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span> Live Entry Feed
+                </h4>
+                <div id="logs" class="space-y-3">
+                    <p class="text-sm text-slate-400 italic">No activity recorded today.</p>
                 </div>
             </div>
         </section>
 
         <section id="dairy" class="view">
-            <h2 class="text-4xl font-black text-slate-900 mb-10">Dairy Sector Data</h2>
-            <div class="card-glass">
-                <div class="calc-row font-black text-[10px] text-slate-400 uppercase tracking-widest mb-4">
-                    <span>Commodity</span>
-                    <span>Qty (kg/L)</span>
-                    <span>Rate (Nu)</span>
-                    <span>Subtotal</span>
+            <h2 class="text-3xl font-black text-slate-900 mb-8">Dairy Production & AI Services</h2>
+            <div class="grid grid-cols-2 gap-8">
+                <div class="card p-8">
+                    <h3 class="text-lg font-bold mb-6 text-blue-600">Milk Production Entry</h3>
+                    <div class="space-y-4">
+                        <select id="dairy-gewog" onchange="updateGroups()">
+                            <option value="">-- Select Gewog --</option>
+                            <option value="Bji">Bji</option>
+                            <option value="Katsho">Katsho</option>
+                            <option value="Uesu">Uesu</option>
+                            <option value="Gakiling">Gakiling</option>
+                            <option value="Samar">Samar</option>
+                            <option value="Sangbay">Sangbay</option>
+                        </select>
+                        <select id="dairy-group"><option value="">-- Select Group --</option></select>
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="number" id="milk-qty" placeholder="Quantity (L)">
+                            <input type="number" id="milk-rate" placeholder="Rate (Nu/L)">
+                        </div>
+                        <button onclick="submitDairy()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700">Log Production</button>
+                    </div>
                 </div>
-                <div class="calc-row sector-row">
-                    <span class="font-bold">Fresh Milk</span>
-                    <input type="number" class="qty form-input" oninput="calculateSector('dairy')">
-                    <input type="number" class="rate form-input" oninput="calculateSector('dairy')">
-                    <span class="text-xl font-black text-indigo-600 subtotal">0</span>
-                </div>
-                <div class="calc-row sector-row">
-                    <span class="font-bold">Local Butter</span>
-                    <input type="number" class="qty form-input" oninput="calculateSector('dairy')">
-                    <input type="number" class="rate form-input" oninput="calculateSector('dairy')">
-                    <span class="text-xl font-black text-indigo-600 subtotal">0</span>
+                <div class="card p-8">
+                    <h3 class="text-lg font-bold mb-6 text-indigo-600">AI Service Registry</h3>
+                    <div class="space-y-4">
+                        <input type="text" placeholder="Farmer Name/CID">
+                        <select><option>Jersey</option><option>Holstein Friesian</option></select>
+                        <input type="date">
+                        <button class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700">Submit AI Record</button>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="unique" class="view">
-            <div class="flex justify-between items-end mb-12">
-                <div>
-                    <h2 class="text-4xl font-black text-slate-900">Unique Products</h2>
-                    <p class="text-purple-600 font-bold italic text-xl">Haa Specialty Premium Exports</p>
-                </div>
-                <div class="text-right">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Grand Total</p>
-                    <h3 class="text-5xl font-black text-purple-600">Nu. <span id="u-grand-total">0</span></h3>
-                </div>
-            </div>
-
-            <div class="space-y-6">
-                <div class="u-row card-glass flex items-center gap-12 hover:border-purple-300">
-                    <div class="w-1/4">
-                        <h4 class="text-2xl font-black">Yaksha</h4>
-                        <p class="text-sm text-slate-400 font-medium italic">Premium dried yak meat</p>
-                    </div>
-                    <input type="number" class="u-qty form-input w-44" placeholder="Qty (kg)" oninput="masterCalc()">
-                    <input type="number" class="u-price form-input w-44" placeholder="Price" oninput="masterCalc()">
-                    <div class="flex-grow text-right">
-                        <p class="text-4xl font-black text-purple-600 u-sub">0</p>
+        <section id="nutrition" class="view">
+            <h2 class="text-3xl font-black text-slate-900 mb-8">Animal Nutrition & Fodder</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="card p-8">
+                    <h3 class="text-lg font-bold mb-6 text-emerald-600">Seed Distribution Entry</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-emerald-50 rounded-xl">
+                            <span class="font-bold">🍀 Trifolium (Clover)</span>
+                            <input type="number" placeholder="Qty (kg)" class="w-32 bg-white">
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
+                            <span class="font-bold">🌾 Cocksfoot Grass</span>
+                            <input type="number" placeholder="Qty (kg)" class="w-32 bg-white">
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                            <span class="font-bold">📦 Other Varieties</span>
+                            <input type="number" placeholder="Qty (kg)" class="w-32 bg-white">
+                        </div>
+                        <button class="w-full bg-emerald-600 text-white font-bold py-3 rounded-lg mt-4">Record Distribution</button>
                     </div>
                 </div>
-                <div class="u-row card-glass flex items-center gap-12 hover:border-purple-300">
-                    <div class="w-1/4">
-                        <h4 class="text-2xl font-black">Hard Chugo</h4>
-                        <p class="text-sm text-slate-400 font-medium italic">Dried string cheese</p>
+                <div class="card p-8">
+                    <h3 class="text-lg font-bold mb-6 text-emerald-600">Silage & Feed</h3>
+                    <div class="space-y-4">
+                        <input type="number" placeholder="Silage Production (MT)">
+                        <input type="number" placeholder="Concentrate Feed (kg)">
+                        <button class="w-full bg-emerald-800 text-white font-bold py-3 rounded-lg">Update Inventory</button>
                     </div>
-                    <input type="number" class="u-qty form-input w-44" placeholder="Qty (Shey)" oninput="masterCalc()">
-                    <input type="number" class="u-price form-input w-44" placeholder="Price" oninput="masterCalc()">
-                    <div class="flex-grow text-right">
-                        <p class="text-4xl font-black text-purple-600 u-sub">0</p>
-                    </div>
-                </div>
-            </div>
-            <button class="w-full mt-12 bg-purple-600 text-white py-6 rounded-3xl font-black text-xl shadow-xl shadow-purple-200 hover:scale-[1.01] transition-all" onclick="finalSync()">Finalize & Sync Dashboard</button>
-        </section>
-
-        <section id="dvh" class="view">
-            <h2 class="text-4xl font-black text-slate-900 mb-10">District Veterinary Hospital</h2>
-            <div class="grid grid-cols-2 gap-8 mb-10">
-                <div class="bg-emerald-50 border-2 border-emerald-100 p-12 rounded-[48px]">
-                    <label class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Case Load (MTD)</label>
-                    <input type="number" class="w-full bg-transparent text-7xl font-black text-emerald-900 mt-6 focus:outline-none" value="142">
-                </div>
-                <div class="bg-blue-50 border-2 border-blue-100 p-12 rounded-[48px]">
-                    <label class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Surgical Success</label>
-                    <h3 class="text-7xl font-black text-blue-900 mt-6">98%</h3>
-                </div>
-            </div>
-            <div class="card-glass">
-                <h4 class="font-black text-slate-800 mb-8 uppercase text-xs tracking-widest">Medical Inventory Usage</h4>
-                <div class="grid grid-cols-4 gap-6">
-                    <input type="number" placeholder="FMD Doses" class="form-input">
-                    <input type="number" placeholder="HS/BQ Doses" class="form-input">
-                    <input type="number" placeholder="Rabies" class="form-input">
-                    <input type="number" placeholder="Anesthesia (ml)" class="form-input">
                 </div>
             </div>
         </section>
+
+        <section id="brand" class="view">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-black text-slate-900">Haa Brand: Unique Products</h2>
+                <div class="bg-amber-100 text-amber-700 tag px-4 py-2">Premium Specialty Exports</div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card p-6 hover:border-amber-400 transition-colors">
+                    <h4 class="font-bold text-lg mb-4">Yaksha (Dried Yak Meat)</h4>
+                    <div class="space-y-3">
+                        <input type="number" id="brand-yaksha-qty" placeholder="Quantity (kg)">
+                        <input type="number" id="brand-yaksha-val" placeholder="Total Value (Nu)">
+                        <button onclick="logBrand('Yaksha')" class="w-full bg-amber-500 text-white font-bold py-2 rounded-lg text-sm">Update Sales</button>
+                    </div>
+                </div>
+                <div class="card p-6 hover:border-blue-400 transition-colors">
+                    <h4 class="font-bold text-lg mb-4">Hard Chugo (Shey)</h4>
+                    <div class="space-y-3">
+                        <input type="number" id="brand-chugo-qty" placeholder="Quantity (Strings)">
+                        <input type="number" id="brand-chugo-val" placeholder="Total Value (Nu)">
+                        <button onclick="logBrand('Chugo')" class="w-full bg-blue-500 text-white font-bold py-2 rounded-lg text-sm">Update Sales</button>
+                    </div>
+                </div>
+                <div class="card p-6 hover:border-slate-400 transition-colors">
+                    <h4 class="font-bold text-lg mb-4">Gangphu Datshi</h4>
+                    <div class="space-y-3">
+                        <input type="number" id="brand-datshi-qty" placeholder="Quantity (Balls)">
+                        <input type="number" id="brand-datshi-val" placeholder="Total Value (Nu)">
+                        <button onclick="logBrand('Gangphu Datshi')" class="w-full bg-slate-800 text-white font-bold py-2 rounded-lg text-sm">Update Sales</button>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <h4 class="font-bold text-lg mb-4">Phelu (Probiotic Whey)</h4>
+                    <input type="number" class="mb-3" placeholder="Volume (L)">
+                    <button class="w-full bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-sm">Update</button>
+                </div>
+                <div class="card p-6">
+                    <h4 class="font-bold text-lg mb-4">Traditional Ghee</h4>
+                    <input type="number" class="mb-3" placeholder="Qty (kg)">
+                    <button class="w-full bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-sm">Update</button>
+                </div>
+                <div class="card p-6">
+                    <h4 class="font-bold text-lg mb-4">Haa Mountain Yoghurt</h4>
+                    <input type="number" class="mb-3" placeholder="Cups/L">
+                    <button class="w-full bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-sm">Update</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="breeding" class="view"><h2 class="text-3xl font-black">Natural Breeding</h2><div class="card p-8 mt-6">Data entry for Bull distribution and Progeny...</div></section>
+        <section id="fishery" class="view"><h2 class="text-3xl font-black text-blue-800">Fishery</h2><div class="card p-8 mt-6">Trout and Common Carp harvest records...</div></section>
+        <section id="apiculture" class="view"><h2 class="text-3xl font-black text-amber-600">Apiculture</h2><div class="card p-8 mt-6">Alpine honey collection and colony status...</div></section>
+        <section id="small-livestock" class="view"><h2 class="text-3xl font-black text-orange-800">Sheep & Goat Sector</h2><div class="card p-8 mt-6">Wool production and herd health tracking...</div></section>
 
         <section id="staff" class="view">
-            <div class="flex justify-between items-center mb-12">
-                <h2 class="text-3xl font-black">Livestock Personnel Directory</h2>
-                <button class="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold text-sm" onclick="addPersonnel()">+ Add Staff</button>
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-black">Staff Directory</h2>
+                <button class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg">+ Add Official</button>
             </div>
-            <div class="card-glass p-0 overflow-hidden">
+            <div class="card overflow-hidden">
                 <table class="w-full text-left">
-                    <thead class="bg-slate-50 border-b">
-                        <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                            <th class="p-6">Employee Name</th>
-                            <th class="p-6">Designation</th>
-                            <th class="p-6">Gewog</th>
-                            <th class="p-6">Contact</th>
+                    <thead class="bg-slate-100 border-b">
+                        <tr class="text-[10px] uppercase font-black text-slate-500 tracking-widest">
+                            <th class="p-5">Official Name</th>
+                            <th class="p-5">Designation</th>
+                            <th class="p-5">Assigned Post</th>
+                            <th class="p-5">Status</th>
                         </tr>
                     </thead>
-                    <tbody id="staff-rows">
-                        <tr class="border-b border-slate-50 hover:bg-slate-50/50">
-                            <td class="p-6 font-bold">DLO Tshenden</td>
-                            <td class="p-6 text-slate-500">District Head</td>
-                            <td class="p-6"><span class="px-4 py-1.5 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-black uppercase">HQ</span></td>
-                            <td class="p-6 font-mono">1712xxxx</td>
+                    <tbody class="text-sm">
+                        <tr class="border-b">
+                            <td class="p-5 font-bold">DLO Tshenden</td>
+                            <td class="p-5 text-slate-600">District Livestock Officer</td>
+                            <td class="p-5 italic text-slate-500">Haa HQ</td>
+                            <td class="p-5"><span class="tag bg-blue-100 text-blue-700">Active</span></td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="p-5 font-bold">Sangay Wangdi</td>
+                            <td class="p-5 text-slate-600">LPO / Master Admin</td>
+                            <td class="p-5 italic text-slate-500">District Office</td>
+                            <td class="p-5"><span class="tag bg-purple-100 text-purple-700">Online</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -321,90 +236,89 @@
     </main>
 
     <script>
+        // DATA OBJECTS
+        const gewogGroups = {
+            "Bji": ["Yangthang Om Gongphel Detshen", "Bji Group A", "Bji Group B"],
+            "Katsho": ["Katsho Om Detshen", "Katsho Nyamley Tshogpa"],
+            "Uesu": ["Uesu Dairy Farmers"],
+            "Gakiling": ["Gakiling Livestock Unit"],
+            "Samar": ["Samar Dairy Detshen"],
+            "Sangbay": ["Sangbay Livestock Group"]
+        };
+
         // NAVIGATION
         function showView(viewId, btn) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-
-            document.querySelectorAll('nav button').forEach(b => b.className = 'nav-link');
-            if(btn) btn.className = 'nav-link nav-link-active';
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
         }
 
-        // CALCULATOR ENGINE
-        function calculateSector(sectorId) {
-            let total = 0;
-            const rows = document.querySelectorAll(`#${sectorId} .sector-row`);
-            rows.forEach(row => {
-                const q = parseFloat(row.querySelector('.qty').value) || 0;
-                const r = parseFloat(row.querySelector('.rate').value) || 0;
-                const sub = q * r;
-                row.querySelector('.subtotal').innerText = sub.toLocaleString('en-IN');
-                total += sub;
-            });
-            return total;
+        // UPDATE GEWOG GROUPS
+        function updateGroups() {
+            const gewog = document.getElementById('dairy-gewog').value;
+            const groupSelect = document.getElementById('dairy-group');
+            groupSelect.innerHTML = '<option value="">-- Select Group --</option>';
+            if(gewogGroups[gewog]) {
+                gewogGroups[gewog].forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g; opt.text = g;
+                    groupSelect.add(opt);
+                });
+            }
         }
 
-        // UNIQUE PRODUCTS MASTER ENGINE
-        function masterCalc() {
-            let grandTotal = 0;
-            const rows = document.querySelectorAll('.u-row');
-            rows.forEach(row => {
-                const qty = parseFloat(row.querySelector('.u-qty').value) || 0;
-                const price = parseFloat(row.querySelector('.u-price').value) || 0;
-                const sub = qty * price;
-                row.querySelector('.u-sub').innerText = sub.toLocaleString('en-IN');
-                grandTotal += sub;
-            });
-            document.getElementById('u-grand-total').innerText = grandTotal.toLocaleString('en-IN');
-            return grandTotal;
-        }
+        // LOGGING SYSTEM
+        let stats = { revenue: 0, milk: 0, brand: 0 };
 
-        // FINAL SYNC
-        function finalSync() {
-            const rev = masterCalc();
-            document.getElementById('gal-rev').innerText = rev.toLocaleString('en-IN');
+        function submitDairy() {
+            const qty = parseFloat(document.getElementById('milk-qty').value) || 0;
+            const rate = parseFloat(document.getElementById('milk-rate').value) || 0;
+            const gewog = document.getElementById('dairy-gewog').value;
             
-            // Create feed notification
-            const feed = document.getElementById('master-live-feed');
-            const entry = document.createElement('div');
-            entry.className = "flex items-center justify-between p-6 rounded-[32px] border border-purple-50 bg-purple-50/50 animate-pulse";
-            entry.innerHTML = `
-                <div class="flex items-center gap-6">
-                    <div class="w-14 h-14 rounded-2xl bg-purple-600 text-white flex items-center justify-center text-3xl shadow-xl">✨</div>
-                    <div>
-                        <p class="text-lg font-black text-purple-900">System Update</p>
-                        <p class="text-xs text-purple-400 font-bold uppercase">Consolidated Specialty Sales | Just Now</p>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <p class="text-xl font-black text-purple-900">Nu. ${rev.toLocaleString('en-IN')}</p>
-                    <span class="text-[10px] font-black text-purple-500 uppercase bg-purple-100 px-3 py-1 rounded-full">Synced</span>
-                </div>
-            `;
-            feed.prepend(entry);
+            if(qty <= 0 || !gewog) return alert("Please enter valid production data.");
+
+            const subtotal = qty * rate;
+            stats.revenue += subtotal;
+            stats.milk += qty;
+
+            updateDashboard();
+            addLog(`🐄 ${gewog}: ${qty}L milk logged (Nu.${subtotal.toLocaleString()})`);
             
-            setTimeout(() => {
-                entry.classList.remove('animate-pulse');
-                showView('gallery');
-            }, 800);
+            // Reset
+            document.getElementById('milk-qty').value = '';
+            showView('dashboard', document.querySelector('.nav-btn'));
         }
 
-        // STAFF ADDITION
-        function addPersonnel() {
-            const name = prompt("Name:");
-            const des = prompt("Designation:");
-            const gewog = prompt("Gewog:");
-            if(!name || !des) return;
+        function logBrand(product) {
+            let val = 0;
+            if(product === 'Yaksha') val = parseFloat(document.getElementById('brand-yaksha-val').value) || 0;
+            if(product === 'Chugo') val = parseFloat(document.getElementById('brand-chugo-val').value) || 0;
+            if(product === 'Gangphu Datshi') val = parseFloat(document.getElementById('brand-datshi-val').value) || 0;
 
-            const table = document.getElementById('staff-rows');
-            const row = table.insertRow();
-            row.className = "border-b border-slate-50 hover:bg-slate-50/50";
-            row.innerHTML = `
-                <td class="p-6 font-bold">${name}</td>
-                <td class="p-6 text-slate-500">${des}</td>
-                <td class="p-6"><span class="px-4 py-1.5 bg-slate-100 text-slate-600 rounded-full text-[10px] font-black uppercase">${gewog}</span></td>
-                <td class="p-6 font-mono">Pending...</td>
-            `;
+            if(val <= 0) return alert("Enter sales value.");
+
+            stats.revenue += val;
+            stats.brand += 1;
+            
+            updateDashboard();
+            addLog(`✨ Brand: ${product} sales updated (+Nu.${val.toLocaleString()})`);
+            showView('dashboard', document.querySelector('.nav-btn'));
+        }
+
+        function updateDashboard() {
+            document.getElementById('dash-rev').innerText = stats.revenue.toLocaleString();
+            document.getElementById('dash-milk').innerText = stats.milk.toLocaleString();
+            document.getElementById('dash-brand').innerText = stats.brand;
+        }
+
+        function addLog(msg) {
+            const feed = document.getElementById('logs');
+            if(feed.innerText.includes("No activity")) feed.innerHTML = '';
+            const p = document.createElement('p');
+            p.className = "text-sm p-3 bg-white border border-slate-100 rounded-lg shadow-sm font-medium";
+            p.innerHTML = `<span class="text-blue-500 mr-2">●</span> ${msg} <span class="text-[10px] text-slate-400 float-right">Just Now</span>`;
+            feed.prepend(p);
         }
     </script>
 </body>
