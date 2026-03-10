@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -11,68 +10,85 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
 <style>
 
 body{
-font-family:Inter;
-background:#F8FAFC;
+font-family:'Inter',sans-serif;
+background:#0f172a;
 }
 
 .sidebar{
-width:270px;
-background:#0F172A;
+width:280px;
+background:#1e293b;
 color:white;
 position:fixed;
 height:100vh;
-padding:25px;
+padding:2rem;
+overflow-y:auto;
 }
 
 .main{
-margin-left:270px;
-padding:30px;
+margin-left:280px;
+padding:2rem;
+background:#f8fafc;
+min-height:100vh;
 }
 
 .card{
 background:white;
-border-radius:18px;
-padding:20px;
-box-shadow:0 10px 20px rgba(0,0,0,0.05);
-margin-bottom:20px;
+padding:1.5rem;
+border-radius:1rem;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+margin-bottom:2rem;
 }
 
 .form-input{
 width:100%;
 border:1px solid #cbd5e1;
-padding:10px;
-border-radius:10px;
-}
-
-.calc-row{
-display:grid;
-grid-template-columns:2fr 1fr 1fr 1fr;
-gap:8px;
-padding:8px;
-background:#F1F5F9;
-border-radius:10px;
-align-items:center;
+padding:0.6rem;
+border-radius:8px;
+font-size:0.85rem;
 }
 
 .nav-btn{
 display:block;
 width:100%;
-padding:8px;
-margin-bottom:4px;
 text-align:left;
+padding:8px;
+margin-bottom:5px;
 border-radius:8px;
+font-size:12px;
 }
 
 .nav-btn:hover{
-background:#1E293B;
+background:#334155;
+}
+
+.nav-btn.active{
+background:#1d4ed8;
+}
+
+.calc-row{
+display:grid;
+grid-template-columns:2fr 1fr 1fr 1fr;
+gap:6px;
+padding:6px;
+background:#eff6ff;
+border-radius:6px;
+align-items:center;
+}
+
+.btn{
+background:#1e40af;
+color:white;
+padding:10px;
+border-radius:8px;
+font-weight:bold;
+width:100%;
+}
+
+.btn:hover{
+background:#1d4ed8;
 }
 
 </style>
@@ -80,175 +96,248 @@ background:#1E293B;
 
 <body>
 
+<!-- STAFF LOGIN MODAL -->
+
+<div id="signup_modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+
+<div class="bg-white p-8 rounded-2xl w-full max-w-md">
+
+<h2 class="text-xl font-black mb-2">Staff Access Request</h2>
+
+<p class="text-xs text-slate-400 mb-6 uppercase font-bold">Haa Livestock System</p>
+
+<div class="space-y-3">
+
+<input id="reg_user" placeholder="Full Name" class="form-input">
+
+<input id="reg_email" placeholder="Official Email" class="form-input">
+
+<select id="reg_role" class="form-input">
+<option>STAFF</option>
+<option>FIELD SUPERVISOR</option>
+<option>LPO</option>
+<option>DLO</option>
+<option>ADLO</option>
+</select>
+
+<button onclick="requestAccess()" class="btn">Submit for Approval</button>
+
+<button onclick="bypassForAdmin()" class="text-xs mt-2 w-full">Administrator Bypass</button>
+
+</div>
+
+</div>
+</div>
+
 <!-- SIDEBAR -->
 
 <div class="sidebar">
 
-<h1 class="text-xl font-black">HAA LIVESTOCK</h1>
-<p class="text-xs text-blue-400 mb-6">DRP Portal</p>
+<h1 class="text-xl font-black">HAA DISTRICT</h1>
+<p class="text-xs text-blue-400">Livestock Portal</p>
 
-<button onclick="showView('dashboard')" class="nav-btn">Dashboard</button>
+<div class="mt-6">
 
-<button onclick="showView('dairy')" class="nav-btn">Dairy Production</button>
+<button class="nav-btn active" onclick="showView('dash',this)">Dashboard</button>
 
-<button onclick="showView('fishery')" class="nav-btn">Fishery</button>
+<p class="text-xs text-slate-400 mt-4">PRODUCTION</p>
 
-<button onclick="showView('api')" class="nav-btn">Apiculture</button>
+<button class="nav-btn" onclick="showView('dairy',this)">Dairy</button>
+<button class="nav-btn" onclick="showView('fish',this)">Fishery</button>
+<button class="nav-btn" onclick="showView('api',this)">Apiculture</button>
+<button class="nav-btn" onclick="showView('nutri',this)">Nutrition</button>
+<button class="nav-btn" onclick="showView('sheep',this)">Sheep & Goat</button>
 
-<button onclick="showView('nutrition')" class="nav-btn">Nutrition</button>
+<p class="text-xs text-slate-400 mt-4">ADMIN</p>
 
-<button onclick="showView('sheep')" class="nav-btn">Sheep & Goat</button>
-
-<button onclick="showView('map')" class="nav-btn">Gewog Map</button>
-
-<button onclick="showView('analytics')" class="nav-btn">Analytics</button>
-
-<button onclick="showView('staff')" class="nav-btn">Staff</button>
+<button class="nav-btn" onclick="showView('staff',this)">Staff Directory</button>
+<button class="nav-btn" onclick="showView('admin_gate',this)">Admin Panel</button>
 
 </div>
 
+</div>
 
-<!-- MAIN PANEL -->
+<!-- MAIN -->
 
 <div class="main">
 
-
 <!-- DASHBOARD -->
 
-<section id="dashboard" class="view">
+<section id="dash" class="view card">
 
-<div class="grid grid-cols-4 gap-4">
+<h2 class="font-black text-lg mb-4">District Dashboard</h2>
 
-<div class="card">
-<p>Total Dairy Revenue</p>
-<h2 id="dairy_total" class="text-2xl font-bold">0</h2>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+<div class="bg-blue-900 text-white p-4 rounded-xl">
+<label>Total Dairy Revenue</label>
+<p id="dairy_total" class="text-xl font-black">0</p>
 </div>
 
-<div class="card">
-<p>Honey Revenue</p>
-<h2 id="honey_total" class="text-2xl font-bold">0</h2>
+<div class="bg-amber-400 text-white p-4 rounded-xl">
+<label>Honey Revenue</label>
+<p id="api_total" class="text-xl font-black">0</p>
 </div>
 
-<div class="card">
-<p>Fishery Revenue</p>
-<h2 id="fish_total" class="text-2xl font-bold">0</h2>
+<div class="bg-cyan-500 text-white p-4 rounded-xl">
+<label>Fish Production</label>
+<p id="fish_total" class="text-xl font-black">0</p>
 </div>
 
-<div class="card">
-<p>Sheep Sector</p>
-<h2 id="sheep_total" class="text-2xl font-bold">0</h2>
+<div class="bg-emerald-600 text-white p-4 rounded-xl">
+<label>Sheep/Goat Output</label>
+<p id="sheep_total" class="text-xl font-black">0</p>
 </div>
 
 </div>
 
 </section>
 
+<!-- DAIRY -->
 
-<!-- DAIRY PRODUCTION -->
+<section id="dairy" class="view card hidden">
 
-<section id="dairy" class="view hidden">
+<h3 class="font-black mb-4">Dairy Production</h3>
 
-<div class="card">
+<div class="space-y-2">
 
-<h2 class="font-black mb-4">Dairy Production</h2>
+<div class="calc-row">
+<span>Milk</span>
+<input type="number" class="qty-input form-input" oninput="runAutoCalc('dairy')">
+<input type="number" class="price-input form-input" oninput="runAutoCalc('dairy')">
+<span>Nu <span class="subtotal-display">0</span></span>
+</div>
+
+<div class="calc-row">
+<span>Butter</span>
+<input type="number" class="qty-input form-input" oninput="runAutoCalc('dairy')">
+<input type="number" class="price-input form-input" oninput="runAutoCalc('dairy')">
+<span>Nu <span class="subtotal-display">0</span></span>
+</div>
+
+</div>
+
+<button onclick="syncDashboard('dairy')" class="btn mt-4">Live Sync</button>
+
+</section>
+
+<!-- APICULTURE -->
+
+<section id="api" class="view card hidden">
+
+<h3 class="font-black mb-4">Apiculture</h3>
 
 <div class="calc-row">
 
-<span>Milk (L)</span>
+<span>Honey Sold</span>
 
-<input type="number" class="qty-input form-input" oninput="runAutoCalc('dairy')">
+<input class="qty-input form-input" type="number" oninput="runAutoCalc('api')">
 
-<input type="number" class="price-input form-input" oninput="runAutoCalc('dairy')">
+<input class="price-input form-input" type="number" oninput="runAutoCalc('api')">
 
 <span>Nu <span class="subtotal-display">0</span></span>
 
 </div>
 
-<div class="calc-row">
+<button onclick="syncDashboard('api')" class="btn mt-4">Live Sync</button>
 
-<span>Butter (Kg)</span>
+</section>
 
-<input type="number" class="qty-input form-input" oninput="runAutoCalc('dairy')">
+<!-- FISHERY -->
 
-<input type="number" class="price-input form-input" oninput="runAutoCalc('dairy')">
+<section id="fish" class="view card hidden">
 
-<span>Nu <span class="subtotal-display">0</span></span>
+<h3 class="font-black mb-4">Fishery</h3>
 
-</div>
+<input id="fish_prod" type="number" class="form-input">
 
-<div class="calc-row">
+<button onclick="syncFish()" class="btn mt-4">Sync Fish Data</button>
 
-<span>Cheese</span>
+</section>
 
-<input type="number" class="qty-input form-input" oninput="runAutoCalc('dairy')">
+<!-- NUTRITION -->
 
-<input type="number" class="price-input form-input" oninput="runAutoCalc('dairy')">
+<section id="nutri" class="view card hidden">
 
-<span>Nu <span class="subtotal-display">0</span></span>
+<h3 class="font-black mb-4">Animal Nutrition</h3>
 
-</div>
+<div class="grid grid-cols-2 gap-4">
+
+<input placeholder="Pasture Acre" class="form-input">
+<input placeholder="Fodder Slips" class="form-input">
+<input placeholder="Silage MT" class="form-input">
+<input placeholder="TMR MT" class="form-input">
 
 </div>
 
 </section>
 
+<!-- SHEEP -->
 
-<!-- GEWOG SATELLITE MAP -->
+<section id="sheep" class="view card hidden">
 
-<section id="map" class="view hidden">
+<h3 class="font-black mb-4">Sheep & Goat</h3>
 
-<div class="card">
+<input id="sheep_prod" type="number" class="form-input">
 
-<h2 class="font-black mb-4">Livestock Satellite Map</h2>
-
-<div id="livestockMap" style="height:500px"></div>
-
-</div>
+<button onclick="syncSheep()" class="btn mt-4">Sync Output</button>
 
 </section>
 
+<!-- STAFF -->
 
-<!-- ANALYTICS -->
+<section id="staff" class="view card hidden">
 
-<section id="analytics" class="view hidden">
+<h3 class="font-black mb-4">Staff Directory</h3>
 
-<div class="card">
+<div class="grid grid-cols-3 gap-4">
 
-<h2 class="font-black mb-4">Production Analytics</h2>
-
-<canvas id="revChart"></canvas>
+<input id="st_name" placeholder="Name" class="form-input">
+<input id="st_des" placeholder="Designation" class="form-input">
+<input id="st_unit" placeholder="Duty Station" class="form-input">
 
 </div>
+
+<button onclick="addStaff()" class="btn mt-4">Add Staff</button>
+
+<div id="staff_list" class="mt-4"></div>
+
+</section>
+
+<!-- ADMIN PANEL -->
+
+<section id="admin_gate" class="view card hidden">
+
+<h3 class="font-black mb-4">Pending Staff Requests</h3>
+
+<div id="request_list"></div>
 
 </section>
 
 </div>
-
-
 
 <script>
 
-function showView(id){
+function showView(id,btn){
 
 document.querySelectorAll(".view").forEach(v=>v.classList.add("hidden"))
 
 document.getElementById(id).classList.remove("hidden")
 
+document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"))
+
+if(btn)btn.classList.add("active")
+
 }
-
-
 
 function runAutoCalc(sector){
 
 let total=0
 
-const rows=document.querySelectorAll("#"+sector+" .calc-row")
+document.querySelectorAll("#"+sector+" .calc-row").forEach(row=>{
 
-rows.forEach(row=>{
-
-const q=row.querySelector(".qty-input").value || 0
-
-const p=row.querySelector(".price-input").value || 0
+const q=row.querySelector(".qty-input").value||0
+const p=row.querySelector(".price-input").value||0
 
 const sub=q*p
 
@@ -258,59 +347,80 @@ total+=sub
 
 })
 
-document.getElementById("dairy_total").innerText=total
+document.getElementById(sector+"_total")?.innerText=total
 
 }
 
+function syncDashboard(sector){
 
+const total=document.getElementById(sector+"_total").innerText
 
-</script>
+document.getElementById(sector+"_total").innerText=total
 
+alert("Synced to dashboard")
 
-<script>
-
-const map=L.map('livestockMap').setView([27.38,89.28],10)
-
-L.tileLayer(
-
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-
-).addTo(map)
-
-
-
-// 6 GEWOG MARKERS
-
-L.marker([27.42,89.30]).addTo(map).bindPopup("Bji Gewog")
-
-L.marker([27.40,89.26]).addTo(map).bindPopup("Katsho Gewog")
-
-L.marker([27.36,89.31]).addTo(map).bindPopup("Uesu Gewog")
-
-L.marker([27.35,89.22]).addTo(map).bindPopup("Samar Gewog")
-
-L.marker([27.33,89.29]).addTo(map).bindPopup("Gakiling Gewog")
-
-L.marker([27.31,89.25]).addTo(map).bindPopup("Sangbay Gewog")
-
-</script>
-
-
-
-<script>
-
-const ctx=document.getElementById("revChart")
-
-new Chart(ctx,{
-type:"bar",
-data:{
-labels:["Dairy","Fish","Honey","Sheep"],
-datasets:[{
-label:"Revenue Nu",
-data:[200000,50000,30000,20000]
-}]
 }
-})
+
+function syncFish(){
+
+document.getElementById("fish_total").innerText=
+document.getElementById("fish_prod").value
+
+}
+
+function syncSheep(){
+
+document.getElementById("sheep_total").innerText=
+document.getElementById("sheep_prod").value
+
+}
+
+function addStaff(){
+
+const name=document.getElementById("st_name").value
+const des=document.getElementById("st_des").value
+
+const div=document.createElement("div")
+
+div.innerHTML="<b>"+name+"</b> - "+des
+
+document.getElementById("staff_list").appendChild(div)
+
+}
+
+function bypassForAdmin(){
+
+document.getElementById("signup_modal").style.display="none"
+
+}
+
+function requestAccess(){
+
+const name=document.getElementById("reg_user").value
+const role=document.getElementById("reg_role").value
+
+const id="req"+Date.now()
+
+const card=`
+<div id="${id}" class="p-3 border rounded flex justify-between">
+<div>${name} - ${role}</div>
+<button onclick="approve('${id}','${name}')">Approve</button>
+</div>
+`
+
+document.getElementById("request_list").innerHTML+=card
+
+alert("Request submitted")
+
+}
+
+function approve(id,name){
+
+document.getElementById(id).remove()
+
+alert(name+" approved")
+
+}
 
 </script>
 
