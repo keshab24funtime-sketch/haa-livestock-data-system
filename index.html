@@ -16,12 +16,15 @@
         .view.active { display: block; animation: slideUp 0.4s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .card { background: white; border-radius: 1.25rem; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        input, select { border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 0.6rem 0.8rem; width: 100%; font-size: 0.9rem; }
+        input, select { border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 0.6rem 0.8rem; width: 100%; font-size: 0.85rem; background-color: #fdfdfd; }
         input:focus { outline: 2px solid #3b82f6; border-color: transparent; }
         .tag { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.25rem 0.6rem; border-radius: 2rem; }
+        .field-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #64748b; margin-bottom: 4px; display: block; }
+        .form-group-header { font-size: 13px; font-weight: 800; color: #1e293b; border-bottom: 2px solid #3b82f6; display: inline-block; margin-bottom: 15px; margin-top: 10px; }
+        .calc-box { background: #f1f5f9; border-radius: 0.5rem; padding: 0.5rem; text-align: right; font-weight: 800; color: #3b82f6; font-size: 0.8rem; }
     </style>
 </head>
-<body class="flex">
+<body class="flex" onload="calcDairyRevenue()">
 
     <aside class="w-72 sidebar flex flex-col p-6 shrink-0">
         <div class="mb-8">
@@ -32,7 +35,6 @@
         <nav class="space-y-1 overflow-y-auto">
             <p class="text-[10px] font-bold text-slate-500 uppercase mb-2 ml-2">Core Analytics</p>
             <button onclick="showView('dashboard', this)" class="nav-btn active">📊 Dashboard</button>
-            
             <p class="text-[10px] font-bold text-slate-500 uppercase mt-6 mb-2 ml-2">Seven Sectors</p>
             <button onclick="showView('dairy', this)" class="nav-btn">🐄 Dairy & AI</button>
             <button onclick="showView('breeding', this)" class="nav-btn">🧬 Natural Breeding</button>
@@ -40,7 +42,6 @@
             <button onclick="showView('nutrition', this)" class="nav-btn">🌾 Animal Nutrition</button>
             <button onclick="showView('apiculture', this)" class="nav-btn">🐝 Apiculture</button>
             <button onclick="showView('small-livestock', this)" class="nav-btn">🐐 Sheep & Goat</button>
-            
             <p class="text-[10px] font-bold text-slate-500 uppercase mt-6 mb-2 ml-2">Exclusive</p>
             <button onclick="showView('brand', this)" class="nav-btn">✨ Haa Brand Products</button>
             <button onclick="showView('staff', this)" class="nav-btn">👥 Staff Info</button>
@@ -69,176 +70,112 @@
                     <h3 id="dash-staff" class="text-3xl font-black text-slate-800 mt-2">2</h3>
                 </div>
             </div>
-            
-            <div class="card p-8">
-                <h4 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span> Live Entry Feed
-                </h4>
-                <div id="logs" class="space-y-3">
-                    <p class="text-sm text-slate-400 italic">No activity recorded today.</p>
-                </div>
-            </div>
+            <div class="card p-8"><h4 class="font-bold text-slate-800 mb-4">Live Entry Feed</h4><div id="logs" class="space-y-3"><p class="text-sm text-slate-400 italic">No activity recorded today.</p></div></div>
         </section>
 
         <section id="dairy" class="view">
-            <h2 class="text-3xl font-black text-slate-900 mb-8">Dairy Production & AI Services</h2>
-            <div class="grid grid-cols-2 gap-8">
-                <div class="card p-8">
-                    <h3 class="text-lg font-bold mb-6 text-blue-600">Milk Production Entry</h3>
-                    <div class="space-y-4">
-                        <select id="dairy-gewog" onchange="updateGroups()">
-                            <option value="">-- Select Gewog --</option>
-                            <option value="Bji">Bji</option>
-                            <option value="Katsho">Katsho</option>
-                            <option value="Uesu">Uesu</option>
-                            <option value="Gakiling">Gakiling</option>
-                            <option value="Samar">Samar</option>
-                            <option value="Sangbay">Sangbay</option>
-                        </select>
-                        <select id="dairy-group"><option value="">-- Select Group --</option></select>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="number" id="milk-qty" placeholder="Quantity (L)">
-                            <input type="number" id="milk-rate" placeholder="Rate (Nu/L)">
-                        </div>
-                        <button onclick="submitDairy()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700">Log Production</button>
-                    </div>
+            <h2 class="text-3xl font-black text-slate-900 mb-8">Dairy Production Sector</h2>
+            <div class="card p-8 mb-8">
+                <div class="form-group-header">1. Identification & Membership</div>
+                <div class="grid grid-cols-4 gap-4 mb-8">
+                    <div><span class="field-label">Reporting Month</span><select><option>July</option><option>August</option><option>September</option></select></div>
+                    <div><span class="field-label">Year</span><select><option>2025</option><option>2026</option></select></div>
+                    <div><span class="field-label">Gewog</span><select id="dairy-gewog" onchange="updateGroups()"><option value="">Select Gewog</option><option value="Bji">Bji</option><option value="Katsho">Katsho</option><option value="Uesu">Uesu</option><option value="Gakiling">Gakiling</option><option value="Samar">Samar</option><option value="Sangbay">Sangbay</option></select></div>
+                    <div><span class="field-label">Farmers Group</span><select id="dairy-group"><option value="">Select Group</option></select></div>
+                    <div><span class="field-label">Total members</span><input type="number"></div>
+                    <div><span class="field-label">No. of Active Members</span><input type="number"></div>
+                    <div><span class="field-label">No of milking cows</span><input type="number"></div>
                 </div>
-                <div class="card p-8">
-                    <h3 class="text-lg font-bold mb-6 text-indigo-600">AI Service Registry</h3>
-                    <div class="space-y-4">
-                        <input type="text" placeholder="Farmer Name/CID">
-                        <select><option>Jersey</option><option>Holstein Friesian</option></select>
-                        <input type="date">
-                        <button class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700">Submit AI Record</button>
+
+                <div class="form-group-header">2. Milk & Butter Sales (Auto-Calculating)</div>
+                <div class="grid grid-cols-4 gap-4 mb-8">
+                    <div class="col-span-1"><span class="field-label">Milk collected/supplied (l)</span><input type="number" id="milk-collected"></div>
+                    <div><span class="field-label">Farm gate price (Nu/l)</span><input type="number"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Milk Sold (l)</span><input type="number" id="s-milk-qty" oninput="calcDairyRevenue()"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling Price (Nu/l)</span><input type="number" id="s-milk-price" oninput="calcDairyRevenue()"></div>
+                    
+                    <div><span class="field-label">Butter produced (kg)</span><input type="number"></div>
+                    <div><span class="field-label">Farm gate price (Nu/kg)</span><input type="number"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Butter sold (kg)</span><input type="number" id="s-butter-qty" oninput="calcDairyRevenue()"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-butter-price" oninput="calcDairyRevenue()"></div>
+                </div>
+
+                <div class="form-group-header">3. Cheese & Yoghurt</div>
+                <div class="grid grid-cols-4 gap-4 mb-8">
+                    <div><span class="field-label">Cheese produced (kg)</span><input type="number"></div>
+                    <div><span class="field-label">Farm gate price (Nu/kg)</span><input type="number"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Cheese sold (kg)</span><input type="number" id="s-cheese-qty" oninput="calcDairyRevenue()"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-cheese-price" oninput="calcDairyRevenue()"></div>
+
+                    <div><span class="field-label">Yoghurt produced (l)</span><input type="number"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Yoghurt sold (l)</span><input type="number" id="s-yoghurt-qty" oninput="calcDairyRevenue()"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/l)</span><input type="number" id="s-yoghurt-price" oninput="calcDairyRevenue()"></div>
+                    <div><span class="field-label">Paneer produced (kg)</span><input type="number"></div>
+
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Paneer sold (kg)</span><input type="number" id="s-paneer-qty" oninput="calcDairyRevenue()"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-paneer-price" oninput="calcDairyRevenue()"></div>
+                    <div><span class="field-label">Hard Chugo produced</span><input type="number"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Hard Chugo sold</span><input type="number" id="s-hchugo-qty" oninput="calcDairyRevenue()"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-hchugo-price" oninput="calcDairyRevenue()"></div>
+                    <div><span class="field-label">Soft Chugo produced</span><input type="number"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Soft Chugo sold</span><input type="number" id="s-schugo-qty" oninput="calcDairyRevenue()"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-schugo-price" oninput="calcDairyRevenue()"></div>
+                    <div><span class="field-label">Gouda cheese produced</span><input type="number"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Gouda cheese sold</span><input type="number" id="s-gauda-qty" oninput="calcDairyRevenue()"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/kg)</span><input type="number" id="s-gauda-price" oninput="calcDairyRevenue()"></div>
+                </div>
+
+                <div class="form-group-header">4. Byproducts & Infrastructure</div>
+                <div class="grid grid-cols-4 gap-4 mb-8">
+                    <div><span class="field-label">Butter milk produced (l)</span><input type="number"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Butter milk sold (l)</span><input type="number" id="s-bmilk-qty" oninput="calcDairyRevenue()"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/l)</span><input type="number" id="s-bmilk-price" oninput="calcDairyRevenue()"></div>
+                    <div><span class="field-label">Curd produced (l)</span><input type="number"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Curd sold (l)</span><input type="number" id="s-curd-qty" oninput="calcDairyRevenue()"></div>
+                    <div class="bg-blue-50 p-2 rounded-lg"><span class="field-label text-blue-600">Selling price (Nu/l)</span><input type="number" id="s-curd-price" oninput="calcDairyRevenue()"></div>
+                    
+                    <div><span class="field-label">No of MCC</span><input type="number"></div>
+                    <div><span class="field-label">No of MPU</span><input type="number"></div>
+                    <div><span class="field-label">No of sales counter</span><input type="number"></div>
+                </div>
+
+                <div class="flex justify-between items-center bg-slate-900 p-6 rounded-xl text-white">
+                    <div>
+                        <p class="text-xs font-bold uppercase text-slate-400">Calculated Revenue for this Entry</p>
+                        <h2 class="text-3xl font-black">Nu. <span id="entry-total">0.00</span></h2>
                     </div>
+                    <button onclick="submitDairy()" class="bg-blue-500 hover:bg-blue-600 px-8 py-3 rounded-lg font-black uppercase text-sm">Sync Final Report</button>
                 </div>
             </div>
         </section>
 
         <section id="nutrition" class="view">
-            <h2 class="text-3xl font-black text-slate-900 mb-8">Animal Nutrition & Fodder</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="card p-8">
-                    <h3 class="text-lg font-bold mb-6 text-emerald-600">Seed Distribution Entry</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center justify-between p-4 bg-emerald-50 rounded-xl">
-                            <span class="font-bold">🍀 Trifolium (Clover)</span>
-                            <input type="number" placeholder="Qty (kg)" class="w-32 bg-white">
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
-                            <span class="font-bold">🌾 Cocksfoot Grass</span>
-                            <input type="number" placeholder="Qty (kg)" class="w-32 bg-white">
-                        </div>
-                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                            <span class="font-bold">📦 Other Varieties</span>
-                            <input type="number" placeholder="Qty (kg)" class="w-32 bg-white">
-                        </div>
-                        <button class="w-full bg-emerald-600 text-white font-bold py-3 rounded-lg mt-4">Record Distribution</button>
-                    </div>
-                </div>
-                <div class="card p-8">
-                    <h3 class="text-lg font-bold mb-6 text-emerald-600">Silage & Feed</h3>
-                    <div class="space-y-4">
-                        <input type="number" placeholder="Silage Production (MT)">
-                        <input type="number" placeholder="Concentrate Feed (kg)">
-                        <button class="w-full bg-emerald-800 text-white font-bold py-3 rounded-lg">Update Inventory</button>
-                    </div>
-                </div>
+            <h2 class="text-3xl font-black mb-8">Animal Nutrition</h2>
+            <div class="card p-8 grid grid-cols-2 gap-8">
+                <div class="p-4 bg-emerald-50 rounded-xl">🍀 <b>Trifolium (Clover)</b> Distribution (kg): <input type="number" class="mt-2"></div>
+                <div class="p-4 bg-blue-50 rounded-xl">🌾 <b>Cocksfoot Grass</b> Distribution (kg): <input type="number" class="mt-2"></div>
             </div>
         </section>
 
         <section id="brand" class="view">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-black text-slate-900">Haa Brand: Unique Products</h2>
-                <div class="bg-amber-100 text-amber-700 tag px-4 py-2">Premium Specialty Exports</div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="card p-6 hover:border-amber-400 transition-colors">
-                    <h4 class="font-bold text-lg mb-4">Yaksha (Dried Yak Meat)</h4>
-                    <div class="space-y-3">
-                        <input type="number" id="brand-yaksha-qty" placeholder="Quantity (kg)">
-                        <input type="number" id="brand-yaksha-val" placeholder="Total Value (Nu)">
-                        <button onclick="logBrand('Yaksha')" class="w-full bg-amber-500 text-white font-bold py-2 rounded-lg text-sm">Update Sales</button>
-                    </div>
-                </div>
-                <div class="card p-6 hover:border-blue-400 transition-colors">
-                    <h4 class="font-bold text-lg mb-4">Hard Chugo (Shey)</h4>
-                    <div class="space-y-3">
-                        <input type="number" id="brand-chugo-qty" placeholder="Quantity (Strings)">
-                        <input type="number" id="brand-chugo-val" placeholder="Total Value (Nu)">
-                        <button onclick="logBrand('Chugo')" class="w-full bg-blue-500 text-white font-bold py-2 rounded-lg text-sm">Update Sales</button>
-                    </div>
-                </div>
-                <div class="card p-6 hover:border-slate-400 transition-colors">
-                    <h4 class="font-bold text-lg mb-4">Gangphu Datshi</h4>
-                    <div class="space-y-3">
-                        <input type="number" id="brand-datshi-qty" placeholder="Quantity (Balls)">
-                        <input type="number" id="brand-datshi-val" placeholder="Total Value (Nu)">
-                        <button onclick="logBrand('Gangphu Datshi')" class="w-full bg-slate-800 text-white font-bold py-2 rounded-lg text-sm">Update Sales</button>
-                    </div>
-                </div>
-                <div class="card p-6">
-                    <h4 class="font-bold text-lg mb-4">Phelu (Probiotic Whey)</h4>
-                    <input type="number" class="mb-3" placeholder="Volume (L)">
-                    <button class="w-full bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-sm">Update</button>
-                </div>
-                <div class="card p-6">
-                    <h4 class="font-bold text-lg mb-4">Traditional Ghee</h4>
-                    <input type="number" class="mb-3" placeholder="Qty (kg)">
-                    <button class="w-full bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-sm">Update</button>
-                </div>
-                <div class="card p-6">
-                    <h4 class="font-bold text-lg mb-4">Haa Mountain Yoghurt</h4>
-                    <input type="number" class="mb-3" placeholder="Cups/L">
-                    <button class="w-full bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-sm">Update</button>
-                </div>
+            <h2 class="text-3xl font-black mb-8">Haa Brand Products</h2>
+            <div class="grid grid-cols-3 gap-6">
+                <div class="card p-6"><b>Yaksha</b> <input type="number" placeholder="Value (Nu)" class="mt-2"></div>
+                <div class="card p-6"><b>Hard Chugo (Shey)</b> <input type="number" placeholder="Value (Nu)" class="mt-2"></div>
+                <div class="card p-6"><b>Gangphu Datshi</b> <input type="number" placeholder="Value (Nu)" class="mt-2"></div>
             </div>
         </section>
 
-        <section id="breeding" class="view"><h2 class="text-3xl font-black">Natural Breeding</h2><div class="card p-8 mt-6">Data entry for Bull distribution and Progeny...</div></section>
-        <section id="fishery" class="view"><h2 class="text-3xl font-black text-blue-800">Fishery</h2><div class="card p-8 mt-6">Trout and Common Carp harvest records...</div></section>
-        <section id="apiculture" class="view"><h2 class="text-3xl font-black text-amber-600">Apiculture</h2><div class="card p-8 mt-6">Alpine honey collection and colony status...</div></section>
-        <section id="small-livestock" class="view"><h2 class="text-3xl font-black text-orange-800">Sheep & Goat Sector</h2><div class="card p-8 mt-6">Wool production and herd health tracking...</div></section>
-
         <section id="staff" class="view">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-black">Staff Directory</h2>
-                <button class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg">+ Add Official</button>
-            </div>
-            <div class="card overflow-hidden">
-                <table class="w-full text-left">
-                    <thead class="bg-slate-100 border-b">
-                        <tr class="text-[10px] uppercase font-black text-slate-500 tracking-widest">
-                            <th class="p-5">Official Name</th>
-                            <th class="p-5">Designation</th>
-                            <th class="p-5">Assigned Post</th>
-                            <th class="p-5">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-sm">
-                        <tr class="border-b">
-                            <td class="p-5 font-bold">DLO Tshenden</td>
-                            <td class="p-5 text-slate-600">District Livestock Officer</td>
-                            <td class="p-5 italic text-slate-500">Haa HQ</td>
-                            <td class="p-5"><span class="tag bg-blue-100 text-blue-700">Active</span></td>
-                        </tr>
-                        <tr class="border-b">
-                            <td class="p-5 font-bold">Sangay Wangdi</td>
-                            <td class="p-5 text-slate-600">LPO / Master Admin</td>
-                            <td class="p-5 italic text-slate-500">District Office</td>
-                            <td class="p-5"><span class="tag bg-purple-100 text-purple-700">Online</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <h2 class="text-3xl font-black mb-8">Staff Info</h2>
+            <div class="card p-8"><b>DLO Tshenden</b> (Head) | <b>Sangay Wangdi</b> (LPO)</div>
         </section>
 
     </main>
 
     <script>
-        // DATA OBJECTS
         const gewogGroups = {
-            "Bji": ["Yangthang Om Gongphel Detshen", "Bji Group A", "Bji Group B"],
+            "Bji": ["Yangthang Om Gongphel Detshen", "Talung Om Tshongdrel Detshen", "Hatey Om Tshongdrel Detshen"],
             "Katsho": ["Katsho Om Detshen", "Katsho Nyamley Tshogpa"],
             "Uesu": ["Uesu Dairy Farmers"],
             "Gakiling": ["Gakiling Livestock Unit"],
@@ -246,7 +183,6 @@
             "Sangbay": ["Sangbay Livestock Group"]
         };
 
-        // NAVIGATION
         function showView(viewId, btn) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -254,11 +190,10 @@
             btn.classList.add('active');
         }
 
-        // UPDATE GEWOG GROUPS
         function updateGroups() {
             const gewog = document.getElementById('dairy-gewog').value;
             const groupSelect = document.getElementById('dairy-group');
-            groupSelect.innerHTML = '<option value="">-- Select Group --</option>';
+            groupSelect.innerHTML = '<option value="">Select Group</option>';
             if(gewogGroups[gewog]) {
                 gewogGroups[gewog].forEach(g => {
                     const opt = document.createElement('option');
@@ -268,57 +203,47 @@
             }
         }
 
-        // LOGGING SYSTEM
-        let stats = { revenue: 0, milk: 0, brand: 0 };
+        function calcDairyRevenue() {
+            const products = [
+                ['s-milk-qty', 's-milk-price'], ['s-butter-qty', 's-butter-price'],
+                ['s-cheese-qty', 's-cheese-price'], ['s-yoghurt-qty', 's-yoghurt-price'],
+                ['s-paneer-qty', 's-paneer-price'], ['s-hchugo-qty', 's-hchugo-price'],
+                ['s-schugo-qty', 's-schugo-price'], ['s-gauda-qty', 's-gauda-price'],
+                ['s-bmilk-qty', 's-bmilk-price'], ['s-curd-qty', 's-curd-price']
+            ];
 
+            let total = 0;
+            products.forEach(pair => {
+                const q = parseFloat(document.getElementById(pair[0]).value) || 0;
+                const p = parseFloat(document.getElementById(pair[1]).value) || 0;
+                total += (q * p);
+            });
+
+            document.getElementById('entry-total').innerText = total.toLocaleString(undefined, {minimumFractionDigits: 2});
+            return total;
+        }
+
+        let globalRev = 0;
         function submitDairy() {
-            const qty = parseFloat(document.getElementById('milk-qty').value) || 0;
-            const rate = parseFloat(document.getElementById('milk-rate').value) || 0;
+            const entryRev = calcDairyRevenue();
+            const milk = parseFloat(document.getElementById('milk-collected').value) || 0;
             const gewog = document.getElementById('dairy-gewog').value;
             
-            if(qty <= 0 || !gewog) return alert("Please enter valid production data.");
+            if(!gewog) return alert("Please select a Gewog.");
 
-            const subtotal = qty * rate;
-            stats.revenue += subtotal;
-            stats.milk += qty;
+            globalRev += entryRev;
+            document.getElementById('dash-rev').innerText = globalRev.toLocaleString();
+            document.getElementById('dash-milk').innerText = milk.toLocaleString();
 
-            updateDashboard();
-            addLog(`🐄 ${gewog}: ${qty}L milk logged (Nu.${subtotal.toLocaleString()})`);
-            
-            // Reset
-            document.getElementById('milk-qty').value = '';
-            showView('dashboard', document.querySelector('.nav-btn'));
-        }
-
-        function logBrand(product) {
-            let val = 0;
-            if(product === 'Yaksha') val = parseFloat(document.getElementById('brand-yaksha-val').value) || 0;
-            if(product === 'Chugo') val = parseFloat(document.getElementById('brand-chugo-val').value) || 0;
-            if(product === 'Gangphu Datshi') val = parseFloat(document.getElementById('brand-datshi-val').value) || 0;
-
-            if(val <= 0) return alert("Enter sales value.");
-
-            stats.revenue += val;
-            stats.brand += 1;
-            
-            updateDashboard();
-            addLog(`✨ Brand: ${product} sales updated (+Nu.${val.toLocaleString()})`);
-            showView('dashboard', document.querySelector('.nav-btn'));
-        }
-
-        function updateDashboard() {
-            document.getElementById('dash-rev').innerText = stats.revenue.toLocaleString();
-            document.getElementById('dash-milk').innerText = stats.milk.toLocaleString();
-            document.getElementById('dash-brand').innerText = stats.brand;
-        }
-
-        function addLog(msg) {
             const feed = document.getElementById('logs');
             if(feed.innerText.includes("No activity")) feed.innerHTML = '';
             const p = document.createElement('p');
             p.className = "text-sm p-3 bg-white border border-slate-100 rounded-lg shadow-sm font-medium";
-            p.innerHTML = `<span class="text-blue-500 mr-2">●</span> ${msg} <span class="text-[10px] text-slate-400 float-right">Just Now</span>`;
+            p.innerHTML = `🐄 <b>${gewog}:</b> Full record synced. Generated <b>Nu. ${entryRev.toLocaleString()}</b> in sales.`;
             feed.prepend(p);
+
+            alert("Record Saved and Dashboard Updated.");
+            showView('dashboard', document.querySelector('.nav-btn'));
         }
     </script>
 </body>
