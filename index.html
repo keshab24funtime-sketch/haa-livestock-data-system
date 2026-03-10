@@ -3,315 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Haa District Livestock Master Portal</title>
+    <title>Haa Livestock Portal - Absolute Master v4.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8FAFC; color: #0F172A; }
-        .sidebar { background: #FFFFFF; border-right: 1px solid #E2E8F0; height: 100vh; position: sticky; top: 0; transition: all 0.3s; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 8px; color: #64748B; font-weight: 600; transition: 0.2s; cursor: pointer; margin-bottom: 4px; }
-        .nav-item:hover { background: #F1F5F9; color: #0F172A; }
-        .nav-item.active { background: #0F172A; color: #FFFFFF; }
-        .section-content { display: none; animation: slideUp 0.4s ease-out; }
-        .section-content.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .glass-card { background: white; border: 1px solid #E2E8F0; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); padding: 24px; }
-        .input-field { width: 100%; background: #FDFDFD; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px 12px; font-size: 14px; outline: none; transition: 0.2s; }
-        .input-field:focus { border-color: #0F172A; ring: 2px solid #F1F5F9; }
-        .label-style { font-size: 11px; font-weight: 800; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; display: block; }
-        .btn-primary { background: #0F172A; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 700; transition: 0.2s; width: 100%; }
-        .btn-primary:hover { background: #1E293B; transform: translateY(-1px); }
+        body { font-family: 'Inter', sans-serif; background: #f4f7fa; color: #1a202c; }
+        .sidebar { background: #ffffff; border-right: 1px solid #e2e8f0; height: 100vh; position: sticky; top: 0; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: #718096; font-weight: 500; transition: 0.2s; cursor: pointer; margin-bottom: 2px; }
+        .nav-item:hover { background: #f7fafc; color: #2d3748; }
+        .nav-item.active { background: #2d3748; color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .section-content { display: none; }
+        .section-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .glass-card { background: white; border: 1px solid #edf2f7; border-radius: 16px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); padding: 24px; margin-bottom: 24px; }
+        .form-input { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; font-size: 14px; transition: 0.2s; background: #fcfdfe; }
+        .form-input:focus { border-color: #3b82f6; outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .label-head { font-size: 11px; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; display: block; }
+        .btn-action { background: #2d3748; color: white; padding: 12px; border-radius: 8px; font-weight: 600; width: 100%; transition: 0.2s; }
+        .btn-action:hover { background: #1a202c; }
+        .calc-box { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 10px; border-radius: 8px; font-weight: 800; color: #1e293b; }
+        .badge-calc { font-size: 10px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; margin-bottom: 4px; display: inline-block; }
     </style>
 </head>
 <body class="flex">
 
-    <aside class="w-80 sidebar p-6 shrink-0 flex flex-col">
-        <div class="mb-10 flex items-center gap-3">
-            <div class="bg-black p-2 rounded-xl text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            </div>
-            <div>
-                <h1 class="font-extrabold text-xl tracking-tighter">HAA LIVESTOCK</h1>
-                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Enterprise Portal</p>
-            </div>
+    <aside class="w-72 sidebar p-6 flex flex-col shrink-0">
+        <div class="mb-10 px-2">
+            <h1 class="text-xl font-extrabold tracking-tight flex items-center gap-2">
+                <span class="bg-blue-600 text-white p-1.5 rounded-lg text-sm">HAA</span>
+                PORTAL 4.0
+            </h1>
         </div>
 
-        <nav class="flex-grow space-y-1 overflow-y-auto pr-2">
-            <div onclick="showSection('dashboard')" class="nav-item active" id="btn-dashboard">🏠 Dashboard</div>
+        <nav class="flex-grow space-y-1 overflow-y-auto">
+            <div onclick="showSection('dash')" class="nav-item active" id="n-dash">📊 Dashboard</div>
             
-            <div class="pt-4 pb-2 text-[10px] font-bold text-slate-400 uppercase">Production Units</div>
-            <div onclick="showSection('dairy')" class="nav-item" id="btn-dairy">🥛 Dairy & Groups</div>
-            <div onclick="showSection('fishery')" class="nav-item" id="btn-fishery">🐟 Fishery Sector</div>
-            <div onclick="showSection('apiculture')" class="nav-item" id="btn-apiculture">🐝 Apiculture</div>
-            <div onclick="showSection('sheep')" class="nav-item" id="btn-sheep">🐑 Sheep & Goat</div>
-            <div onclick="showSection('nutrition')" class="nav-item" id="btn-nutrition">🌾 Animal Nutrition</div>
-            <div onclick="showSection('breeding')" class="nav-item" id="btn-breeding">🧬 Natural Breeding</div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase mt-6 mb-2 px-4">Production Sector</p>
+            <div onclick="showSection('dairy')" class="nav-item" id="n-dairy">🥛 Dairy & AI Registry</div>
+            <div onclick="showSection('fishery')" class="nav-item" id="n-fishery">🐟 Fishery Sector</div>
+            <div onclick="showSection('honey')" class="nav-item" id="n-honey">🐝 Apiculture</div>
+            <div onclick="showSection('small')" class="nav-item" id="n-small">🐑 Sheep & Goat</div>
+            <div onclick="showSection('nutrition')" class="nav-item" id="n-nutrition">🌾 Nutrition & Pasture</div>
+            <div onclick="showSection('breed')" class="nav-item" id="n-breed">🧬 Natural Breeding</div>
 
-            <div class="pt-4 pb-2 text-[10px] font-bold text-slate-400 uppercase">Admin & Health</div>
-            <div onclick="showSection('health')" class="nav-item" id="btn-health">🏥 DVH & Health</div>
-            <div onclick="showSection('staff')" class="nav-item" id="btn-staff">👥 Staff Profile</div>
-            <div onclick="showSection('admin')" class="nav-item" id="btn-admin">📂 Administration</div>
-            <div onclick="showSection('products')" class="nav-item" id="btn-products">✨ Haa Unique Brand</div>
+            <p class="text-[10px] font-bold text-slate-400 uppercase mt-6 mb-2 px-4">Management & Clinical</p>
+            <div onclick="showSection('health')" class="nav-item" id="n-health">🏥 DVH Clinical Logs</div>
+            <div onclick="showSection('staff')" class="nav-item" id="n-staff">👥 Staff Directory</div>
+            <div onclick="showSection('brand')" class="nav-item" id="n-brand">✨ Haa Brand Units</div>
         </nav>
     </aside>
 
-    <main class="flex-grow p-10 max-h-screen overflow-y-auto">
+    <main class="flex-grow p-10 h-screen overflow-y-auto">
 
-        <section id="dashboard" class="section-content active">
-            <header class="mb-8">
-                <h2 class="text-4xl font-extrabold tracking-tight mb-2">Executive Summary</h2>
-                <p class="text-slate-500 font-medium">District-wide statistics and official announcements.</p>
-            </header>
-
-            <div class="bg-indigo-600 rounded-2xl p-8 text-white mb-10 shadow-lg shadow-indigo-100 relative overflow-hidden">
-                <div class="relative z-10 flex justify-between items-start">
-                    <div>
-                        <span class="bg-indigo-500 text-[10px] font-bold py-1 px-3 rounded-full mb-4 inline-block uppercase tracking-wider">Live Updates</span>
-                        <h3 class="text-2xl font-bold mb-4">📢 Official Announcements</h3>
-                        <ul class="space-y-3 opacity-90 text-sm">
-                            <li class="flex items-center gap-3">✦ <strong>Notice:</strong> Monthly production reports due by the 25th of each month.</li>
-                            <li class="flex items-center gap-3">✦ <strong>DVH Alert:</strong> FMD vaccine stock replenished for Bji and Katsho Gewogs.</li>
-                            <li class="flex items-center gap-3">✦ <strong>Training:</strong> Improved fodder seed distribution at RNR Center next Tuesday.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="absolute right-[-20px] bottom-[-20px] text-[160px] opacity-10 rotate-12">📢</div>
-            </div>
-
+        <section id="dash" class="section-content active">
+            <h2 class="text-3xl font-extrabold mb-8">District Executive Dashboard</h2>
             <div class="grid grid-cols-4 gap-6">
-                <div class="glass-card border-l-4 border-l-blue-500">
-                    <label class="label-style">Total Milk (L)</label>
-                    <div class="text-3xl font-black">24,102.50</div>
-                </div>
-                <div class="glass-card border-l-4 border-l-amber-500">
-                    <label class="label-style">Honey Prod (Kg)</label>
-                    <div class="text-3xl font-black">412.00</div>
-                </div>
-                <div class="glass-card border-l-4 border-l-emerald-500">
-                    <label class="label-style">Active Farms</label>
-                    <div class="text-3xl font-black">182 Units</div>
-                </div>
-                <div class="glass-card border-l-4 border-l-rose-500">
-                    <label class="label-style">Total Revenue</label>
-                    <div class="text-3xl font-black">Nu. 1.2M</div>
-                </div>
+                <div class="glass-card"><label class="label-head">Milk Rev (Nu)</label><div class="text-2xl font-black" id="dash-milk">0.00</div></div>
+                <div class="glass-card"><label class="label-head">Total Honey (Kg)</label><div class="text-2xl font-black" id="dash-honey">0.00</div></div>
+                <div class="glass-card"><label class="label-head">Clinical Cases</label><div class="text-2xl font-black text-rose-500" id="dash-cases">0</div></div>
+                <div class="glass-card"><label class="label-head">Active Staff</label><div class="text-2xl font-black text-blue-600">24</div></div>
+            </div>
+            
+            <div class="glass-card bg-slate-900 text-white">
+                <h3 class="font-bold text-lg mb-2">Automated Data Validation Status</h3>
+                <p class="text-slate-400 text-sm">Global calculation engine is online. All financial totals are calculated at farm-gate prices.</p>
             </div>
         </section>
 
         <section id="dairy" class="section-content">
-            <h2 class="text-3xl font-extrabold mb-8">Dairy Production & Registry</h2>
+            <h2 class="text-2xl font-extrabold mb-6">Dairy Production & AI Service Records</h2>
             <div class="glass-card">
-                <div class="grid grid-cols-2 gap-8 mb-8 pb-8 border-b border-slate-100">
-                    <div>
-                        <label class="label-style text-indigo-600">Gewog Selector</label>
-                        <select id="dairy-gewog" onchange="updateFarmerGroups()" class="input-field">
-                            <option value="">Select Gewog</option>
-                            <option value="Bji">Bji</option>
-                            <option value="Katsho">Katsho</option>
-                            <option value="Uesu">Uesu</option>
-                            <option value="Gakiling">Gakiling</option>
-                            <option value="Samar">Samar</option>
-                            <option value="Sangbay">Sangbay</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="label-style text-indigo-600">Farmer Group / Cooperative</label>
-                        <select id="dairy-group" class="input-field">
-                            <option>Please select a Gewog first...</option>
-                        </select>
+                <div class="grid grid-cols-2 gap-6 mb-6">
+                    <div><label class="label-head">Gewog</label><select id="gewogSelect" onchange="loadGroups()" class="form-input font-bold"><option value="">Select Gewog...</option><option value="Bji">Bji</option><option value="Katsho">Katsho</option><option value="Uesu">Uesu</option><option value="Gakiling">Gakiling</option><option value="Samar">Samar</option><option value="Sangbay">Sangbay</option></select></div>
+                    <div><label class="label-head">Farmer Group</label><select id="groupSelect" class="form-input font-bold"><option>Select Gewog First</option></select></div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                    <div><label class="label-head">Milk Sold (L)</label><input type="number" id="milkQty" oninput="calcDairy()" class="form-input"></div>
+                    <div><label class="label-head">Price (Nu/L)</label><input type="number" id="milkPrice" oninput="calcDairy()" class="form-input"></div>
+                    <div class="col-span-2"><span class="badge-calc">Automated Revenue</span><div class="calc-box" id="milkTotal">Nu. 0.00</div></div>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-6">
+                    <h4 class="font-bold text-sm mb-4">Value Addition (Processing)</h4>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div><label class="label-head">Butter Sold (Kg)</label><input type="number" id="buttQty" oninput="calcDairy()" class="form-input"></div>
+                        <div><label class="label-head">Butter Price (Nu/Kg)</label><input type="number" id="buttPrice" oninput="calcDairy()" class="form-input"></div>
+                        <div><span class="badge-calc">Butter Revenue</span><div class="calc-box" id="buttTotal">Nu. 0.00</div></div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-4 gap-6 mb-8">
-                    <div><label class="label-style">Total Members</label><input type="number" class="input-field"></div>
-                    <div><label class="label-style">Active Milking Cows</label><input type="number" class="input-field"></div>
-                    <div><label class="label-style">Milk Collected (L)</label><input type="number" class="input-field"></div>
-                    <div><label class="label-style">Milk Sold (L)</label><input type="number" class="input-field"></div>
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                    <h4 class="font-bold text-sm mb-4 text-blue-800">🧬 AI Service Record (Excel Mapping)</h4>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div><label class="label-head">AI Centre</label><input type="text" class="form-input"></div>
+                        <div><label class="label-head">Semen Type</label><select class="form-input"><option>Sex-Sorted</option><option>Conventional</option></select></div>
+                        <div><label class="label-head">Male Progeny</label><input type="number" class="form-input"></div>
+                        <div><label class="label-head">Female Progeny</label><input type="number" class="form-input"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="health" class="section-content">
+            <h2 class="text-2xl font-extrabold mb-6">DVH & Clinical Management System</h2>
+            <div class="glass-card">
+                <div class="grid grid-cols-5 gap-4 mb-6 text-center">
+                    <div class="p-4 bg-rose-50 rounded-xl border border-rose-100"><label class="label-head text-rose-600">Total Vacc.</label><input type="number" id="vaxQty" oninput="calcHealth()" class="form-input"></div>
+                    <div class="p-4 bg-blue-50 rounded-xl border border-blue-100"><label class="label-head text-blue-600">OPD Cases</label><input type="number" id="opdQty" oninput="calcHealth()" class="form-input"></div>
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-100"><label class="label-head text-amber-600">Outcalls</label><input type="number" id="outcallQty" oninput="calcHealth()" class="form-input"></div>
+                    <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100"><label class="label-head text-emerald-600">Attended</label><input type="number" id="attendQty" oninput="calcHealth()" class="form-input"></div>
+                    <div class="p-4 bg-slate-900 rounded-xl"><label class="label-head text-slate-400">Total Clinical</label><div id="totalClinical" class="text-white font-bold text-xl">0</div></div>
                 </div>
 
-                <div class="grid grid-cols-3 gap-8 p-6 bg-slate-50 rounded-xl">
-                    <div>
-                        <h4 class="font-bold text-sm mb-4">Butter & Cheese</h4>
-                        <div class="space-y-3">
-                            <input type="number" placeholder="Butter Prod (kg)" class="input-field">
-                            <input type="number" placeholder="Cheese Prod (kg)" class="input-field">
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm mb-4">Value Addition</h4>
-                        <div class="space-y-3">
-                            <input type="number" placeholder="Yoghurt (L)" class="input-field">
-                            <input type="number" placeholder="Paneer (kg)" class="input-field">
-                        </div>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm mb-4">Chugo Specialist</h4>
-                        <div class="space-y-3">
-                            <input type="number" placeholder="Hard Chugo (Shey)" class="input-field">
-                            <input type="number" placeholder="Soft Chugo (kg)" class="input-field">
-                        </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div><label class="label-head">Medical Report / Diagnosis</label><textarea class="form-input h-32" placeholder="Enter clinical findings..."></textarea></div>
+                    <div class="space-y-4">
+                        <div><label class="label-head">Lab Findings</label><input type="text" class="form-input" placeholder="Worm load, bacterial count, etc."></div>
+                        <div><label class="label-head">Staff In-Charge</label><input type="text" class="form-input" placeholder="Doctor/Technician Name"></div>
                     </div>
                 </div>
-                <button class="btn-primary mt-8">SYNC DAIRY DATA</button>
+                <button class="btn-action mt-6">SAVE CLINICAL LOG</button>
+            </div>
+        </section>
+
+        <section id="staff" class="section-content">
+            <h2 class="text-2xl font-extrabold mb-6">Staff Registry (District Wide)</h2>
+            <div class="glass-card">
+                <div class="overflow-x-auto mb-8">
+                    <table class="w-full text-left text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold">
+                                <th class="p-4 border-b">Staff Name</th>
+                                <th class="p-4 border-b">Place of Work</th>
+                                <th class="p-4 border-b">Designation</th>
+                                <th class="p-4 border-b">Post/Grade</th>
+                                <th class="p-4 border-b">Contact</th>
+                                <th class="p-4 border-b">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staffTable">
+                            <tr class="hover:bg-slate-50 border-b">
+                                <td class="p-4 font-bold">Tshenden</td>
+                                <td class="p-4">DLO Office, Haa</td>
+                                <td class="p-4">Data Manager</td>
+                                <td class="p-4">P3-A</td>
+                                <td class="p-4">17123456</td>
+                                <td class="p-4 text-blue-600">tshenden@haa.gov.bt</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h4 class="font-bold text-sm mb-4">Register New Personnel</h4>
+                <div class="grid grid-cols-3 gap-4">
+                    <input type="text" placeholder="Full Name" class="form-input">
+                    <input type="text" placeholder="Place of Work" class="form-input">
+                    <input type="text" placeholder="Designation" class="form-input">
+                    <input type="text" placeholder="Post (e.g. S1, P1)" class="form-input">
+                    <input type="number" placeholder="Contact Number" class="form-input">
+                    <input type="email" placeholder="Official Email" class="form-input">
+                </div>
+                <button class="btn-action mt-4">ADD STAFF TO REGISTRY</button>
+            </div>
+        </section>
+
+        <section id="honey" class="section-content">
+            <h2 class="text-2xl font-extrabold mb-6">Apiculture Sector</h2>
+            <div class="glass-card">
+                <div class="grid grid-cols-4 gap-4">
+                    <div><label class="label-head">Honey Sold (Kg)</label><input type="number" id="honeyQty" oninput="calcHoney()" class="form-input"></div>
+                    <div><label class="label-head">Price (Nu/Kg)</label><input type="number" id="honeyPrice" oninput="calcHoney()" class="form-input"></div>
+                    <div class="col-span-2"><span class="badge-calc">Honey Revenue</span><div class="calc-box" id="honeyTotal">Nu. 0.00</div></div>
+                </div>
             </div>
         </section>
 
         <section id="fishery" class="section-content">
-            <h2 class="text-3xl font-extrabold mb-8">Fishery Sector Data</h2>
+            <h2 class="text-2xl font-extrabold mb-6">Fishery Sector Monitoring</h2>
             <div class="glass-card">
-                <div class="grid grid-cols-3 gap-6 mb-8">
-                    <div><label class="label-style">Pond Under Utilization (m³)</label><input type="number" class="input-field"></div>
-                    <div><label class="label-style">Number of Ponds</label><input type="number" class="input-field"></div>
-                    <div><label class="label-style">Fingerlings Supplied</label><input type="number" class="input-field"></div>
-                </div>
-                <div class="grid grid-cols-2 gap-8">
-                    <div class="p-6 border border-slate-100 rounded-xl">
-                        <label class="label-style text-blue-600">Carp Farming</label>
-                        <input type="number" placeholder="Harvest (kg)" class="input-field mb-4">
-                        <input type="number" placeholder="No. Households" class="input-field">
-                    </div>
-                    <div class="p-6 border border-slate-100 rounded-xl">
-                        <label class="label-style text-cyan-600">Trout Farming</label>
-                        <input type="number" placeholder="Total Trout Harvested (kg)" class="input-field mb-4">
-                        <input type="number" placeholder="No. Households" class="input-field">
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="apiculture" class="section-content">
-            <h2 class="text-3xl font-extrabold mb-8">Apiculture Development</h2>
-            <div class="glass-card grid grid-cols-4 gap-6">
-                <div><label class="label-style">Local Hives (No)</label><input type="number" class="input-field"></div>
-                <div><label class="label-style">Improved Hives (No)</label><input type="number" class="input-field"></div>
-                <div><label class="label-style">Honey Harvested (kg)</label><input type="number" class="input-field"></div>
-                <div><label class="label-style">Honey Sold (kg)</label><input type="number" class="input-field"></div>
-            </div>
-        </section>
-
-        <section id="sheep" class="section-content">
-            <h2 class="text-3xl font-extrabold mb-8">Sheep & Goat Population</h2>
-            <div class="glass-card space-y-8">
                 <div class="grid grid-cols-3 gap-6">
-                    <div><label class="label-style">Wool Produced (kg)</label><input type="number" class="input-field"></div>
-                    <div><label class="label-style">Wool Sold (kg)</label><input type="number" class="input-field"></div>
-                    <div><label class="label-style">Mutton Produced (kg)</label><input type="number" class="input-field"></div>
+                    <div class="p-4 border rounded-xl"><label class="label-head">Carp Harvest (Kg)</label><input type="number" id="carpQty" oninput="calcFish()" class="form-input"></div>
+                    <div class="p-4 border rounded-xl"><label class="label-head">Trout Harvest (Kg)</label><input type="number" id="troutQty" oninput="calcFish()" class="form-input"></div>
+                    <div class="p-4 bg-slate-50 rounded-xl"><label class="label-head">Total Fish (Kg)</label><div id="totalFish" class="text-2xl font-black">0</div></div>
                 </div>
-                <div class="grid grid-cols-2 gap-8">
-                    <div class="bg-slate-50 p-6 rounded-xl">
-                        <h4 class="font-bold text-sm mb-4">Improved Breeds</h4>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="number" placeholder="Male Pop" class="input-field">
-                            <input type="number" placeholder="Female Pop" class="input-field">
-                        </div>
-                    </div>
-                    <div class="bg-slate-50 p-6 rounded-xl">
-                        <h4 class="font-bold text-sm mb-4">Local Breeds</h4>
-                        <div class="grid grid-cols-2 gap-4">
-                            <input type="number" placeholder="Male Pop" class="input-field">
-                            <input type="number" placeholder="Female Pop" class="input-field">
-                        </div>
-                    </div>
+            </div>
+        </section>
+
+        <section id="small" class="section-content">
+            <h2 class="text-2xl font-extrabold mb-6">Sheep & Goat Population</h2>
+            <div class="glass-card">
+                <div class="grid grid-cols-3 gap-6">
+                    <div><label class="label-head">Improved Breed</label><input type="number" id="improvedSheep" oninput="calcSmall()" class="form-input"></div>
+                    <div><label class="label-head">Local Breed</label><input type="number" id="localSheep" oninput="calcSmall()" class="form-input"></div>
+                    <div><span class="badge-calc">Total Population</span><div class="calc-box" id="totalSmall">0</div></div>
                 </div>
             </div>
         </section>
 
         <section id="nutrition" class="section-content">
-            <h2 class="text-3xl font-extrabold mb-8">Animal Nutrition & Pasture</h2>
-            <div class="glass-card grid grid-cols-3 gap-6">
-                <div><label class="label-style">Temperate Pasture (Acre)</label><input type="number" class="input-field"></div>
-                <div><label class="label-style">Sub-Tropical Pasture (Acre)</label><input type="number" class="input-field"></div>
-                <div><label class="label-style">Fodder Slip Supplied</label><input type="number" class="input-field"></div>
-                <div><label class="label-style">Winter Oat (Acres)</label><input type="number" class="input-field"></div>
-                <div><label class="label-style">Silage Produced (MT)</label><input type="number" class="input-field"></div>
-                <div><label class="label-style">TMR Feed Qty (MT)</label><input type="number" class="input-field"></div>
-            </div>
-        </section>
-
-        <section id="breeding" class="section-content">
-            <h2 class="text-3xl font-extrabold mb-8">Natural Breeding Service</h2>
-            <div class="glass-card grid grid-cols-4 gap-6">
-                <div><label class="label-style">Animal ID</label><input type="text" class="input-field" placeholder="ID-000"></div>
-                <div><label class="label-style">Breed Type</label><input type="text" class="input-field" placeholder="e.g. Jersey"></div>
-                <div><label class="label-style">Placement Date</label><input type="date" class="input-field"></div>
-                <div><label class="label-style">Male Progeny Born</label><input type="number" class="input-field"></div>
-                <div><label class="label-style">Female Progeny Born</label><input type="number" class="input-field"></div>
-            </div>
-        </section>
-
-        <section id="admin" class="section-content">
-            <h2 class="text-3xl font-extrabold mb-8">Administration Control</h2>
-            <div class="grid grid-cols-2 gap-10">
-                <div class="glass-card">
-                    <h4 class="font-bold text-lg mb-6">Document Gateway</h4>
-                    <div class="border-2 border-dashed border-slate-200 rounded-2xl p-10 text-center hover:border-black transition cursor-pointer">
-                        <p class="text-slate-400 text-sm font-medium">Click to upload Note-sheets, Tenders, or Leave Applications</p>
-                        <input type="file" class="hidden" id="file-upload">
-                    </div>
-                </div>
-                <div class="glass-card">
-                    <h4 class="font-bold text-lg mb-6">Process Log</h4>
-                    <div class="space-y-3">
-                        <div class="flex justify-between p-4 bg-emerald-50 rounded-xl text-sm font-bold text-emerald-700">Annual_Work_Plan_2026.pdf <span>Verified</span></div>
-                        <div class="flex justify-between p-4 bg-slate-50 rounded-xl text-sm font-bold text-slate-500">Tender_Fodder_Seeds.docx <span>In Review</span></div>
-                    </div>
+            <h2 class="text-2xl font-extrabold mb-6">Animal Nutrition & Pasture</h2>
+            <div class="glass-card">
+                <div class="grid grid-cols-4 gap-4">
+                    <div><label class="label-head">Oat Acreage</label><input type="number" id="oatAcre" oninput="calcNutri()" class="form-input"></div>
+                    <div><label class="label-head">Maize Acreage</label><input type="number" id="maizeAcre" oninput="calcNutri()" class="form-input"></div>
+                    <div><label class="label-head">Temperate Pasture</label><input type="number" id="tempAcre" oninput="calcNutri()" class="form-input"></div>
+                    <div class="bg-emerald-50 p-2 rounded"><label class="label-head text-emerald-700">Total Land (Acres)</label><div id="totalLand" class="font-black">0.00</div></div>
                 </div>
             </div>
         </section>
 
-        <section id="products" class="section-content">
-            <h2 class="text-3xl font-extrabold mb-2">Haa Highlands Specialty</h2>
-            <p class="text-slate-500 mb-10 font-medium">Marketing and production tracking for unique regional identifiers.</p>
-            
-            <div class="grid grid-cols-4 gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center font-bold mb-4">🥛</div>
-                    <h4 class="font-extrabold">Gangphu Datshi</h4>
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Premium Cheese</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center font-bold mb-4">🧀</div>
-                    <h4 class="font-extrabold">Hard Chugo (Shey)</h4>
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Dehydrated Yak Milk</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center font-bold mb-4">🥩</div>
-                    <h4 class="font-extrabold">Yaksha</h4>
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Air-dried Yak Meat</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-lg flex items-center justify-center font-bold mb-4">🍖</div>
-                    <h4 class="font-extrabold">Phelu</h4>
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Highland Delicacy</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center font-bold mb-4">🍯</div>
-                    <h4 class="font-extrabold">Alpine Honey</h4>
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">High Altitude Wild Flora</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center font-bold mb-4">🧈</div>
-                    <h4 class="font-extrabold">Alpine Ghee (Mar)</h4>
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Traditional Butter</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center font-bold mb-4">🥚</div>
-                    <h4 class="font-extrabold">Haa Organic Eggs</h4>
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">Free Range Production</p>
-                </div>
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center font-bold mb-4">🍦</div>
-                    <h4 class="font-extrabold">Mountain Yoghurt</h4>
-                    <p class="text-xs text-slate-400 uppercase font-bold tracking-tight">High Fat Culture</p>
-                </div>
-            </div>
-        </section>
+        <section id="breed" class="section-content"><h2 class="text-2xl font-extrabold mb-6">Natural Breeding Service</h2><div class="glass-card">Monitoring for Bull placement and Mating records...</div></section>
+        <section id="brand" class="section-content"><h2 class="text-2xl font-extrabold mb-6">Haa Highland Unique Brand</h2><div class="glass-card">Marketing and Brand Units...</div></section>
 
     </main>
 
     <script>
-        // MASTER REGISTRY OF FARMER GROUPS
-        const farmerGroups = {
+        const registry = {
             'Bji': ['Yangthang Om Gongphel Detshen', 'Talung Om Tshongdrel Detshen', 'Hatey Om Tshongdrel Detshen'],
             'Katsho': ['Ketshen Amtsu Namrub Tshongdrel Detshen', 'Kango Om Gongphel Detshen', 'Nyamley Om Tshongdrel Detshen'],
             'Uesu': ['Uesu Meriphensum Cooperative', 'Pajekha Om Gongphel Detshen'],
@@ -320,36 +228,80 @@
             'Sangbay': ['Sangbayama Gonor Gongphel Detshen', 'Doriub Noryang Layjay Detshen']
         };
 
-        function updateFarmerGroups() {
-            const gewog = document.getElementById('dairy-gewog').value;
-            const groupSelect = document.getElementById('dairy-group');
+        function loadGroups() {
+            const gewog = document.getElementById('gewogSelect').value;
+            const groupSelect = document.getElementById('groupSelect');
             groupSelect.innerHTML = '';
-
-            if (farmerGroups[gewog]) {
-                farmerGroups[gewog].forEach(group => {
-                    const opt = document.createElement('option');
-                    opt.value = group;
-                    opt.textContent = group;
+            if (registry[gewog]) {
+                registry[gewog].forEach(g => {
+                    let opt = document.createElement('option');
+                    opt.value = g; opt.textContent = g;
                     groupSelect.appendChild(opt);
                 });
             } else {
-                const opt = document.createElement('option');
-                opt.textContent = "Please select a Gewog first...";
+                let opt = document.createElement('option'); opt.textContent = "Select Gewog First";
                 groupSelect.appendChild(opt);
             }
         }
 
-        // VIEW NAVIGATION LOGIC
-        function showSection(id) {
-            // Hide all sections
-            document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
-            // Remove active style from all nav items
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        // GLOBAL CALCULATION ENGINE
+        function formatNu(val) { return "Nu. " + val.toLocaleString(undefined, {minimumFractionDigits: 2}); }
+
+        function calcDairy() {
+            const mQ = parseFloat(document.getElementById('milkQty').value) || 0;
+            const mP = parseFloat(document.getElementById('milkPrice').value) || 0;
+            const bQ = parseFloat(document.getElementById('buttQty').value) || 0;
+            const bP = parseFloat(document.getElementById('buttPrice').value) || 0;
             
-            // Show selected section
+            const milkTotal = mQ * mP;
+            const buttTotal = bQ * bP;
+            
+            document.getElementById('milkTotal').textContent = formatNu(milkTotal);
+            document.getElementById('buttTotal').textContent = formatNu(buttTotal);
+            document.getElementById('dash-milk').textContent = formatNu(milkTotal);
+        }
+
+        function calcHealth() {
+            const v = parseInt(document.getElementById('vaxQty').value) || 0;
+            const o = parseInt(document.getElementById('opdQty').value) || 0;
+            const c = parseInt(document.getElementById('outcallQty').value) || 0;
+            const a = parseInt(document.getElementById('attendQty').value) || 0;
+            const total = v + o + c + a;
+            document.getElementById('totalClinical').textContent = total;
+            document.getElementById('dash-cases').textContent = total;
+        }
+
+        function calcHoney() {
+            const q = parseFloat(document.getElementById('honeyQty').value) || 0;
+            const p = parseFloat(document.getElementById('honeyPrice').value) || 0;
+            document.getElementById('honeyTotal').textContent = formatNu(q * p);
+            document.getElementById('dash-honey').textContent = q + " Kg";
+        }
+
+        function calcFish() {
+            const c = parseFloat(document.getElementById('carpQty').value) || 0;
+            const t = parseFloat(document.getElementById('troutQty').value) || 0;
+            document.getElementById('totalFish').textContent = (c + t).toFixed(2);
+        }
+
+        function calcSmall() {
+            const imp = parseInt(document.getElementById('improvedSheep').value) || 0;
+            const loc = parseInt(document.getElementById('localSheep').value) || 0;
+            document.getElementById('totalSmall').textContent = imp + loc;
+        }
+
+        function calcNutri() {
+            const o = parseFloat(document.getElementById('oatAcre').value) || 0;
+            const m = parseFloat(document.getElementById('maizeAcre').value) || 0;
+            const t = parseFloat(document.getElementById('tempAcre').value) || 0;
+            document.getElementById('totalLand').textContent = (o + m + t).toFixed(2);
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.section-content').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            // Style active nav item
-            document.getElementById('btn-' + id).classList.add('active');
+            document.getElementById('n-' + id).classList.add('active');
         }
     </script>
 </body>
